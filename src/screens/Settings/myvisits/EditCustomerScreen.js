@@ -1,0 +1,507 @@
+import {Picker} from '@react-native-picker/picker';
+import {Formik} from 'formik';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, View, SafeAreaView} from 'react-native';
+import {Button, Subheading, Text, TextInput} from 'react-native-paper';
+import SearchableDropdown from 'react-native-searchable-dropdown';
+import {COLORS} from '../../../constants/theme/colors';
+import {
+  getBeatList,
+  getCustomerClassList,
+  getCustomerTypeList,
+  getPinCodeList,
+  getCitiesList,
+  getCitiesDetail,
+  editShop,
+  getState,
+} from '../../../services/retailer_services';
+
+const EditCustomerScreen = ({navigation, route}) => {
+  const data = route.params.data;
+  const initialValues = {
+    route_id: data.route_id,
+    name: data.name,
+    address: data.address,
+    customer_type_id: data.customer_type_id,
+    customer_class_id: data.customer_class_id,
+    gst_number: data.gst_number,
+    owner_name: data.owner_name,
+    owner_email: data.owner_email,
+    owner_contact_number: data.owner_contact_number,
+    billing_address: data.billing_address,
+    billing_state_id: data.billing_state_id,
+    billing_district: data.billing_district,
+    billing_tehsil: data.billing_tehsil,
+    billing_pincode: data.billing_pincode,
+    billing_city: data.billing_city,
+    shipping_pincode: data.shipping_pincode,
+    shipping_city: data.shipping_city,
+    shipping_state_id: data.shipping_state_id,
+    shipping_district: data.shipping_district,
+    shipping_tehsil: data.shipping_tehsil,
+    shipping_address: data.shipping_address,
+    referred_by: data.referred_by,
+    town: data.town,
+  };
+
+  const [beat, setBeat] = useState([]);
+  const [shopClass, setShopClass] = useState([]);
+  const [shopType, setShopType] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState({});
+
+  const [state, setState] = useState([]);
+
+  useEffect(() => {
+    getBeat();
+    getShopType();
+    getShopClass();
+    getStateValue();
+  }, []);
+
+  const getBeat = () => {
+    getBeatList()
+      .then(res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setBeat(data.routes);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
+  const getShopClass = () => {
+    getCustomerClassList()
+      .then(res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setShopClass(data.customer_classes);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
+  const getShopType = () => {
+    getCustomerTypeList()
+      .then(res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setShopType(data.customer_types);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
+  const getStateValue = () => {
+    getState()
+      .then(res => {
+        const {data, success, errors} = res.data;
+        console.log('states', res.data);
+        if (success) {
+          setState(data.states);
+        }
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  return (
+    <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.container}>
+      <SafeAreaView />
+      <Formik
+        validateOnBlur={false}
+        validateOnChange={false}
+        initialValues={initialValues}
+        onSubmit={(values, {resetForm}) => {
+          setIsLoading(true);
+          // var data = {
+          //   longitude: location.longitude,
+          //   latitude: location.latitude,
+          //   // billing_city_id: selectedCity._id,
+          //   // billing_pin_code_id: selectedPinCode._id,
+          // };
+          let temp = {
+            ...values,
+            // ...data,
+          };
+
+          console.log('post', temp);
+
+          editShop(temp, route.params.id)
+            .then(res => {
+              const {data, errors, success} = res.data;
+
+              if (success) {
+                setIsLoading(false);
+                navigation.goBack();
+                alert('Customer is Successfully updated');
+              } else {
+                // alert(JSON.stringify(errors));
+                console.log('edit shop', errors);
+                setError(errors);
+              }
+            })
+            .catch(e => alert(e))
+            .finally(() => setIsLoading(false));
+        }}>
+        {({handleChange, handleBlur, handleSubmit, values, errors}) => (
+          <View>
+            <Subheading style={styles.label}>Shop Information</Subheading>
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={values.route_id}
+                mode="dropdown"
+                onValueChange={handleChange('route_id')}>
+                <Picker.Item label="Select Beat (Required)" value="" />
+                {beat.map(item => (
+                  <Picker.Item
+                    key={item._id}
+                    label={item.name}
+                    value={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+            {error.route_id && (
+              <Text style={styles.errorText}>{error.route_id}</Text>
+            )}
+            <TextInput
+              style={styles.input}
+              value={values.name}
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
+              error={error.name ? true : false}
+              label="Shop Name (Required)"
+              mode="outlined"
+            />
+            {error.name && <Text style={styles.errorText}>{error.name}</Text>}
+            <TextInput
+              style={styles.input}
+              value={values.owner_name}
+              onChangeText={handleChange('owner_name')}
+              onBlur={handleBlur('owner_name')}
+              label="Owner Name (Required)"
+              error={error.owner_name ? true : false}
+              mode="outlined"
+            />
+            {error.owner_name && (
+              <Text style={styles.errorText}>{error.owner_name}</Text>
+            )}
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={values.customer_type_id}
+                onBlur={handleBlur('customer_type_id')}
+                mode="dropdown"
+                onValueChange={handleChange('customer_type_id')}>
+                <Picker.Item label="Select Shop Type" value="" />
+                {shopType.map(item => (
+                  <Picker.Item
+                    key={item._id}
+                    label={item.name}
+                    value={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={values.customer_class_id}
+                mode="dropdown"
+                onBlur={handleBlur('customer_class_id')}
+                onValueChange={handleChange('customer_class_id')}>
+                <Picker.Item label="Select Shop CLass" value="" />
+                {shopClass.map(item => (
+                  <Picker.Item
+                    key={item._id}
+                    label={item.name}
+                    value={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+            <Subheading style={styles.label}>Contact Information</Subheading>
+            <TextInput
+              style={styles.input}
+              value={values.gst_number}
+              onChangeText={handleChange('gst_number')}
+              label="GST number"
+              maxLength={15}
+              mode="outlined"
+              keyboardType="number-pad"
+              error={error.gst_number ? true : false}
+            />
+            {error.gst_number && (
+              <Text style={styles.errorText}>{error.gst_number}</Text>
+            )}
+            <TextInput
+              style={styles.input}
+              value={values.town}
+              onChangeText={handleChange('town')}
+              label="Town"
+              maxLength={15}
+              mode="outlined"
+              error={error.town ? true : false}
+            />
+            {error.town && <Text style={styles.town}>{error.town}</Text>}
+            <TextInput
+              style={styles.input}
+              value={values.owner_contact_number}
+              onBlur={handleBlur('owner_contact_number')}
+              onChangeText={handleChange('owner_contact_number')}
+              keyboardType="phone-pad"
+              label="Contact Number (Required)"
+              maxLength={10}
+              mode="outlined"
+              error={error.owner_contact_number ? true : false}
+            />
+            {error.owner_contact_number && (
+              <Text style={styles.errorText}>{error.owner_contact_number}</Text>
+            )}
+            <TextInput
+              style={styles.input}
+              value={values.owner_email}
+              onBlur={handleBlur('owner_email')}
+              onChangeText={handleChange('owner_email')}
+              keyboardType="email-address"
+              label="Email Id (Required)"
+              mode="outlined"
+              error={errors.owner_email || error.owner_email ? true : false}
+            />
+            {(errors.owner_email || error.owner_email) && (
+              <Text style={styles.errorText}>
+                {errors.owner_email || error.owner_email}
+              </Text>
+            )}
+            <TextInput
+              style={styles.input}
+              value={values.referred_by}
+              onBlur={handleBlur('referred_by')}
+              onChangeText={handleChange('referred_by')}
+              label="Referred by"
+              mode="outlined"
+              error={errors.referred_by || error.referred_by ? true : false}
+            />
+            {(errors.referred_by || error.referred_by) && (
+              <Text style={styles.errorText}>
+                {errors.referred_by || error.referred_by}
+              </Text>
+            )}
+            <Subheading style={styles.label}>Primary Address</Subheading>
+
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={values.billing_state_id}
+                onBlur={handleBlur('billing_state_id')}
+                mode="dropdown"
+                onValueChange={handleChange('billing_state_id')}>
+                <Picker.Item label="Select State" value="" />
+                {state.map(item => (
+                  <Picker.Item
+                    key={item._id}
+                    label={item.name}
+                    value={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={values.billing_pincode}
+              onChangeText={handleChange('billing_pincode')}
+              onBlur={handleBlur('billing_pincode')}
+              error={error.billing_pincode ? true : false}
+              label="Pin Code"
+              mode="outlined"
+            />
+
+            {(errors.billing_pincode || error.billing_pincode) && (
+              <Text style={styles.errorText}>
+                {errors.billing_pincode || error.billing_pincode}
+              </Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              value={values.billing_city}
+              onChangeText={handleChange('billing_city')}
+              onBlur={handleBlur('billing_city')}
+              error={error.billing_city ? true : false}
+              label="City"
+              mode="outlined"
+            />
+
+            {(errors.billing_city || error.billing_city) && (
+              <Text style={styles.errorText}>
+                {errors.billing_city || error.billing_city}
+              </Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              //value={cityDetail.district}
+              value={values.billing_district}
+              onChangeText={handleChange('billing_district')}
+              onBlur={handleBlur('billing_district')}
+              error={error.billing_district ? true : false}
+              label="District"
+              mode="outlined"
+            />
+            {error.billing_district && (
+              <Text style={styles.errorText}>{error.billing_district}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              //value={cityDetail.region}
+              value={values.billing_tehsil}
+              onChangeText={handleChange('billing_tehsil')}
+              onBlur={handleBlur('billing_tehsil')}
+              label="Tehsil "
+              mode="outlined"
+            />
+            <TextInput
+              style={styles.input}
+              value={values.billing_address}
+              onBlur={handleBlur('billing_address')}
+              onChangeText={handleChange('billing_address')}
+              label="Address"
+              mode="outlined"
+            />
+            <Subheading style={styles.label}>Shipping Address</Subheading>
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={values.shipping_state_id}
+                onBlur={handleBlur('shipping_state_id')}
+                mode="dropdown"
+                onValueChange={handleChange('shipping_state_id')}>
+                <Picker.Item label="Select State" value="" />
+                {state.map(item => (
+                  <Picker.Item
+                    key={item._id}
+                    label={item.name}
+                    value={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={values.shipping_pincode}
+              onChangeText={handleChange('shipping_pincode')}
+              onBlur={handleBlur('shipping_pincode')}
+              error={error.shipping_pincode ? true : false}
+              label="Pin Code"
+              mode="outlined"
+            />
+
+            {(errors.shipping_pincode || error.shipping_pincode) && (
+              <Text style={styles.errorText}>
+                {errors.shipping_pincode || error.shipping_pincode}
+              </Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              value={values.shipping_city}
+              onChangeText={handleChange('shipping_city')}
+              onBlur={handleBlur('shipping_city')}
+              error={error.shipping_city ? true : false}
+              label="City"
+              mode="outlined"
+            />
+
+            {(errors.shipping_city || error.shipping_city) && (
+              <Text style={styles.errorText}>
+                {errors.shipping_city || error.shipping_city}
+              </Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              //value={cityDetail.district}
+              value={values.shipping_district}
+              onChangeText={handleChange('shipping_district')}
+              onBlur={handleBlur('shipping_district')}
+              error={error.shipping_district ? true : false}
+              label="District"
+              mode="outlined"
+            />
+            {error.shipping_district && (
+              <Text style={styles.errorText}>{error.shipping_district}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              //value={cityDetail.region}
+              value={values.shipping_tehsil}
+              onChangeText={handleChange('shipping_tehsil')}
+              onBlur={handleBlur('shipping_tehsil')}
+              label="Tehsil"
+              mode="outlined"
+            />
+
+            {error.shipping_tehsil && (
+              <Text style={styles.errorText}>{error.shipping_tehsil}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              value={values.shipping_address}
+              onBlur={handleBlur('shipping_address')}
+              onChangeText={handleChange('shipping_address')}
+              label="Address"
+              mode="outlined"
+            />
+            <Button
+              disabled={isLoading}
+              style={styles.btn}
+              onPress={handleSubmit}
+              loading={isLoading}
+              mode="contained">
+              Submit
+            </Button>
+          </View>
+        )}
+      </Formik>
+    </ScrollView>
+  );
+};
+
+export default EditCustomerScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  input: {
+    marginTop: 10,
+    backgroundColor: 'white',
+  },
+  picker: {
+    width: '100%',
+    border: 1,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  label: {
+    color: COLORS.accentPrimary,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: COLORS.error,
+  },
+  btn: {
+    marginBottom: 25,
+    marginTop: 10,
+  },
+});
