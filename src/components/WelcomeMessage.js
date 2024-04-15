@@ -6,7 +6,7 @@ import {Button, Text, Avatar, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {COLORS} from '../constants/theme/colors';
-import MapmyIndiaIntouch from 'mappls-intouch-react-native';
+import MapplsIntouch from 'mappls-intouch-react-native';
 import {ROUTES} from '../constants/routes';
 
 const WelcomeMessage = () => {
@@ -19,14 +19,15 @@ const WelcomeMessage = () => {
 
   useEffect(() => {
     generateGreetings();
-    trackingOn();
+    // trackingOn();
   }, [hourOfDay]);
   const trackingOn = async () => {
     if (attendanceStatus) {
-      const status = await MapmyIndiaIntouch.isRunning();
+      const status = await MapplsIntouch.isRunning();
+      console.log('mappls running', status);
       if (!status) {
-        MapmyIndiaIntouch.startTrackingWithCustomConfig({
-          standByTimeInMins: 15, //mandatory
+        MapplsIntouch.startTrackingWithCustomConfig({
+          standByTimeInMins: 15, //mandatory 
           timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
           autoTrackingConfig: {
             endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
@@ -34,7 +35,7 @@ const WelcomeMessage = () => {
         });
       }
     } else {
-      MapmyIndiaIntouch.stopTracking();
+      MapplsIntouch.stopTracking();
     }
   };
 

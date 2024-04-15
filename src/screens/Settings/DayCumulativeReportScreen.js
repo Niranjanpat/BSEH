@@ -69,6 +69,12 @@ const CumulativeReportScreen = () => {
           backGroundColor="#11BCCA"
           iconName="cube"
           label="Order count"
+          value={data?.total_order}
+        />
+        <FlexRow
+          backGroundColor={COLORS.success}
+          iconName="cash-register"
+          label="Order Quantity"
           value={data?.order_quantity}
         />
         <FlexRow
@@ -77,12 +83,12 @@ const CumulativeReportScreen = () => {
           label="Order amount"
           value={data?.order_amount}
         />
-        <FlexRow
+        {/* <FlexRow
           backGroundColor={COLORS.success}
           iconName="cash-register"
           label="Total amount (in INR)"
           value={data?.total_order}
-        />
+        /> */}
       </View>
 
       {loading && <LoadingView />}

@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 10,
+    color: COLORS.accentSecondary,
   },
 });
 

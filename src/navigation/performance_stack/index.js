@@ -12,6 +12,7 @@ import TopSalesOfficerScreen from '../../screens/Settings/performance/TopSalesOf
 import PerformanceDSMScreen from '../../screens/Settings/performance/PerformanceDSMScreen';
 import TodayCustomerOrder from '../../screens/Settings/performance/TodayCustomerOrder';
 import OrderLogScreen from '../../screens/Settings/performance/OrderLogScreen';
+import TodayReportScreen from '../../screens/Settings/TodayReportScreen';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 export const PerformanceStack = () => {
@@ -61,6 +62,11 @@ export const PerformanceStack = () => {
         name={ROUTES.order_log_performance}
         component={OrderLogScreen}
         options={{title: 'Order Log'}}
+      />
+      <Screen
+        name={ROUTES.today_report}
+        options={{ title: "Daily Performance", headerShown: true }}
+        component={TodayReportScreen}
       />
     </Navigator>
   );

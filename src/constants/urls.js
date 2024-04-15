@@ -1,6 +1,6 @@
 export const URLS = {
   base: 'http://182.18.155.185/ruchi-soya-nutrition/api/', //test
-  //base: 'http://182.18.142.47/ruchi-soya-nutrition/api/', //live
+  // base: 'http://182.18.142.47/ruchi-soya-nutrition/api/', //live
 
   login: 'users/login',
   profile: 'users/profile',
@@ -64,6 +64,7 @@ export const URLS = {
   userJointWork: 'user-joint-workings',
   kamDashboard: 'kams/dashboard',
   cumulativeReport: 'user-hierarchy/cumulative-report',
+  cumulativeMonthlyReport: 'user-hierarchy/cumulative-monthly-report',
   kamMtd: 'kams/month-till-date',
   kams: 'kams',
   promoterSales: 'promoter-sales',

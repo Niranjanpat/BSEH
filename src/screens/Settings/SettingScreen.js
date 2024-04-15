@@ -1,4 +1,4 @@
-import MapmyIndiaIntouch from 'mappls-intouch-react-native';
+import MapplsIntouch from 'mappls-intouch-react-native';
 import React from 'react';
 import {View, StyleSheet, SafeAreaView, ScrollView, Alert} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
@@ -25,7 +25,7 @@ const SettingScreen = ({navigation}) => {
 
     mmkv.clearStore();
     navigation.replace(ROUTES.auth_stack);
-    MapmyIndiaIntouch.stopTracking();
+    // MapplsIntouch.stopTracking();
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -84,7 +84,7 @@ const SettingScreen = ({navigation}) => {
             <Divider />
           </>
         )}
-        {role === 'kam' && (
+        {/* {role === 'kam' && (
           <>
             <List.Item
               style={styles.list}
@@ -97,7 +97,7 @@ const SettingScreen = ({navigation}) => {
             />
             <Divider />
           </>
-        )}
+        )} */}
         {role !== 'kam' && (
           <>
             <List.Item
@@ -184,20 +184,23 @@ const SettingScreen = ({navigation}) => {
               right={props => <List.Icon {...props} icon="chevron-right" />}
             />
             <Divider />
-            <Divider />
+            {/* <Divider /> */}
           </>
         )}
         <Divider />
-        <List.Item
-          style={styles.list}
-          title="Route schedules"
-          onPress={() => {
-            navigation.navigate(ROUTES.route_schedule_stack);
-          }}
-          left={props => <List.Icon {...props} icon="map-marker-distance" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
+        {(role === 'promoter' || role === 'kam') && (
+          <>
+            <List.Item
+              style={styles.list}
+              title="Route schedules"
+              onPress={() => {
+                navigation.navigate(ROUTES.route_schedule_stack);
+              }}
+              left={props => <List.Icon {...props} icon="map-marker-distance" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+            />
+            <Divider />
+          </>)}
 
         {!(role === 'promoter' || role === 'kam') && (
           <>

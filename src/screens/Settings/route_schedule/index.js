@@ -27,6 +27,7 @@ const RouteScheduleListScreen = ({navigation}) => {
         <Icon
           name="filter-variant"
           size={22}
+          style={styles.icon}
           onPress={() => setVisible(true)}
         />
       ),
@@ -135,6 +136,10 @@ const styles = StyleSheet.create({
     bottom: '5%',
     right: '5%',
     zIndex: 99999,
+  },
+  icon: {
+    marginLeft: 10,
+    color: COLORS.accentSecondary,
   },
 });
 

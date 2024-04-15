@@ -92,7 +92,7 @@ export const SettingsStackNavigation = () => {
       <SettingsStack.Screen
         name={ROUTES.my_joint_work}
         component={JointWorkListScreen}
-        options={{headerShown: true, headerTitle: 'Joint work list'}}
+        options={{headerShown: false, headerTitle: 'Joint work list'}}
       />
       <SettingsStack.Screen
         name={ROUTES.tracking_stack}
@@ -117,7 +117,7 @@ export const SettingsStackNavigation = () => {
       />
       <SettingsStack.Screen
         name={ROUTES.cumulative_report}
-        options={{title: "Today's Cumulative Report", headerShown: true}}
+        options={{title: "Cumulative Report", headerShown: true}}
         component={CumulativeReportScreen}
       />
       <SettingsStack.Screen

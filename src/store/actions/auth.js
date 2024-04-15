@@ -8,7 +8,7 @@ import {
 } from '../../services/auth_service';
 import {clientId, clientSecret} from '../../constants/urls';
 import {attendanceAction, authActions} from '../action_types';
-import MapmyIndiaIntouch from 'mappls-intouch-react-native';
+import MapplsIntouch from 'mappls-intouch-react-native';
 import {getJointWorkStatus} from '../../services/joint_service';
 
 export const getProfileDetail = () => {
@@ -18,7 +18,7 @@ export const getProfileDetail = () => {
         const {data, errors, success} = res.data;
         if (success) {
           dispatch(storeAccount(data));
-          intouch(data);
+          // intouch(data);
         } else {
         }
       })
@@ -45,19 +45,19 @@ export const fetchJointWorkStatus = () => {
   };
 };
 const intouch = async profile => {
-  const status = await MapmyIndiaIntouch.isInitialized();
+  const status = await MapplsIntouch.isInitialized();
   console.log(status);
   if (!status) {
     try {
-      MapmyIndiaIntouch.initializeWithDeviceId(
+      MapplsIntouch.initializeWithDeviceId(
         profile.emp_code,
-        clientId,
+        clientId, 
         clientSecret,
         profile.emp_code,
         result => {
           console.log('intouchs', result);
           if (result === 'success') {
-            MapmyIndiaIntouch.addTrackingStateListener(event => {
+            MapplsIntouch.addTrackingStateListener(event => {
               console.log('intouch', event);
             });
           } else {
@@ -100,14 +100,14 @@ export const attendancePunchIn = datas => {
           dispatch(getAttendanceStatus());
           dispatch(getAttendanceList());
 
-          MapmyIndiaIntouch.startTrackingWithCustomConfig({
-            standByTimeInMins: 15, //mandatory
-            timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
-            autoTrackingConfig: {
-              endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
-            },
-          });
-          MapmyIndiaIntouch.getCurrentLocationUpdate();
+          // MapplsIntouch.startTrackingWithCustomConfig({
+          //   standByTimeInMins: 15, //mandatory
+          //   timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
+          //   autoTrackingConfig: {
+          //     endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
+          //   },
+          // });
+          // MapplsIntouch.getCurrentLocationUpdate();
         } else {
         }
       })
@@ -127,11 +127,11 @@ export const attendancePunchOut = datas => {
       .then(res => {
         const {data, errors, success} = res.data;
         if (success) {
-          MapmyIndiaIntouch.getCurrentLocationUpdate();
+          // MapplsIntouch.getCurrentLocationUpdate();
           dispatch(getAttendanceStatus());
           dispatch(getAttendanceList());
           dispatch(storeJointStatus(null));
-          MapmyIndiaIntouch.stopTracking();
+          // MapplsIntouch.stopTracking();
         } else {
         }
       })

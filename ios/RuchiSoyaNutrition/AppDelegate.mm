@@ -14,6 +14,11 @@
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler
+{
+[Intouch.shared backgroundfetchWithCompletionHandler:completionHandler];
+}
+
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
   return [self getBundleURL];

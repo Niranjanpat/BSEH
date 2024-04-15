@@ -110,6 +110,18 @@ const PerformanceDSMScreen = ({navigation, route}) => {
           <Divider />
         </>
       )}
+      {role === 'kam' && (<>
+        <List.Item
+          style={styles.list}
+          title="Daily Performance"
+          onPress={() => {
+            navigation.navigate(ROUTES.today_report, { id: null });
+          }}
+          left={props => <List.Icon {...props} icon="cart-remove" />}
+          right={props => <List.Icon {...props} icon="chevron-right" />}
+        />
+        <Divider />
+      </>)}
     </View>
   );
 };

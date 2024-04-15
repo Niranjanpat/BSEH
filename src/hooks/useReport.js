@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {
   getComplianceReport,
   getCumulativeReport,
+  getMonthlyCumulativereport,
   getMtdReport,
   getTodayCumulativereport,
   getTodayReport,
@@ -36,14 +37,18 @@ const useReport = () => {
       });
   };
 
-  const fetchTodayCumulativeReport = () => {
+  const fetchTodayCumulativeReport = (year, month) => {
     setLoading(true);
 
-    getTodayCumulativereport()
+    console.log(year, month);
+
+    getMonthlyCumulativereport(year, month)
       .then(res => {
         setLoading(false);
 
         const {data, success} = res.data;
+
+        console.log(data);
 
         if (success) {
           setData(data);

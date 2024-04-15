@@ -72,6 +72,10 @@ export const getTodayCumulativereport = async () => {
   return await client.get(URLS.cumulativeReport);
 };
 
+export const getMonthlyCumulativereport = async (year, month) => {
+  return await client.get(URLS.cumulativeMonthlyReport, {params: { year, month }});
+};
+
 export const getCumulativeReport = async date => {
   return await client.get(`${URLS.cumulativeReport}/${date}`);
 };

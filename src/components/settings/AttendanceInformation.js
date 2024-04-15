@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   card: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
     padding: 10,
     elevation: 3,
     backgroundColor: COLORS.light,

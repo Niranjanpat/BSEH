@@ -33,14 +33,15 @@ const TodayReportScreen = ({navigation, route}) => {
       <AttendanceInformation data={data} />
       <CallDetails data={data} />
       <OrderDetails data={data} />
-      {!id && (
+      {/* {!id && (
         <Pressable onPress={() => navigation.navigate(ROUTES.kam_mtd)}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>View MTD report</Text>
             <Icon name="chevron-right-circle" size={23} color={COLORS.light} />
           </View>
         </Pressable>
-      )}
+      )} */}
+      <View style={styles.margin_bottom}></View>
       {loading && <LoadingView />}
     </ScrollView>
   );
@@ -59,6 +60,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 10,
+    marginBottom: 30,
+  },
+  margin_bottom: {
     marginBottom: 30,
   },
   buttonText: {

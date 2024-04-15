@@ -34,8 +34,8 @@ const OrderDetails = ({data}) => {
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: 10,
-    marginBottom: 30,
+    marginVertical: 5,
+    marginBottom: 10,
     padding: 10,
     elevation: 3,
     backgroundColor: COLORS.light,
