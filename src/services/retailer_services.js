@@ -25,6 +25,10 @@ export const getCustomerTypeList = async () => {
   return await client.get(URLS.customerType);
 };
 
+export const getCustomerActivityList = async () => {
+  return await client.get(URLS.customerActivityCategories);
+};
+
 export const getCustomerClassList = async () => {
   return await client.get(URLS.customerClass);
 };

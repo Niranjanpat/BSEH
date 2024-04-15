@@ -36,14 +36,22 @@ export const saveFeedback = async data => {
   return await client.post(URLS.saveFeedback, data);
 };
 
-export const saveOrder = async (productList, customer) => {
+export const saveOrder = async (productList, customer, hideCheckoutAfterOrder) => {
   const customer_id = customer._id;
   const products = JSON.stringify(productList);
 
-  return await client.post(URLS.orders, {
-    customer_id,
-    products,
-  });
+  if (hideCheckoutAfterOrder) {
+    return await client.post(URLS.orders, {
+      customer_id,
+      products,
+      is_on_call: 1,
+    });
+  } else {
+    return await client.post(URLS.orders, {
+      customer_id,
+      products,
+    });
+  }
 };
 
 export const saveSalesReturn = async (productList, customer, reason) => {

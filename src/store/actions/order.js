@@ -31,6 +31,16 @@ export const getCustomerVisitStatus = () => {
       });
   };
 };
+export const setHideCheckoutAfterOrderPlaces = (isHide) => {
+  return async dispatch => {
+    dispatch(storeHideCheckoutAfterOrderPlaces(isHide));
+  };
+};
+export const setCustomerForOrderOnCall = (_id) => {
+  return async dispatch => {
+    dispatch(storeCustomerForOrderOnCall({_id}));
+  };
+};
 const alertChangeLocation = (id, position) => {
   Alert.alert(
     'Confirm',
@@ -132,4 +142,11 @@ export const postCustomerCheckOut = (location, navigation, screen) => {
 };
 export const storeCustomerVisitStatus = payload => {
   return {type: orderAction.STORE_CUSTOMER_VISIT_STATUS, payload};
+};
+export const storeHideCheckoutAfterOrderPlaces = payload => {
+  return {type: orderAction.STOTE_HIDE_CHECKOUT_AFTER_ORDER, payload};
+};
+
+export const storeCustomerForOrderOnCall = payload => {
+  return {type: orderAction.STORE_CUSTOMER_FOR_ORDER_ON_CALL, payload};
 };

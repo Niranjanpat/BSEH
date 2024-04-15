@@ -51,6 +51,9 @@ import PromoterProductsScreen from '../screens/Settings/myvisits/promoter/Promot
 import JointWorkListScreen from '../screens/Settings/JointWorkListScreen';
 import RouteScheduleStack from './RouteScheduleStack';
 import UserRouteScheduleListScreen from '../screens/Settings/UserRouteScheduleListScreen';
+import CheckOutScreen from '../screens/Settings/myvisits/CheckOutScreen';
+import OrderCartScreen from '../screens/Settings/myvisits/OrderCartScreen';
+import OrderCartIcon from '../components/OrderCartIcon';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -202,6 +205,42 @@ export const RetailerStackNavigation = () => {
           const title = route.params?.title || 'Customer';
 
           return {title: `Edit ${title}`};
+        }}
+      />
+      <RetailerStack.Screen
+        name={ROUTES.vertical}
+        component={VerticalListScreen}
+        options={{
+          title: 'Vertical List',
+        }}
+      />
+      <RetailerStack.Screen
+        name={ROUTES.brand}
+        component={BrandListScreen}
+        options={({route}) => ({
+          title: route.params?.data?.name || 'Brand List',
+        })}
+      />
+      <RetailerStack.Screen
+        name={ROUTES.product}
+        component={ProductListScreen}
+        options={({route}) => ({
+          title: route.params?.data?.name || 'Product List',
+          headerRight: () => <OrderCartIcon />,
+        })}
+      />
+      <RetailerStack.Screen
+        name={ROUTES.order_cart}
+        component={OrderCartScreen}
+        options={{
+          title: 'Cart Details',
+        }}
+      />
+      <RetailerStack.Screen
+        name={ROUTES.order_checkout}
+        component={CheckOutScreen}
+        options={{
+          title: 'Confirm items & proceed',
         }}
       />
     </RetailerStack.Navigator>

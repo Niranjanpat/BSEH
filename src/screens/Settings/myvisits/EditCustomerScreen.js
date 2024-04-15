@@ -14,6 +14,7 @@ import {
   getCitiesDetail,
   editShop,
   getState,
+  getCustomerActivityList,
 } from '../../../services/retailer_services';
 
 const EditCustomerScreen = ({navigation, route}) => {
@@ -24,6 +25,7 @@ const EditCustomerScreen = ({navigation, route}) => {
     address: data.address,
     customer_type_id: data.customer_type_id,
     customer_class_id: data.customer_class_id,
+    customer_activity_category_id: data.customer_activity_category_id,
     gst_number: data.gst_number,
     owner_name: data.owner_name,
     owner_email: data.owner_email,
@@ -47,7 +49,7 @@ const EditCustomerScreen = ({navigation, route}) => {
   const [beat, setBeat] = useState([]);
   const [shopClass, setShopClass] = useState([]);
   const [shopType, setShopType] = useState([]);
-
+  const [customerActivity, setCustomerActivity] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
 
@@ -58,6 +60,7 @@ const EditCustomerScreen = ({navigation, route}) => {
     getShopType();
     getShopClass();
     getStateValue();
+    getCustomerActivity();
   }, []);
 
   const getBeat = () => {
@@ -110,6 +113,20 @@ const EditCustomerScreen = ({navigation, route}) => {
       })
       .catch(e => {
         console.log(e);
+      });
+  };
+
+  const getCustomerActivity = () => {
+    getCustomerActivityList()
+      .then(res => {
+        console.log(res.data);
+        const {data, success, errors} = res.data;
+        if (success) {
+          setCustomerActivity(data.customer_activity_categories);
+        }
+      })
+      .catch(e => {
+        alert(e);
       });
   };
 
@@ -219,6 +236,22 @@ const EditCustomerScreen = ({navigation, route}) => {
                 onValueChange={handleChange('customer_class_id')}>
                 <Picker.Item label="Select Shop CLass" value="" />
                 {shopClass.map(item => (
+                  <Picker.Item
+                    key={item._id}
+                    label={item.name}
+                    value={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={values.customer_activity_category_id}
+                mode="dropdown"
+                onBlur={handleBlur('customer_activity_category_id')}
+                onValueChange={handleChange('customer_activity_category_id')}>
+                <Picker.Item label="Select Customer Activity" value="" />
+                {customerActivity.map(item => (
                   <Picker.Item
                     key={item._id}
                     label={item.name}

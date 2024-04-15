@@ -27,6 +27,7 @@ const OrderDetails = ({data}) => {
       <View style={styles.section}>
         <GridItem label="First order time" value={data.first_order_time} />
         <GridItem label="Order amount" value={data.order_amount} />
+        <GridItem label="On Call Orders" value={data.on_call_order_count} />
       </View>
     </View>
   );

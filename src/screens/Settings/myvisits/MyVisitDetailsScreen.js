@@ -37,6 +37,7 @@ import {
   getCustomerVisitStatus,
   postCustomerCheckIn,
   postCustomerCheckOut,
+  setHideCheckoutAfterOrderPlaces,
 } from '../../../store/actions/order';
 import ReturnOptionsModal from '../../../components/myvisits/ReturnOptionsModal';
 import {initReturnCart, storeRecentVisit} from '../../../store/actions/returns';
@@ -79,6 +80,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     dispatch(initReturnCart());
     dispatch(storeRecentVisit(data));
     dispatch(getCustomerVisitStatus());
+    dispatch(setHideCheckoutAfterOrderPlaces(false))
   }, []);
 
   useEffect(() => {
@@ -268,27 +270,30 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               : 'Check in'
             : 'Check in'}
         </Button>
-        <HorizontalSpacer />
+
         {!customer?.is_own_con_num_verified &&
           (role === 'kam' ||
             role === 'dsm' ||
             role === 'sm' ||
             role === 'promoter') && (
-            <Button
-              icon="phone"
-              mode="contained"
-              onPress={handleSMSSend}
-              loading={loading}
-              disabled={loading}>
-              Verify number
-            </Button>
+            <>
+              <HorizontalSpacer />
+              <Button
+                icon="phone"
+                mode="contained"
+                onPress={handleSMSSend}
+                loading={loading}
+                disabled={loading}>
+                Verify number
+              </Button>
+            </>
           )}
-        <HorizontalSpacer />
 
         {role == 'promoter' &&
           customerVisitStatus.status &&
           customerVisitStatus.customer_id === data._id && (
             <>
+              <HorizontalSpacer />
               <Button
                 icon="cash-register"
                 mode="contained"
@@ -306,25 +311,31 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               </Button>
             </>
           )}
-        <HorizontalSpacer />
+
         {role !== 'promoter' &&
           customerVisitStatus.status &&
           customerVisitStatus.customer_id === data._id && (
-            <Button
-              icon="cart-outline"
-              mode="contained"
-              onPress={() => navigation.navigate(ROUTES.vertical)}>
-              Order
-            </Button>
+            <>
+              <HorizontalSpacer />
+              <Button
+                icon="cart-outline"
+                mode="contained"
+                onPress={() => navigation.navigate(ROUTES.vertical)}>
+                Order
+              </Button>
+            </>
           )}
-        <HorizontalSpacer />
+
         {role !== 'promoter' && (
-          <Button
-            mode="contained"
-            icon="keyboard-return"
-            onPress={() => setReturnDialogVisible(true)}>
-            Return
-          </Button>
+          <>
+            <HorizontalSpacer />
+            <Button
+              mode="contained"
+              icon="keyboard-return"
+              onPress={() => setReturnDialogVisible(true)}>
+              Return
+            </Button>
+          </>
         )}
       </ScrollView>
 
@@ -371,6 +382,17 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             {customer?.customer_type_name ? (
               <Text style={styles.detailsValue}>
                 {customer?.customer_type_name}
+              </Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.detailsTitle}>Customer Activity</Text>
+            <Text> : </Text>
+            {customer?.customer_activity_category_name ? (
+              <Text style={styles.detailsValue}>
+                {customer?.customer_activity_category_name}
               </Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>

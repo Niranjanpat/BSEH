@@ -20,6 +20,8 @@ const CheckOutScreen = ({navigation}) => {
 
   const cartItems = useSelector(state => state.cart);
   const customer = useSelector(state => state.order.customerVisitStatus);
+  const hideCheckoutAfterOrder = useSelector(state => state.order.hideCheckoutAfterOrder);
+  const customerForOnCall = useSelector(state => state.order.customerForOrderOnCall);
 
   console.log('cart items', cartItems);
 
@@ -32,7 +34,7 @@ const CheckOutScreen = ({navigation}) => {
   const submitOrder = () => {
     if (cartItems.length > 0) {
       setOrderLoading(true);
-      saveOrder(cartItems, customer)
+      saveOrder(cartItems, hideCheckoutAfterOrder ? customerForOnCall : customer, hideCheckoutAfterOrder)
         .then(res => {
           const {success, errors, data} = res.data;
 
@@ -40,7 +42,7 @@ const CheckOutScreen = ({navigation}) => {
           if (success) {
             dispatch(clearCartItems());
             Alert.alert('Success', 'Your order has been successfully saved.', [
-              {
+              !hideCheckoutAfterOrder && {
                 text: 'Check out',
                 onPress: () => {
                   checkOut();
@@ -56,7 +58,7 @@ const CheckOutScreen = ({navigation}) => {
             if (errors.add_order) {
               return Alert.alert('Failed', errors.add_order);
             }
-            Alert.alert('Failed', errors.toString());
+            Alert.alert('Failed', JSON.stringify(errors));
           }
         })
         .catch(error => {
@@ -72,7 +74,7 @@ const CheckOutScreen = ({navigation}) => {
     if (cartItems.length > 0) {
       setOrderAndMailLoading(true);
 
-      saveOrder(cartItems, customer)
+      saveOrder(cartItems, hideCheckoutAfterOrder ? customerForOnCall : customer, hideCheckoutAfterOrder)
         .then(res => {
           const {success, errors, data} = res.data;
 
@@ -115,7 +117,7 @@ const CheckOutScreen = ({navigation}) => {
             if (errors.add_order) {
               return Alert.alert('Failed', errors.add_order);
             }
-            Alert.alert('Failed', errors.toString());
+            Alert.alert('Failed', JSON.stringify(errors));
           }
         })
         .catch(error => {

@@ -21,6 +21,7 @@ export const URLS = {
   customerClass: 'customer-classes',
   route: 'routes',
   customerType: 'customer-types',
+  customerActivityCategories: 'customer-activity-categories',
   customerCheckIn: 'customer-visits/check-in',
   customerCheckOut: 'customer-visits/check-out',
   customerVisitStatus: 'customer-visits/status',

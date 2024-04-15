@@ -17,6 +17,7 @@ const client = axios.create({
 
 client.interceptors.request.use(config => {
   const token = mmkv.getString('token');
+  console.log(token ?? '');
   config.headers.Accept = 'application/json';
   config.headers['x-auth'] = token;
   config.headers['version'] = VersionNumber.buildVersion;

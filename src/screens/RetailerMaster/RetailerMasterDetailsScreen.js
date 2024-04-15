@@ -36,12 +36,14 @@ import {getRetailerList} from '../../store/actions/retailer';
 import CustomerTarget from '../../components/CustomerTarget';
 import {getCustomerTarget} from '../../services/retailer_services';
 import {ROUTES} from '../../constants/routes';
+import { setCustomerForOrderOnCall, setHideCheckoutAfterOrderPlaces } from '../../store/actions/order';
 
 const MyVisitDetailsScreen = ({route, navigation}) => {
   const {data, title} = route.params;
   const [customer, setCustomer] = useState(null);
   const [customerTarget, setCustomerTarget] = useState([]);
   const {role} = useSelector(state => state.auth);
+  const {customerVisitStatus} = useSelector(state => state.order);
 
   const [visitLogVisible, setVisitLogVisible] = useState(false);
   const [topSellingVisible, setTopSellingVisible] = useState(false);
@@ -52,6 +54,11 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     fetchCustomerDetails();
     requestLocationPermission();
     fetchCustomerTarget();
+    if (!customerVisitStatus.status) {
+      console.log('not checked in');
+      dispatch(setHideCheckoutAfterOrderPlaces(true));
+      dispatch(setCustomerForOrderOnCall(data._id));
+    }
   }, []);
 
   async function fetchCustomerDetails() {
@@ -136,15 +143,29 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         <Title numberOfLines={1}>{data.name}</Title>
         <Caption>{data.owner_contact_number}</Caption>
       </View>
-      {!data.is_active && (
-        <Button
-          icon="check-circle-outline"
-          mode="contained"
-          style={{margin: 10}}
-          onPress={() => activateCustomer()}>
-          Activate
-        </Button>
-      )}
+      <View style={styles.buttonContainer}>
+        {data.is_active ? (
+          <Button
+            mode="contained"
+            icon="phone"
+            onPress={() =>
+              customerVisitStatus.status
+                ? Alert.alert('Information', 'Please checkout first.')
+                : navigation.navigate(ROUTES.vertical)
+            }>
+            On Call Order
+          </Button>
+        ) : (
+          <Button
+            icon="check-circle-outline"
+            mode="contained"
+            style={{margin: 10}}
+            onPress={() => activateCustomer()}>
+            Activate
+          </Button>
+        )}
+      </View>
+
       <View style={styles.detailsContainer}>
         <ScrollView
           contentContainerStyle={styles.bottomDetailsContentContainer}
@@ -377,5 +398,11 @@ const styles = StyleSheet.create({
 
   button: {
     padding: SPACINGS.sm,
+  },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 10,
   },
 });

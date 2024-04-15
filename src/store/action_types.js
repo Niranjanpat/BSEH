@@ -25,6 +25,8 @@ export const performanceAction = {
 
 export const orderAction = {
   STORE_CUSTOMER_VISIT_STATUS: 'STORE_CUSTOMER_VISIT_STATUS',
+  STOTE_HIDE_CHECKOUT_AFTER_ORDER: 'STOTE_HIDE_CHECKOUT_AFTER_ORDER',
+  STORE_CUSTOMER_FOR_ORDER_ON_CALL: 'STORE_CUSTOMER_FOR_ORDER_ON_CALL',
 };
 
 export const orderCartActions = {
