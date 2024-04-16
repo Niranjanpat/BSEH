@@ -83,34 +83,34 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     dispatch(setHideCheckoutAfterOrderPlaces(false))
   }, []);
 
-  useEffect(() => {
-    let timeOut = null;
-    const checkedInAt = mmkv.getString('checked_in_at');
-    if (
-      customerVisitStatus &&
-      customer &&
-      checkedInAt &&
-      customerVisitStatus.status &&
-      customerVisitStatus.customer_id === data._id
-    ) {
-      if (dayjs(checkedInAt).add(5, 'minute').isAfter(dayjs())) {
-        setCheckOutDisabled(true);
-        const timeRemaining = dayjs(checkedInAt)
-          .add(5, 'minute')
-          .diff(dayjs(), 'millisecond');
+  // useEffect(() => {
+  //   let timeOut = null;
+  //   const checkedInAt = mmkv.getString('checked_in_at');
+  //   if (
+  //     customerVisitStatus &&
+  //     customer &&
+  //     checkedInAt &&
+  //     customerVisitStatus.status &&
+  //     customerVisitStatus.customer_id === data._id
+  //   ) {
+  //     if (dayjs(checkedInAt).add(5, 'minute').isAfter(dayjs())) {
+  //       setCheckOutDisabled(true);
+  //       const timeRemaining = dayjs(checkedInAt)
+  //         .add(5, 'minute')
+  //         .diff(dayjs(), 'millisecond');
 
-        timeOut = setTimeout(() => {
-          setCheckOutDisabled(false);
-        }, timeRemaining);
-      } else {
-        setCheckOutDisabled(false);
-      }
-    }
+  //       timeOut = setTimeout(() => {
+  //         setCheckOutDisabled(false);
+  //       }, timeRemaining);
+  //     } else {
+  //       setCheckOutDisabled(false);
+  //     }
+  //   }
 
-    return () => {
-      if (timeOut) clearTimeout(timeOut);
-    };
-  }, [customerVisitStatus, customer]);
+  //   return () => {
+  //     if (timeOut) clearTimeout(timeOut);
+  //   };
+  // }, [customerVisitStatus, customer]);
 
   useLayoutEffect(() => {
     navigation.setOptions({

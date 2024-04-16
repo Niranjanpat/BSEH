@@ -57,7 +57,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     if (!customerVisitStatus.status) {
       console.log('not checked in');
       dispatch(setHideCheckoutAfterOrderPlaces(true));
-      dispatch(setCustomerForOrderOnCall(data._id));
+      dispatch(setCustomerForOrderOnCall(data._id, data.name));
     }
   }, []);
 

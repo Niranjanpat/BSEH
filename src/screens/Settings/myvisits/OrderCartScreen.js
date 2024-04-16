@@ -16,7 +16,9 @@ const OrderCartScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart);
   const customer = useSelector(state => state.order.customerVisitStatus);
+  const customerForOnCall = useSelector(state => state.order.customerForOrderOnCall);
 
+  console.log('dfdfdf', customerForOnCall);
   return (
     <>
       <View style={styles.heading}>
@@ -26,7 +28,7 @@ const OrderCartScreen = ({navigation}) => {
         </View>
         <View style={styles.customer}>
           <Subheading style={{...TYPOGRAPHY.body1}}>Shop</Subheading>
-          <Text>{customer.customer_name}</Text>
+          <Text>{customer.customer_name ?? customerForOnCall.name}</Text>
         </View>
       </View>
       <FlatList

@@ -36,9 +36,9 @@ export const setHideCheckoutAfterOrderPlaces = (isHide) => {
     dispatch(storeHideCheckoutAfterOrderPlaces(isHide));
   };
 };
-export const setCustomerForOrderOnCall = (_id) => {
+export const setCustomerForOrderOnCall = (_id, name) => {
   return async dispatch => {
-    dispatch(storeCustomerForOrderOnCall({_id}));
+    dispatch(storeCustomerForOrderOnCall({_id, name}));
   };
 };
 const alertChangeLocation = (id, position) => {

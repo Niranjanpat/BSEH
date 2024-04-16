@@ -157,7 +157,7 @@ const CheckOutScreen = ({navigation}) => {
       <View style={styles.heading}>
         <View style={styles.customer}>
           <Subheading style={{...TYPOGRAPHY.body1}}>Shop</Subheading>
-          <Text>{customer.customer_name}</Text>
+          <Text>{customer.customer_name ?? customerForOnCall.name}</Text>
         </View>
         <VerticalSpacer size={20} />
         <Header />
