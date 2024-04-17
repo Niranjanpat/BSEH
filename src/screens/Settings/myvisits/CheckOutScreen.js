@@ -90,7 +90,7 @@ const CheckOutScreen = ({navigation}) => {
                     'Success',
                     'Your order has been successfully saved.',
                     [
-                      {
+                      !hideCheckoutAfterOrder && {
                         text: 'Check out',
                         onPress: () => {
                           checkOut();
