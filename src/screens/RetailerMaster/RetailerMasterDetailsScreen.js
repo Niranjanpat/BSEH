@@ -245,7 +245,29 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Distributors</Text>
+            <Text style={styles.detailsTitle}>Distributor Code</Text>
+            <Text> : </Text>
+            {customer?.distributor_code ? (
+              <Text style={styles.detailsValue}>
+                {customer?.distributor_code}
+              </Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.detailsTitle}>Distributor Name</Text>
+            <Text> : </Text>
+            {customer?.distributor_name ? (
+              <Text style={styles.detailsValue}>
+                {customer?.distributor_name}
+              </Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
+          {/* <View style={styles.row}>
+            <Text style={styles.detailsTitle}>Distributor</Text>
             <Text> : </Text>
             <View>
               {customer?.route_distributors?.length > 0 ? (
@@ -258,7 +280,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 <Text style={styles.notAvailableTxt}>N/A</Text>
               )}
             </View>
-          </View>
+          </View> */}
 
           <Divider />
           <VerticalSpacer />
@@ -384,7 +406,7 @@ const styles = StyleSheet.create({
 
   detailsTitle: {
     ...TYPOGRAPHY.caption,
-    width: size.width * 0.22,
+    width: size.width * 0.30,
     color: COLORS.accentSecondary,
   },
 
