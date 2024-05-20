@@ -25,7 +25,7 @@ const SettingScreen = ({navigation}) => {
 
     mmkv.clearStore();
     navigation.replace(ROUTES.auth_stack);
-    // MapplsIntouch.stopTracking();
+    MapplsIntouch.stopTracking();
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>

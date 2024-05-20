@@ -100,14 +100,14 @@ export const attendancePunchIn = datas => {
           dispatch(getAttendanceStatus());
           dispatch(getAttendanceList());
 
-          // MapplsIntouch.startTrackingWithCustomConfig({
-          //   standByTimeInMins: 15, //mandatory
-          //   timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
-          //   autoTrackingConfig: {
-          //     endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
-          //   },
-          // });
-          // MapplsIntouch.getCurrentLocationUpdate();
+          MapplsIntouch.startTrackingWithCustomConfig({
+            standByTimeInMins: 15, //mandatory
+            timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
+            autoTrackingConfig: {
+              endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
+            },
+          });
+          MapplsIntouch.getCurrentLocationUpdate();
         } else {
         }
       })
@@ -127,11 +127,11 @@ export const attendancePunchOut = datas => {
       .then(res => {
         const {data, errors, success} = res.data;
         if (success) {
-          // MapplsIntouch.getCurrentLocationUpdate();
+          MapplsIntouch.getCurrentLocationUpdate();
           dispatch(getAttendanceStatus());
           dispatch(getAttendanceList());
           dispatch(storeJointStatus(null));
-          // MapplsIntouch.stopTracking();
+          MapplsIntouch.stopTracking();
         } else {
         }
       })

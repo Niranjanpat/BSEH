@@ -19,7 +19,7 @@ const WelcomeMessage = () => {
 
   useEffect(() => {
     generateGreetings();
-    // trackingOn();
+    trackingOn();
   }, [hourOfDay]);
   const trackingOn = async () => {
     if (attendanceStatus) {
