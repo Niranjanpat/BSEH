@@ -5,6 +5,7 @@ import orderReducer from './reducers/order';
 import performanceReducer from './reducers/performance';
 import retailerReducer from './reducers/retailer';
 import returnsReducer from './reducers/returns';
+import orderCartPromotionalReducer from './reducers/cartPromotional';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   performance: performanceReducer,
   order: orderReducer,
   cart: orderCartReducer,
+  cartPromotional: orderCartPromotionalReducer,
   returns: returnsReducer,
 });
 

@@ -42,13 +42,14 @@ import {
 import ReturnOptionsModal from '../../../components/myvisits/ReturnOptionsModal';
 import {initReturnCart, storeRecentVisit} from '../../../store/actions/returns';
 import OrderSummaryModal from '../../../components/myvisits/OrderSummaryModal';
-import {clearCartItems} from '../../../store/actions/cart';
+import {clearCartItems, clearCartPromotionalItems} from '../../../store/actions/cart';
 import {getCustomerTarget} from '../../../services/retailer_services';
 import CustomerTarget from '../../../components/CustomerTarget';
 import {useFocusEffect} from '@react-navigation/core';
 import MMKVStorage from 'react-native-mmkv-storage';
 import dayjs from 'dayjs';
 import {sendOTP} from '../../../services/activity_service';
+import PromotionalItemsModal from '../../../components/promotional_item/PromotionalItemsModal';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -67,6 +68,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const [returnDialogVisible, setReturnDialogVisible] = useState(false);
   const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
   const [isCheckOutDisabled, setCheckOutDisabled] = useState(false);
+  const [promotionalVisible, setPromotionalVisible] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -77,6 +79,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   useEffect(() => {
     fetchCustomerTarget();
     dispatch(clearCartItems());
+    dispatch(clearCartPromotionalItems());
     dispatch(initReturnCart());
     dispatch(storeRecentVisit(data));
     dispatch(getCustomerVisitStatus());
@@ -323,6 +326,13 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 onPress={() => navigation.navigate(ROUTES.vertical)}>
                 Order
               </Button>
+              <HorizontalSpacer />
+              <Button
+                icon="tag-outline"
+                mode="contained"
+                onPress={() => setPromotionalVisible(true)}>
+                Promotional Items
+              </Button>
             </>
           )}
 
@@ -533,6 +543,11 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         visible={orderSummaryVisible}
         onClose={setOrderSummaryVisible}
         id={data._id}
+      />
+      <PromotionalItemsModal
+        visible={promotionalVisible}
+        onDismiss={setPromotionalVisible}
+        customerId={data._id}
       />
     </View>
   );

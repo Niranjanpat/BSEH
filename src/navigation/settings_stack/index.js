@@ -33,6 +33,8 @@ import AddOrderScreen from '../../screens/Settings/myvisits/promoter/AddOrderScr
 import AddSalesScreen from '../../screens/Settings/myvisits/promoter/AddSalesScreen';
 import AddInvoiceScreen from '../../screens/Settings/myvisits/promoter/AddInvoiceScreen';
 import AddPromoterStockScreen from '../../screens/Settings/myvisits/promoter/AddPromoterStockScreen';
+import CustomerPromotionalItems from '../../screens/Settings/promotional_items/CustomerPromotionalItems';
+import UserPromotionalItems from '../../screens/Settings/promotional_items/UserPromotionalItems';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -164,6 +166,21 @@ export const MyVisitStack = () => {
         component={AddPromoterStockScreen}
         options={() => ({
           title: 'Add closing stock',
+        })}
+      />
+      <Screen
+        name={ROUTES.customer_promotional_items}
+        component={CustomerPromotionalItems}
+        options={() => ({
+          title: 'Customer Promotional Items',
+        })}
+      />
+      <Screen
+        name={ROUTES.user_promotional_items}
+        component={UserPromotionalItems}
+        options={() => ({
+          title: 'Promotional Items',
+          headerRight: () => <OrderCartIcon />,
         })}
       />
     </Navigator>

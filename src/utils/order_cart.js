@@ -2,6 +2,7 @@ import MMKV from 'react-native-mmkv-storage';
 
 const mmkv = new MMKV.Loader().initialize();
 const CART_KEY = 'order_cart';
+const CART_PROMOTIONAL_KEY = 'order_promotional_cart';
 
 /**
  * Gets an array of persisted the cart.
@@ -12,6 +13,15 @@ export const getCartItems = async _ => {
   let cartItems = [];
 
   const cart = await mmkv.getArrayAsync(CART_KEY);
+  if (cart) cartItems = cart;
+
+  return cartItems;
+};
+
+export const getCartPromotionalItems = async _ => {
+  let cartItems = [];
+
+  const cart = await mmkv.getArrayAsync(CART_PROMOTIONAL_KEY);
   if (cart) cartItems = cart;
 
   return cartItems;
@@ -56,6 +66,28 @@ export const storeProductInCart = async product => {
   return newCart;
 };
 
+export const storePromotionalInCart = async product => {
+  let newCart = [];
+  const cart = await getCartPromotionalItems();
+
+  const productInCart = await getPromotionalItemsIfExists(product.id);
+
+  if (productInCart) {
+    newCart = cart.map(item => {
+      if (item.id === product.id) {
+        return product;
+      }
+
+      return item;
+    });
+  } else {
+    newCart = [...cart, product];
+  }
+
+  mmkv.setArrayAsync(CART_PROMOTIONAL_KEY, newCart);
+  return newCart;
+};
+
 /**
  * Checks if the item exists in the cart.
  *
@@ -70,6 +102,16 @@ export const getProductIfExists = async key => {
 
   if (cart) {
     return cart.find(item => item._id === key);
+  }
+
+  return null;
+};
+
+export const getPromotionalItemsIfExists = async key => {
+  const cart = await getCartPromotionalItems();
+
+  if (cart) {
+    return cart.find(item => item.id === key);
   }
 
   return null;
@@ -99,10 +141,29 @@ export const removeProductFromCart = async key => {
   return null;
 };
 
+export const removePromotionalFromCart = async key => {
+  const product = getPromotionalItemsIfExists(key);
+
+  if (product) {
+    const cart = await getCartPromotionalItems();
+
+    const newCart = cart.filter(item => item.id !== key);
+
+    mmkv.setArrayAsync(CART_PROMOTIONAL_KEY, newCart);
+    return newCart;
+  }
+
+  return null;
+};
+
 /**
  * As the name suggests, it removes every entry in the cart array.
  *
  **/
 export const clearCart = _ => {
   mmkv.removeItem(CART_KEY);
+};
+
+export const clearCartPromotional = _ => {
+  mmkv.removeItem(CART_PROMOTIONAL_KEY);
 };

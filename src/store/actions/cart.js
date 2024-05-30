@@ -2,10 +2,14 @@ import {orderCartActions} from '../action_types';
 
 import {
   clearCart,
+  clearCartPromotional,
   getCartItems,
+  getCartPromotionalItems,
   removeProductFromCart,
+  removePromotionalFromCart,
   storeProductInCart,
   storeProductsInCart,
+  storePromotionalInCart,
 } from '../../utils/order_cart';
 
 // load cart items on loging in or app start up
@@ -15,6 +19,10 @@ export const initOrderCart = () => {
       const cartItems = await getCartItems();
       if (cartItems) {
         dispatch(storeCartItems(cartItems));
+      }
+      const cartPromotionalItems = await getCartPromotionalItems();
+      if (cartPromotionalItems) {
+        dispatch(storeCartPromotionalItems(cartPromotionalItems));
       }
     } catch (error) {
       console.log('initOrderCart', error);
@@ -50,6 +58,19 @@ export const updateItemToCart = product => {
   };
 };
 
+export const updateItemToCartPromotional = product => {
+  return async dispatch => {
+    try {
+      const cartItems = await storePromotionalInCart(product);
+      if (cartItems) {
+        dispatch(storeCartPromotionalItems(cartItems));
+      }
+    } catch (error) {
+      console.log('updateItemToCart', error);
+    }
+  };
+};
+
 // removes the item from cart and updates the cart array
 export const removeItemFromCart = productId => {
   return async dispatch => {
@@ -64,15 +85,40 @@ export const removeItemFromCart = productId => {
   };
 };
 
+export const removeItemFromCartPromotional = productId => {
+  return async dispatch => {
+    try {
+      const cart = await removePromotionalFromCart(productId);
+      if (cart) {
+        dispatch(storeCartPromotionalItems(cart));
+      }
+    } catch (error) {
+      console.log('removeItemFromCart', error);
+    }
+  };
+};
+
 // clear the cart
 export const clearCartItems = _ => {
   clearCart();
   return {type: orderCartActions.CLEAR_ORDER_CART, payload: []};
 };
 
+export const clearCartPromotionalItems = _ => {
+  clearCartPromotional();
+  return {type: orderCartActions.CLEAR_ORDER_CART_PROMOTIONAL, payload: []};
+};
+
 export const storeCartItems = payload => {
   return {
     type: orderCartActions.STORE_ORDER_CART_ITEMS,
+    payload,
+  };
+};
+
+export const storeCartPromotionalItems = payload => {
+  return {
+    type: orderCartActions.STORE_ORDER_CART_PROMOTIONAL_ITEMS,
     payload,
   };
 };

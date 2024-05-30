@@ -56,6 +56,10 @@ export const ROUTES = {
   add_promoter_order: 'add_promoter_order',
   add_promoter_invoice: 'add_promoter_invoice',
 
+  //promotional items
+  customer_promotional_items: 'customer_promotional_items',
+  user_promotional_items: 'user_promotional_items',
+
   //return stack routes
   return_vertical: 'return_vertical_list',
   return_brand: 'return_brand_list',

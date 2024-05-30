@@ -74,6 +74,10 @@ export const URLS = {
   allUsers: 'all-users',
   routeSchedules: 'route-schedules',
   userRouteSchedules: 'user-route-schedules',
+
+  //promotional items
+  customerPromotionalItems: 'customer-promotional-items',
+  userPromotionalItems: 'user-promotional-inventory-items',
 };
 
 export const clientId =
