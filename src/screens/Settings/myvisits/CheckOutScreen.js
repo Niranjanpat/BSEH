@@ -273,10 +273,10 @@ const CheckOutScreen = ({navigation}) => {
           </>
         )}
       </ScrollView>
-      <View style={styles.grandTotalContainer}>
+      {total !== 0 && <View style={styles.grandTotalContainer}>
         <Text>Total order value: </Text>
         <Subheading>{total.toFixed(2)}</Subheading>
-      </View>
+      </View>}
       <View style={styles.buttonRow}>
         {(cartItems.length > 0) && <Button
           onPress={submitAndMail}

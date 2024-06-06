@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Caption, List, Searchbar, Text} from 'react-native-paper';
-import {FlatList, View, StyleSheet, ScrollView} from 'react-native';
+import {FlatList, View, StyleSheet, ScrollView, RefreshControl} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import ProductQuantity from '../../../components/ProductQuantity';
@@ -76,7 +76,13 @@ const ProductListScreen = ({route}) => {
         onChangeText={setSearchQuery}
         style={styles.searchBar}
       />
-      <ScrollView nestedScrollEnabled>
+      <ScrollView nestedScrollEnabled refreshControl={<RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => {
+              getProduct();
+              getScheme();
+            }}
+          />}>
         <FlatList
           style={{
             width: '100%',
@@ -201,9 +207,7 @@ const ProductListScreen = ({route}) => {
         />
 
         <FlatList
-          onRefresh={getProduct}
           data={filtered}
-          refreshing={isLoading}
           removeClippedSubviews={false}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => {

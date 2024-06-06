@@ -18,12 +18,12 @@ const usePromotionalItems = () => {
 
   const dispatch = useDispatch();
 
-  const getCustomerPromotionalItems = async ({
+  const getCustomerPromotionalItems = async (
     customerId,
     userId,
     startDate,
     endDate,
-  }) => {
+  ) => {
     setLoading(true);
 
     const params = {
@@ -32,6 +32,8 @@ const usePromotionalItems = () => {
       start_date: startDate ?? dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: endDate ?? dayjs(new Date()).format('YYYY-MM-DD'),
     };
+
+    console.log(params);
 
     customerPromotionalItem(params)
       .then(res => {

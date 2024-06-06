@@ -28,6 +28,9 @@ export const getCustomerVisitStatus = () => {
       })
       .catch(e => {
         alert(e);
+      })
+      .finally(() => {
+        dispatch(storeCustomerVisitStatusLoading(false));
       });
   };
 };
@@ -88,6 +91,7 @@ export const postCustomerCheckIn = (location, navigation) => {
           dispatch(getCustomerVisitStatus());
           mmkv.setString('checked_in_at', dayjs().toISOString());
         } else {
+          dispatch(storeCustomerVisitStatusLoading(false));
           if (errors.check_in == 'out_of_range') {
             alertChangeLocation(location.customer_id, location);
             return;
@@ -104,6 +108,7 @@ export const postCustomerCheckIn = (location, navigation) => {
       })
       .catch(e => {
         alert(e);
+        dispatch(storeCustomerVisitStatusLoading(false));
       });
   };
 };
@@ -120,6 +125,7 @@ export const postCustomerCheckOut = (location, navigation, screen) => {
             navigation.goBack();
           }
         } else {
+          dispatch(storeCustomerVisitStatusLoading(false));
           if (errors.feedbacks) {
             if (screen === 'FeedbackScreen') {
               Alert.alert('Denied', errors.feedbacks);
@@ -137,12 +143,19 @@ export const postCustomerCheckOut = (location, navigation, screen) => {
       })
       .catch(e => {
         alert(e);
+        dispatch(storeCustomerVisitStatusLoading(false));
       });
   };
 };
+
 export const storeCustomerVisitStatus = payload => {
   return {type: orderAction.STORE_CUSTOMER_VISIT_STATUS, payload};
 };
+
+export const storeCustomerVisitStatusLoading = payload => {
+  return {type: orderAction.STORE_CHECK_VISIT_LOADING, payload};
+};
+
 export const storeHideCheckoutAfterOrderPlaces = payload => {
   return {type: orderAction.STOTE_HIDE_CHECKOUT_AFTER_ORDER, payload};
 };

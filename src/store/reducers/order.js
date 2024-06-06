@@ -4,6 +4,7 @@ const initialStore = {
   customerVisitStatus: {},
   hideCheckoutAfterOrder: false,
   customerForOrderOnCall: {},
+  checkVisitLoading: false,
 };
 
 const orderReducer = (state = initialStore, action) => {
@@ -18,6 +19,9 @@ const orderReducer = (state = initialStore, action) => {
 
     case orderAction.STORE_CUSTOMER_FOR_ORDER_ON_CALL:
       return {...state, customerForOrderOnCall: payload};
+
+    case orderAction.STORE_CHECK_VISIT_LOADING:
+      return {...state, checkVisitLoading: payload};
 
     default:
       return state;

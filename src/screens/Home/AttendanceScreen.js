@@ -15,6 +15,7 @@ import {
   attendancePunchIn,
   attendancePunchOut,
   getAttendanceList,
+  storeAttendanceLoading,
 } from '../../store/actions/auth';
 import useLocationPermission from '../../utils/useLocationPermission';
 import ScheduleSummaryModal from '../../components/ScheduleSummaryModal';
@@ -63,6 +64,7 @@ const AttendanceScreen = ({navigation}) => {
             <Switch
               style={styles.switchStyle}
               onValueChange={_ => {
+                dispatch(storeAttendanceLoading(true));
                 Geolocation.getCurrentPosition(
                   position => {
                     var data = {
@@ -75,10 +77,12 @@ const AttendanceScreen = ({navigation}) => {
                           'Check out pending',
                           'Please check out from the customer in order to punch out.',
                         );
+                        dispatch(storeAttendanceLoading(false));
                         return;
                       }
 
                       if (role === 'kam' || role === 'sales-officer') {
+                        dispatch(storeAttendanceLoading(false));
                         setIsSummaryVisible(true);
                         return;
                       }
@@ -89,6 +93,7 @@ const AttendanceScreen = ({navigation}) => {
                     }
                   },
                   error => {
+                    dispatch(storeAttendanceLoading(false));
                     console.log(error.code, error.message);
                   },
                   {

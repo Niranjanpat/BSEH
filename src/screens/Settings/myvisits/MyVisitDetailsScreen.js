@@ -38,6 +38,7 @@ import {
   postCustomerCheckIn,
   postCustomerCheckOut,
   setHideCheckoutAfterOrderPlaces,
+  storeCustomerVisitStatusLoading,
 } from '../../../store/actions/order';
 import ReturnOptionsModal from '../../../components/myvisits/ReturnOptionsModal';
 import {initReturnCart, storeRecentVisit} from '../../../store/actions/returns';
@@ -60,14 +61,14 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const [customer, setCustomer] = useState(null);
   const [customerTarget, setCustomerTarget] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {customerVisitStatus} = useSelector(state => state.order);
+  const {customerVisitStatus, checkVisitLoading} = useSelector(state => state.order);
   const {role, token} = useSelector(state => state.auth);
 
   const [visitLogVisible, setVisitLogVisible] = useState(false);
   const [topSellingVisible, setTopSellingVisible] = useState(false);
   const [returnDialogVisible, setReturnDialogVisible] = useState(false);
   const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
-  const [isCheckOutDisabled, setCheckOutDisabled] = useState(false);
+  // const [isCheckOutDisabled, setCheckOutDisabled] = useState(false);
   const [promotionalVisible, setPromotionalVisible] = useState(false);
 
   useFocusEffect(
@@ -158,6 +159,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
 
   const checkInFunction = () => {
     {
+      dispatch(storeCustomerVisitStatusLoading(true))
       Geolocation.getCurrentPosition(
         position => {
           var datas = {
@@ -173,6 +175,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         },
         error => {
           console.log(error.code, error.message);
+          dispatch(storeCustomerVisitStatusLoading(false))
         },
         {
           enableHighAccuracy: true,
@@ -265,7 +268,8 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         <Button
           icon="check-circle-outline"
           mode="contained"
-          disabled={isCheckOutDisabled}
+          loading={checkVisitLoading}
+          disabled={checkVisitLoading}
           onPress={() => checkInFunction()}>
           {customerVisitStatus.status
             ? customerVisitStatus.customer_id === data._id
@@ -326,15 +330,16 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 onPress={() => navigation.navigate(ROUTES.vertical)}>
                 Order
               </Button>
-              <HorizontalSpacer />
-              <Button
-                icon="tag-outline"
-                mode="contained"
-                onPress={() => setPromotionalVisible(true)}>
-                Promotional Items
-              </Button>
             </>
           )}
+
+        <HorizontalSpacer />
+        <Button
+          icon="tag-outline"
+          mode="contained"
+          onPress={() => setPromotionalVisible(true)}>
+          Promotional Items
+        </Button>
 
         {role !== 'promoter' && (
           <>

@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useSelector} from 'react-redux';
 import {Badge} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -16,10 +16,15 @@ const OrderCartIcon = () => {
     [cartItems, cartPromotionalItems],
   );
 
+  const navigateTo = useCallback(() => {
+    const screen = cartItems?.length > 0 ? ROUTES.order_cart : ROUTES.order_checkout;
+    navigation.navigate(screen);
+  }, [cartItems])
+
   return (
     <TouchableOpacity
       activeOpacity={0.6}
-      onPress={() => navigation.navigate(ROUTES.order_cart)}>
+      onPress={() => navigateTo()}>
       <Badge style={styles.badge}>{cartItemCount}</Badge>
       <Icon name="cart-outline" size={24} />
     </TouchableOpacity>

@@ -10,6 +10,7 @@ import {clientId, clientSecret} from '../../constants/urls';
 import {attendanceAction, authActions} from '../action_types';
 import MapplsIntouch from 'mappls-intouch-react-native';
 import {getJointWorkStatus} from '../../services/joint_service';
+import { Alert } from 'react-native';
 
 export const getProfileDetail = () => {
   return async dispatch => {
@@ -18,7 +19,7 @@ export const getProfileDetail = () => {
         const {data, errors, success} = res.data;
         if (success) {
           dispatch(storeAccount(data));
-          // intouch(data);
+          intouch(data);
         } else {
         }
       })
@@ -126,6 +127,7 @@ export const attendancePunchOut = datas => {
     punchOut(datas)
       .then(res => {
         const {data, errors, success} = res.data;
+        console.log('punch_out', res.data);
         if (success) {
           MapplsIntouch.getCurrentLocationUpdate();
           dispatch(getAttendanceStatus());
@@ -133,6 +135,9 @@ export const attendancePunchOut = datas => {
           dispatch(storeJointStatus(null));
           MapplsIntouch.stopTracking();
         } else {
+          if (errors) {
+            Alert.alert('Error!', Object.values(errors).join(', '));
+          }
         }
       })
       .catch(e => {
