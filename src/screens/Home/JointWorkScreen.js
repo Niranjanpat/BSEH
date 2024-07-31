@@ -5,7 +5,6 @@ import {
   PermissionsAndroid,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -18,7 +17,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import VerticalSpacer from '../../components/VerticalSpacer';
 import {getAllUsers, postStartJointWork} from '../../services/joint_service';
 import {fetchJointWorkStatus} from '../../store/actions/auth';
-import {Caption, Divider, Subheading} from 'react-native-paper';
+import {Caption, Divider, Subheading, Text} from 'react-native-paper';
+import theme from '../../constants/theme';
 
 const JointWorkScreen = ({navigation}) => {
   const roles = [
@@ -69,7 +69,7 @@ const JointWorkScreen = ({navigation}) => {
           } else {
             setUsers(users.concat(data.users));
           }
-          setHasMore(data.hasMore);
+          setHasMore(data.has_more);
         }
       })
       .catch(err => {
@@ -165,6 +165,8 @@ const JointWorkScreen = ({navigation}) => {
       <Text>Role</Text>
       <View style={styles.picker}>
         <Picker
+          style={{color: COLORS.onSurface}}
+          dropdownIconColor={COLORS.onSurface}
           selectedValue={selectType}
           mode="dropdown"
           onValueChange={val => {
@@ -194,8 +196,6 @@ const JointWorkScreen = ({navigation}) => {
         )}
         ItemSeparatorComponent={
           <>
-            <Divider />
-            <Divider />
             <Divider />
             <VerticalSpacer size={10} />
           </>

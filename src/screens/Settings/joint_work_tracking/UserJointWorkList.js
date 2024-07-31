@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, View, FlatList} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getUserJointWorking} from '../../../services/joint_service';
-import {Appbar, Caption, Card, Subheading} from 'react-native-paper';
+import {Appbar, Caption, Card, Subheading, Text} from 'react-native-paper';
 import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
 import dayjs from 'dayjs';

@@ -13,4 +13,6 @@ export const COLORS = {
   lightGrey: '#afafaf',
   darkGrey: '#545454',
   background: '#f5f5f5',
+  onBackground: "rgb(26, 28, 24)",
+  onSurface: "#000",
 };
