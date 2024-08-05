@@ -15,6 +15,7 @@ const AttendanceSummary = () => {
     const url = URLS.attendanceSummary;
     try {
       const res = await client.get(url);
+      console.log('attendance', res);
       const {data, errors, success} = res.data;
       if (success) {
         setAttendanceSummary(data);

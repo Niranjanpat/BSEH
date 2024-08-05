@@ -31,6 +31,10 @@ const JointWorkScreen = ({navigation}) => {
       value: 'sm',
     },
     {
+      label: 'RSM',
+      value: 'rsm',
+    },
+    {
       label: 'DSM',
       value: 'dsm',
     },

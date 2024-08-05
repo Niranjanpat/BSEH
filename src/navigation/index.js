@@ -34,7 +34,7 @@ export default function AppNavigation() {
   const check = async () => {
     try {
       if (isAndroid) {
-        const isDevModeOn = false //await JailMonkey.isDevelopmentSettingsMode();
+        const isDevModeOn = await JailMonkey.isDevelopmentSettingsMode();
 
         if (isDevModeOn) {
           Alert.alert(

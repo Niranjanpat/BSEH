@@ -141,7 +141,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               })
             }
           />
-          {(role === 'kam' || role === 'dsm' || role === 'sm') && (
+          {(role === 'kam' || role === 'dsm' || role === 'sm' || role === 'rsm') && (
             <IconButton
               icon="phone"
               onPress={() =>
@@ -282,6 +282,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           (role === 'kam' ||
             role === 'dsm' ||
             role === 'sm' ||
+            role === 'rsm' ||
             role === 'promoter') && (
             <>
               <HorizontalSpacer />
