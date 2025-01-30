@@ -11,9 +11,8 @@ import {ROUTES} from '../constants/routes';
 
 const WelcomeMessage = () => {
   const hourOfDay = dayjs().format('H');
-  const {profile, attendanceStatus, jointStatus, role} = useSelector(
-    state => state.auth,
-  );
+  const {profile, attendanceStatus, jointStatus, role, travelDistance} =
+    useSelector(state => state.auth);
   const [greeting, setGreeting] = useState('Good Morning');
   const navigation = useNavigation();
 
@@ -27,7 +26,7 @@ const WelcomeMessage = () => {
       console.log('mappls running', status);
       if (!status) {
         MapplsIntouch.startTrackingWithCustomConfig({
-          standByTimeInMins: 15, //mandatory 
+          standByTimeInMins: 15, //mandatory
           timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
           autoTrackingConfig: {
             endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
@@ -63,14 +62,19 @@ const WelcomeMessage = () => {
           <Text numberOfLines={1} style={styles.greetingText}>
             {greeting}! {profile.name}
           </Text>
-          <Text style={styles.status}>
-            Availability{' '}
-            <Icon
-              name="check-decagram"
-              size={16}
-              color={attendanceStatus ? COLORS.success : COLORS.error}
-            />
-          </Text>
+          <View style={{flex: 1}}>
+            <Text style={styles.status}>
+              Availability{' '}
+              <Icon
+                name="check-decagram"
+                size={16}
+                color={attendanceStatus ? COLORS.success : COLORS.error}
+              />
+            </Text>
+            <Text style={styles.status}>
+              Travel Distance:{` ${travelDistance} KM`}
+            </Text>
+          </View>
         </View>
 
         <View style={{flex: 1, alignItems: 'flex-end'}}>
@@ -129,5 +133,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'center',
   },
-  status: {},
+  status: {
+    marginLeft: 5,
+    flexWrap: 'wrap',
+  },
 });

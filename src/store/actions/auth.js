@@ -156,6 +156,7 @@ export const getAttendanceStatus = () => {
         const {data, errors, success} = res.data;
         if (success) {
           dispatch(storeAttendanceStatus(data.status));
+          dispatch(storeTravelDistance(data.advance_distance));
         } else {
         }
       })
@@ -186,6 +187,10 @@ export const storeIsInvalid = payload => {
 
 export const storeAttendanceStatus = payload => {
   return {type: attendanceAction.STORE_ATTENDANCE_STATUS, payload};
+};
+
+export const storeTravelDistance = payload => {
+  return {type: attendanceAction.STORE_TRAVEL_DISTANCE, payload};
 };
 
 export const storeAttendanceList = payload => {

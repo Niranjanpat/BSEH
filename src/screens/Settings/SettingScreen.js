@@ -233,6 +233,18 @@ const SettingScreen = ({navigation}) => {
 
         <List.Item
           style={styles.list}
+          title="Monthly Travel Distance"
+          onPress={() => {
+            navigation.navigate(ROUTES.monthly_attendance_travel);
+          }}
+          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
+          right={props => <List.Icon {...props} icon="chevron-right" />}
+        />
+        <Divider />
+        <Divider />
+
+        <List.Item
+          style={styles.list}
           title="About Patanjali"
           onPress={() => {
             navigation.navigate(ROUTES.about);

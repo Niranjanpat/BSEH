@@ -33,3 +33,12 @@ export const punchIn = async data => {
 export const punchOut = async data => {
   return await client.post(URLS.attendancePunchOut, data);
 };
+
+export const getMonthlyAttendanceTravel = async (year, month) => {
+  return await client.get(URLS.monthlyAttendanceTravel, {
+    params: {
+      year,
+      month,
+    },
+  });
+};

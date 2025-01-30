@@ -1,6 +1,7 @@
 export const URLS = {
-  base: 'http://182.18.155.185/ruchi-soya-nutrition/api/', //test
+  // base: 'http://182.18.155.185/ruchi-soya-nutrition/api/', //test
   // base: 'http://182.18.142.47/ruchi-soya-nutrition/api/', //live
+  base: 'http://182.18.142.21/ruchi-soya-nutrition/api/', //local test
 
   login: 'users/login',
   profile: 'users/profile',
@@ -78,6 +79,9 @@ export const URLS = {
   //promotional items
   customerPromotionalItems: 'customer-promotional-items',
   userPromotionalItems: 'user-promotional-inventory-items',
+
+  //monthly travel
+  monthlyAttendanceTravel: 'attendances/monthly',
 };
 
 export const clientId =

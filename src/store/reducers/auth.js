@@ -9,6 +9,7 @@ const initialStore = {
   attendanceList: [],
   attendanceLoading: false,
   jointStatus: {},
+  travelDistance: 0,
 };
 
 const authReducer = (state = initialStore, action) => {
@@ -36,6 +37,10 @@ const authReducer = (state = initialStore, action) => {
 
     case attendanceAction.STORE_ATTENDANCE_LOADING:
       return {...state, attendanceLoading: payload};
+
+    case attendanceAction.STORE_TRAVEL_DISTANCE:
+      return {...state, travelDistance: payload};
+      
     default:
       return state;
   }

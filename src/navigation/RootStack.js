@@ -54,6 +54,7 @@ import UserRouteScheduleListScreen from '../screens/Settings/UserRouteScheduleLi
 import CheckOutScreen from '../screens/Settings/myvisits/CheckOutScreen';
 import OrderCartScreen from '../screens/Settings/myvisits/OrderCartScreen';
 import OrderCartIcon from '../components/OrderCartIcon';
+import MonthlyTravelDistance from '../screens/Settings/MonthlyTravelDistance';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -72,6 +73,11 @@ export const SettingsStackNavigation = () => {
       <SettingsStack.Screen
         name="AttendanceDetail"
         component={AttendanceDetail}
+      />
+
+      <SettingsStack.Screen
+        name={ROUTES.monthly_attendance_travel}
+        component={MonthlyTravelDistance}
       />
 
       <SettingsStack.Screen name={ROUTES.profile} component={ProfileScreen} />
@@ -120,7 +126,7 @@ export const SettingsStackNavigation = () => {
       />
       <SettingsStack.Screen
         name={ROUTES.cumulative_report}
-        options={{title: "Cumulative Report", headerShown: true}}
+        options={{title: 'Cumulative Report', headerShown: true}}
         component={CumulativeReportScreen}
       />
       <SettingsStack.Screen
