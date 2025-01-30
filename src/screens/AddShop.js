@@ -1,4 +1,5 @@
 import {Picker} from '@react-native-picker/picker';
+import { useColorScheme } from 'react-native'; 
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import {
@@ -63,7 +64,7 @@ const AddShop = ({navigation}) => {
   const [location, setLocation] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
-
+  const theme=useColorScheme();
   useEffect(() => {
     getBeat();
     getShopType();
@@ -225,13 +226,16 @@ const AddShop = ({navigation}) => {
               <Picker
                 selectedValue={values.route_id}
                 mode="dropdown"
+                style={{color:'black'}}
+                dropdownIconColor= 'black'
                 onValueChange={handleChange('route_id')}>
-                <Picker.Item label="Select Beat (Required)" value="" />
+                <Picker.Item label="Select Beat (Required)"  style={{color:(theme=='light'?'white':'white')}} value="" />
                 {beat.map(item => (
                   <Picker.Item
                     key={item._id}
                     label={item.name}
                     value={item._id}
+                    style={{color:(theme=='light'?'white':'white')}}
                   />
                 ))}
               </Picker>
@@ -263,13 +267,16 @@ const AddShop = ({navigation}) => {
             )}
             <View style={styles.picker}>
               <Picker
+                style={{color:'black'}}
+                dropdownIconColor= 'black'
                 selectedValue={values.customer_type_id}
                 onBlur={handleBlur('customer_type_id')}
                 mode="dropdown"
                 onValueChange={handleChange('customer_type_id')}>
-                <Picker.Item label="Select Shop Type" value="" />
+                <Picker.Item label="Select Shop Type" style={{color:(theme=='light'?'white':'white')}} value="" />
                 {shopType.map(item => (
                   <Picker.Item
+                    style={{color:(theme=='light'?'white':'white')}}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -279,13 +286,16 @@ const AddShop = ({navigation}) => {
             </View>
             <View style={styles.picker}>
               <Picker
+                 style={{color:'black'}}
+                 dropdownIconColor= 'black'
                 selectedValue={values.customer_class_id}
                 mode="dropdown"
                 onBlur={handleBlur('customer_class_id')}
                 onValueChange={handleChange('customer_class_id')}>
-                <Picker.Item label="Select Shop CLass" value="" />
+                <Picker.Item label="Select Shop CLass" style={{color:(theme=='light'?'white':'white')}} value="" />
                 {shopClass.map(item => (
                   <Picker.Item
+                    style={{color:(theme=='light'?'white':'white')}}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -295,13 +305,16 @@ const AddShop = ({navigation}) => {
             </View>
             <View style={styles.picker}>
               <Picker
+                 style={{color:'black'}}
+                dropdownIconColor= 'black'
                 selectedValue={values.customer_activity_category_id}
                 mode="dropdown"
                 onBlur={handleBlur('customer_activity_category_id')}
                 onValueChange={handleChange('customer_activity_category_id')}>
-                <Picker.Item label="Select Customer Activity" value="" />
+                <Picker.Item label="Select Customer Activity" style={{color:(theme=='light'?'white':'white')}} value="" />
                 {customerActivity.map(item => (
                   <Picker.Item
+                    style={{color:(theme=='light'?'white':'white')}}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -395,13 +408,16 @@ const AddShop = ({navigation}) => {
             <Subheading style={styles.label}>Primary Address</Subheading>
             <View style={styles.picker}>
               <Picker
+                 style={{color:'black'}}
+                dropdownIconColor= 'black'
                 selectedValue={values.billing_state_id}
                 onBlur={handleBlur('billing_state_id')}
                 mode="dropdown"
                 onValueChange={handleChange('billing_state_id')}>
-                <Picker.Item label="Select State" value="" />
+                <Picker.Item label="Select State" style={{color:(theme=='light'?'white':'white')}} value="" />
                 {state.map(item => (
                   <Picker.Item
+                    style={{color:(theme=='light'?'white':'white')}}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -475,13 +491,16 @@ const AddShop = ({navigation}) => {
             <Subheading style={styles.label}>Shipping Address</Subheading>
             <View style={styles.picker}>
               <Picker
+                style={{color:'black'}}
+                 dropdownIconColor= 'black'
                 selectedValue={values.shipping_state_id}
                 onBlur={handleBlur('shipping_state_id')}
                 mode="dropdown"
                 onValueChange={handleChange('shipping_state_id')}>
-                <Picker.Item label="Select State" value="" />
+                <Picker.Item label="Select State" style={{color:(theme=='light'?'white':'white')}} value="" />
                 {state.map(item => (
                   <Picker.Item
+                    style={{color:(theme=='light'?'white':'white')}}
                     key={item._id}
                     label={item.name}
                     value={item._id}

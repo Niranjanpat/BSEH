@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View,useColorScheme} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
 
@@ -13,6 +13,7 @@ const iconSize = 15;
 const ProductQuantity = ({data}) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
+  const theme=useColorScheme();
 
   useEffect(() => {
     getProductIfExists(data._id)
@@ -65,7 +66,7 @@ const ProductQuantity = ({data}) => {
     <View style={styles.container}>
       <IconButton icon="plus" size={iconSize} onPress={add} />
       <TextInput
-        style={styles.inputStyle}
+        style={[{color:(theme=='dark')?'black':'black'},styles.inputStyle]}
         value={value.toString()}
         onChangeText={onValueChange}
         textAlignVertical="bottom"

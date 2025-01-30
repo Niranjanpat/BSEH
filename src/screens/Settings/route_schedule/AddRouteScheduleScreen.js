@@ -14,7 +14,7 @@ const AddRouteScheduleScreen = () => {
   const [open, setOpen] = useState(false);
 
   const {routes, loading, fetchRoutes, postRouteSchedule} = useRouteSchedule();
-
+  
   useEffect(() => {
     fetchRoutes();
   }, []);
@@ -43,7 +43,7 @@ const AddRouteScheduleScreen = () => {
           }}
         />
         <View style={styles.picker}>
-          <Picker selectedValue={routeId} onValueChange={setRouteId}>
+          <Picker style={{color:'black'}} dropdownIconColor='black' selectedValue={routeId} onValueChange={setRouteId}>
             <Picker.Item value="" label="Select beat" />
             {routes.map(item => (
               <Picker.Item key={item._id} value={item._id} label={item.name} />
