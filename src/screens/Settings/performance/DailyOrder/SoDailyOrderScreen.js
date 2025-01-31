@@ -53,7 +53,7 @@ const SoDailyOrderScreen = ({id, date}) => {
     <>
       {dataDSM && dataDSM.length > 0 ? (
         dataDSM.map(e => (
-          <Grid key={e._id} style={[styles.grid,{color:(theme=='dark')?'black':'black'}]}>
+          <Grid key={e._id} style={styles.grid}>
             <Col style={styles.col} size={2}>
               <Text>{e.sap_code}</Text>
             </Col>
@@ -102,10 +102,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey,
     flex: 1,
+    color:'black',
   },
 
   col: {
     flex: 1,
     padding: 2,
+    color:'black',
   },
 });
