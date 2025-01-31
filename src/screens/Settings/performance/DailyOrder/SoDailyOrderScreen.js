@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey,
     flex: 1,
-    color:'black',
   },
 
   col: {
