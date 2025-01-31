@@ -16,10 +16,6 @@ const OrderCartIcon = () => {
     [cartItems, cartPromotionalItems],
   );
 
-  const [data]=cartItems;
-  const quantity=(data)? data.quantity: 0;
-
-  
   const navigateTo = useCallback(() => {
     const screen = cartItems?.length > 0 ? ROUTES.order_cart : ROUTES.order_checkout;
     navigation.navigate(screen);
@@ -29,7 +25,7 @@ const OrderCartIcon = () => {
     <TouchableOpacity
       activeOpacity={0.6}
       onPress={() => navigateTo()}>
-      <Badge style={styles.badge}>{quantity}</Badge>
+      <Badge style={styles.badge}>{cartItemCount}</Badge>
       <Icon name="cart-outline" size={24} style={{color:'black'}} />
     </TouchableOpacity>
   );
