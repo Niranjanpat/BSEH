@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, View, StyleSheet, Text,useColorScheme} from 'react-native';
+import {Image, View, StyleSheet, Text} from 'react-native';
 import {Col, Grid} from 'react-native-easy-grid';
 import {Button, Caption} from 'react-native-paper';
 import {IMAGE} from '../../../../constants/images';
@@ -11,7 +11,6 @@ const SoDailyOrderScreen = ({id, date}) => {
   const [dataDSM, setDataDSM] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
-  const theme=useColorScheme();
   useEffect(() => {
     getDailyOrderDSM();
   }, [page]);
