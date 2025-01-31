@@ -1,5 +1,4 @@
 import {Picker} from '@react-native-picker/picker';
-import { useColorScheme } from 'react-native'; 
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import {
@@ -64,7 +63,6 @@ const AddShop = ({navigation}) => {
   const [location, setLocation] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
-  const theme=useColorScheme();
   useEffect(() => {
     getBeat();
     getShopType();
@@ -229,13 +227,12 @@ const AddShop = ({navigation}) => {
                 style={{color:'black',}}
                 dropdownIconColor= 'black'
                 onValueChange={handleChange('route_id')}>
-                <Picker.Item label="Select Beat (Required)" style={[{color:(theme=='dark')?'white':'black'}]} value="" />
+                <Picker.Item label="Select Beat (Required)" value="" />
                 {beat.map(item => (
                   <Picker.Item
                     key={item._id}
                     label={item.name}
                     value={item._id}
-                    style={[{color:(theme=='dark')?'white':'black'}]}
                   />
                 ))}
               </Picker>
@@ -273,10 +270,9 @@ const AddShop = ({navigation}) => {
                 onBlur={handleBlur('customer_type_id')}
                 mode="dropdown"
                 onValueChange={handleChange('customer_type_id')}>
-                <Picker.Item label="Select Shop Type" style={[{color:(theme=='dark')?'white':'black'}]} value="" />
+                <Picker.Item label="Select Shop Type" value="" />
                 {shopType.map(item => (
                   <Picker.Item
-                    style={[{color:(theme=='dark')?'white':'black'}]}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -292,10 +288,9 @@ const AddShop = ({navigation}) => {
                 mode="dropdown"
                 onBlur={handleBlur('customer_class_id')}
                 onValueChange={handleChange('customer_class_id')}>
-                <Picker.Item label="Select Shop CLass" style={[{color:(theme=='dark')?'white':'black'}]} value="" />
+                <Picker.Item label="Select Shop CLass" value="" />
                 {shopClass.map(item => (
-                  <Picker.Item
-                   style={[{color:(theme=='dark')?'white':'black'}]}
+                  <Picker.Item       
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -311,10 +306,9 @@ const AddShop = ({navigation}) => {
                 mode="dropdown"
                 onBlur={handleBlur('customer_activity_category_id')}
                 onValueChange={handleChange('customer_activity_category_id')}>
-                <Picker.Item label="Select Customer Activity" style={[{color:(theme=='dark')?'white':'black'}]} value="" />
+                <Picker.Item label="Select Customer Activity" value="" />
                 {customerActivity.map(item => (
                   <Picker.Item
-                    style={[{color:(theme=='dark')?'white':'black'}]}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -414,10 +408,9 @@ const AddShop = ({navigation}) => {
                 onBlur={handleBlur('billing_state_id')}
                 mode="dropdown"
                 onValueChange={handleChange('billing_state_id')}>
-                <Picker.Item label="Select State" style={[{color:(theme=='dark')?'white':'black'}]} value="" />
+                <Picker.Item label="Select State" value="" />
                 {state.map(item => (
                   <Picker.Item
-                    style={[{color:(theme=='dark')?'white':'black'}]}
                     key={item._id}
                     label={item.name}
                     value={item._id}
@@ -497,10 +490,9 @@ const AddShop = ({navigation}) => {
                 onBlur={handleBlur('shipping_state_id')}
                 mode="dropdown"
                 onValueChange={handleChange('shipping_state_id')}>
-                <Picker.Item label="Select State" style={[{color:(theme=='dark')?'white':'black'}]} value="" />
+                <Picker.Item label="Select State" value="" />
                 {state.map(item => (
                   <Picker.Item
-                    style={[{color:(theme=='dark')?'white':'black'}]}
                     key={item._id}
                     label={item.name}
                     value={item._id}
