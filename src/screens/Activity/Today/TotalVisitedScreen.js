@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, Dimensions} from 'react-native';
-import {Appbar, Button, Divider, Subheading} from 'react-native-paper';
+import {View, StyleSheet, Dimensions} from 'react-native';
+import {Appbar, Button, Divider, Subheading, Text} from 'react-native-paper';
 import {COLORS} from '../../../constants/theme/colors';
 import {scheduleSummary} from '../../../services/activity_service';
 import VerticalSpacer from '../../../components/VerticalSpacer';
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
 
   detailsValue: {
     flex: 1,
+    color: '#000',
   },
 
   notAvailableTxt: {
