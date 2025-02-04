@@ -172,7 +172,7 @@ const OrderLogScreen = ({route}) => {
         <>
           {data && data.length > 0 ? (
             data.map(e => (
-              <Grid style={styles.grid} key={e._id}>
+              <Grid style={[styles.grid,{color:'black'}]} key={e._id}>
                 <Col style={styles.col} size={2}>
                   <Text>{e.date}</Text>
                 </Col>
@@ -195,7 +195,7 @@ const OrderLogScreen = ({route}) => {
         <>
           {dataDSM && dataDSM.length > 0 ? (
             dataDSM.map(e => (
-              <Grid style={styles.grid} key={e._id}>
+              <Grid style={[styles.grid,{color:'black'}]} key={e._id}>
                 <Col style={styles.col} size={2}>
                   <Text>{e.date}</Text>
                 </Col>

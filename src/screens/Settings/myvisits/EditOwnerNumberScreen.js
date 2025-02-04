@@ -66,6 +66,7 @@ const EditOwnerNumberScreen = ({ route, navigation }) => {
         style={styles.input}
         mode="outlined"
         label="Owner contact number"
+        maxLength={(10)}
       />
       {/* <View style={styles.container_otp}>
         <TextInput
