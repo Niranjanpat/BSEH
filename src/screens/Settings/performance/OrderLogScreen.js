@@ -108,7 +108,7 @@ const OrderLogScreen = ({route}) => {
             icon="calendar-outline"
           />
         }
-        style={styles.inputText}
+        style={{flex:1,margin:10}}
         editable={false}
         mode="outlined"
       />

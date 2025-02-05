@@ -1,6 +1,7 @@
 import {Picker} from '@react-native-picker/picker';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
+import {Checkbox} from 'react-native-paper';
 import {
   PermissionsAndroid,
   SafeAreaView,
@@ -63,6 +64,7 @@ const AddShop = ({navigation}) => {
   const [location, setLocation] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
+  const [checked,setChecked]=useState('unchecked');
   useEffect(() => {
     getBeat();
     getShopType();
@@ -217,7 +219,7 @@ const AddShop = ({navigation}) => {
             .catch(e => alert(e))
             .finally(() => setIsLoading(false));
         }}>
-        {({handleChange, handleBlur, handleSubmit, values, errors}) => (
+        {({handleChange, handleBlur, handleSubmit,setFieldValue, values, errors}) => (
           <View>
             <Subheading style={styles.label}>Shop Information</Subheading>
             <View style={styles.picker}>
@@ -481,11 +483,30 @@ const AddShop = ({navigation}) => {
               label="Address"
               mode="outlined"
             />
-            <Subheading style={styles.label}>Shipping Address</Subheading>
+             <Checkbox.Item labelStyle={styles.label} label='Shipping Address' status={checked} onPress={()=>{
+              if(checked=='unchecked'){
+                setChecked('checked');
+                setFieldValue('shipping_state_id',values.billing_state_id);
+                setFieldValue('shipping_pincode',values.billing_pincode);
+                setFieldValue('shipping_city',values.billing_city);
+                setFieldValue('shipping_district',values.billing_district);
+                setFieldValue('shipping_tehsil',values.billing_tehsil);
+                setFieldValue('shipping_address',values.billing_address);
+              }
+              else{
+                setChecked('unchecked');
+                setFieldValue('shipping_state_id','');
+                setFieldValue('shipping_pincode','');
+                setFieldValue('shipping_city','');
+                setFieldValue('shipping_district','');
+                setFieldValue('shipping_tehsil','');
+                setFieldValue('shipping_address','');
+              }
+            }}></Checkbox.Item>
             <View style={styles.picker}>
               <Picker
                 style={{color:'black'}}
-                 dropdownIconColor= 'black'
+                dropdownIconColor= 'black'
                 selectedValue={values.shipping_state_id}
                 onBlur={handleBlur('shipping_state_id')}
                 mode="dropdown"

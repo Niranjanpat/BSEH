@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Alert, Image, Keyboard, ScrollView, ScrollViewBase,KeyboardAvoidingView, StyleSheet, View} from 'react-native';
+import {Alert, Image, Keyboard, ScrollView, StyleSheet, View} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
 import {IconButton, Text, TextInput} from 'react-native-paper';
 import VersionNumber from 'react-native-version-number';
