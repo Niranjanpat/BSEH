@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Alert, Image, Keyboard, StyleSheet, View} from 'react-native';
+import {Alert, Image, Keyboard, ScrollView, ScrollViewBase,KeyboardAvoidingView, StyleSheet, View} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
 import {IconButton, Text, TextInput} from 'react-native-paper';
 import VersionNumber from 'react-native-version-number';
@@ -89,7 +89,11 @@ const SignInScreen = ({navigation}) => {
   return (
     <>
       <Wave1 />
-      <View style={styles.container}>
+      
+        <ScrollView   contentContainerStyle={{
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 60,}}>
         <Image source={IMAGE.logo_ruchi} style={styles.image} />
         <Text style={styles.text}>LOGIN</Text>
         <View style={{flexDirection: 'row'}}>
@@ -145,7 +149,9 @@ const SignInScreen = ({navigation}) => {
           Version:{' '}
           {`${VersionNumber.buildVersion} (${VersionNumber.appVersion})`}
         </Text>
-      </View>
+      </ScrollView>
+     
+      
       <Wave2 style={{zIndex: -100000}} />
     </>
   );
@@ -155,7 +161,7 @@ export default SignInScreen;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+   // justifyContent: 'center',
     flex: 1,
     paddingHorizontal: 10,
     paddingTop: 10,

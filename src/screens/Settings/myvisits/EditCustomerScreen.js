@@ -175,6 +175,8 @@ const EditCustomerScreen = ({navigation, route}) => {
             <View style={styles.picker}>
               <Picker
                 selectedValue={values.route_id}
+                dropdownIconColor= 'black'
+                style={{color:'black'}}
                 mode="dropdown"
                 onValueChange={handleChange('route_id')}>
                 <Picker.Item label="Select Beat (Required)" value="" />
@@ -198,6 +200,7 @@ const EditCustomerScreen = ({navigation, route}) => {
               error={error.name ? true : false}
               label="Shop Name (Required)"
               mode="outlined"
+              readOnly
             />
             {error.name && <Text style={styles.errorText}>{error.name}</Text>}
             <TextInput
@@ -217,6 +220,8 @@ const EditCustomerScreen = ({navigation, route}) => {
                 selectedValue={values.customer_type_id}
                 onBlur={handleBlur('customer_type_id')}
                 mode="dropdown"
+                dropdownIconColor='black'
+                style={{color:'black'}}
                 onValueChange={handleChange('customer_type_id')}>
                 <Picker.Item label="Select Shop Type" value="" />
                 {shopType.map(item => (
@@ -232,6 +237,8 @@ const EditCustomerScreen = ({navigation, route}) => {
               <Picker
                 selectedValue={values.customer_class_id}
                 mode="dropdown"
+                dropdownIconColor='black'
+                style={{color:'black'}}
                 onBlur={handleBlur('customer_class_id')}
                 onValueChange={handleChange('customer_class_id')}>
                 <Picker.Item label="Select Shop CLass" value="" />
@@ -248,6 +255,8 @@ const EditCustomerScreen = ({navigation, route}) => {
               <Picker
                 selectedValue={values.customer_activity_category_id}
                 mode="dropdown"
+                dropdownIconColor='black'
+                style={{color:'black'}}
                 onBlur={handleBlur('customer_activity_category_id')}
                 onValueChange={handleChange('customer_activity_category_id')}>
                 <Picker.Item label="Select Customer Activity" value="" />
@@ -332,6 +341,8 @@ const EditCustomerScreen = ({navigation, route}) => {
             <View style={styles.picker}>
               <Picker
                 selectedValue={values.billing_state_id}
+                dropdownIconColor='black'
+                style={{color:'black'}}
                 onBlur={handleBlur('billing_state_id')}
                 mode="dropdown"
                 onValueChange={handleChange('billing_state_id')}>
@@ -413,6 +424,8 @@ const EditCustomerScreen = ({navigation, route}) => {
               <Picker
                 selectedValue={values.shipping_state_id}
                 onBlur={handleBlur('shipping_state_id')}
+                dropdownIconColor='black'
+                style={{color:'black'}}
                 mode="dropdown"
                 onValueChange={handleChange('shipping_state_id')}>
                 <Picker.Item label="Select State" value="" />

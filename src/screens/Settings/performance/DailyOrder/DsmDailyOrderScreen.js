@@ -104,5 +104,6 @@ const styles = StyleSheet.create({
   col: {
     flex: 1,
     padding: 2,
+    color:'black'
   },
 });

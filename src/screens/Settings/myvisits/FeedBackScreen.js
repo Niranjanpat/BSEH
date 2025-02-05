@@ -91,6 +91,7 @@ const FeedBackScreen = ({navigation, route}) => {
       nestedScrollEnabled
       style={styles.container}>
       <SelectMultiple
+       labelStyle={{color:'black'}}
         items={data}
         selectedItems={selectedFeedback}
         nestedScrollEnabled

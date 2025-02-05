@@ -203,7 +203,7 @@ const AddShop = ({navigation}) => {
               const {data, errors, success} = res.data;
               if (success) {
                 alert('Customer is Successfully added');
-                resetForm({values: initialValues});
+                resetForm({values: initialValues, errors: {}, touched: {}});
                 setSelectedCity({});
                 setSelectedPinCode({});
                 setLocation({});

@@ -149,7 +149,7 @@ const CustomerOrderScreen = ({route}) => {
         <>
           {data && data.length > 0 ? (
             data.map(e => (
-              <Grid style={styles.grid}>
+              <Grid style={[styles.grid,{color:'black'}]}>
                 <Col style={styles.col} size={2}>
                   <Text>{e.sap_code}</Text>
                 </Col>
@@ -184,7 +184,7 @@ const CustomerOrderScreen = ({route}) => {
         <>
           {dataDSM && dataDSM.length > 0 ? (
             dataDSM.map(e => (
-              <Grid style={styles.grid}>
+              <Grid style={[styles.grid,{color:'black'}]}>
                 <Col style={styles.col} size={2}>
                   <Text>{e.sap_code}</Text>
                 </Col>

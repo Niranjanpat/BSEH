@@ -164,7 +164,7 @@ const TopCustomersScreen = ({route}) => {
           {dataDSM && dataDSM.length > 0 ? (
             dataDSM.map(e => (
               <View key={e._id}>
-                <Grid style={styles.grid}>
+                <Grid  style={[styles.grid,{color:'black'}]}>
                   <Col style={styles.col} size={1.5}>
                     <Text>{e.sap_code}</Text>
                   </Col>

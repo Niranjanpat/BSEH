@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center',
     ...TYPOGRAPHY.body2,
-    height: 35,
+    height: 40,
     fontSize: 12,
     color:'black',
   },
