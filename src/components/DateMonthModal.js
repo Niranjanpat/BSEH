@@ -28,7 +28,7 @@ const DateMonthModal = ({
   return (
     <View>
       <TextInput
-        style={styles.inputText}
+        style={{flex:1,margin:10}}
         editable={false}
         value={dayjs(dates).format('MMMM YYYY')}
         label="Select datetime"

@@ -43,7 +43,7 @@ const CustomerOrderScreen = ({route}) => {
               icon="calendar-outline"
             />
           }
-          style={styles.inputText}
+          style={{flex:1,marginLeft:2,marginRight:2}}
           editable={false}
           mode="outlined"
         />
