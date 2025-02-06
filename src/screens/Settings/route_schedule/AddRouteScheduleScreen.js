@@ -28,7 +28,7 @@ const AddRouteScheduleScreen = () => {
             editable={false}
             style={styles.input}
             label="Date"
-            right={<TextInput.Icon icon="calendar-outline" />}
+            right={<TextInput.Icon icon="calendar-outline" onPress={() => setOpen(true)}/>}
           />
         </Pressable>
         <DatePicker
