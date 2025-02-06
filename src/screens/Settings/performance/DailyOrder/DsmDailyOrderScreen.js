@@ -52,19 +52,19 @@ const DsmDailyOrderScreen = ({id, date}) => {
         dataDSM.map(e => (
           <Grid key={e._id} style={styles.grid}>
             <Col style={styles.col} size={2}>
-              <Text>{e.sap_code}</Text>
+              <Text style={styles.text}>{e.sap_code}</Text>
             </Col>
             <Col style={styles.col} size={2}>
-              <Text>{e.name}</Text>
+              <Text style={styles.text}>{e.name}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text>{e.total_quantity}</Text>
+              <Text style={styles.text}>{e.total_quantity}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text>{e.total_amount}</Text>
+              <Text style={styles.text}>{e.total_amount}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text>{e.lpc}</Text>
+              <Text style={styles.text}>{e.lpc}</Text>
             </Col>
           </Grid>
         ))
@@ -104,6 +104,9 @@ const styles = StyleSheet.create({
   col: {
     flex: 1,
     padding: 2,
-    color:'black'
   },
+
+  text: {
+    color: 'black',
+  }
 });
