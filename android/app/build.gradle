@@ -82,8 +82,8 @@ android {
         applicationId "com.patanjali.ruchi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 34
-        versionName "1.3.16"
+        versionCode 35
+        versionName "1.3.17"
         multiDexEnabled true
     }
     signingConfigs {

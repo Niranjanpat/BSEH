@@ -1,11 +1,5 @@
-import React, {useRef,useEffect, useState} from 'react';
-import {
-  Alert,
-  Image,
-  Keyboard,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {useRef, useEffect, useState} from 'react';
+import {Alert, Image, Keyboard, StyleSheet, View} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
 import {IconButton, Text, TextInput} from 'react-native-paper';
 import VersionNumber from 'react-native-version-number';
@@ -40,7 +34,6 @@ const SignInScreen = ({navigation}) => {
     deviceVersion: null,
   });
 
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,9 +45,11 @@ const SignInScreen = ({navigation}) => {
     deviceInfo.current.deviceName = await DeviceInfo.getDeviceName();
   };
 
-  useEffect(()=>{getDeviceInfo();},[]);
+  useEffect(() => {
+    getDeviceInfo();
+  }, []);
 
-  const validateAndLogin = () => {
+  const validateAndLogin = async () => {
     if (email === '') {
       emailRef.current.focus();
       return;
@@ -63,10 +58,14 @@ const SignInScreen = ({navigation}) => {
       passwordRef.current.focus();
       return;
     }
-
-    if( ! deviceInfo.current.deviceId || ! deviceInfo.current.deviceName || ! deviceInfo.current.deviceVersion){
-        getDeviceInfo();
+    if (
+      !deviceInfo.current.deviceId ||
+      !deviceInfo.current.deviceName ||
+      !deviceInfo.current.deviceVersion
+    ) {
+      await getDeviceInfo();
     }
+    
     onSumbit();
   };
 
@@ -74,7 +73,7 @@ const SignInScreen = ({navigation}) => {
     Keyboard.dismiss();
     setIsLoading(true);
 
-    login(email, password,deviceInfo.current)
+    login(email, password, deviceInfo.current)
       .then(res => {
         const {data, success, errors} = res.data;
 
@@ -100,8 +99,7 @@ const SignInScreen = ({navigation}) => {
           if (errors?.email) {
             Alert.alert('Fail', errors.email);
             return;
-          }
-          else{
+          } else {
             Alert.alert('Fail', Object.values(errors).join(', '));
             return;
           }
