@@ -22,12 +22,14 @@
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
     "formik": "^2.4.5",
+    "jail-monkey": "^2.8.0",
     "mappls-intouch-react-native": "^1.0.4",
     "react": "18.2.0",
     "react-native": "0.73.4",
     "react-native-code-push": "^8.2.1",
     "react-native-countdown-timer-hooks": "^1.0.5",
     "react-native-date-picker": "^4.3.6",
+    "react-native-device-info": "^14.0.4",
     "react-native-easy-grid": "^0.2.2",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-linear-gradient": "^2.8.3",
@@ -50,8 +52,7 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
-    "rn-fetch-blob": "^0.12.0",
-    "jail-monkey": "^2.8.0"
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",

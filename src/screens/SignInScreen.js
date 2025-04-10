@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef,useEffect, useState} from 'react';
 import {
   Alert,
   Image,
@@ -26,6 +26,7 @@ import {
 } from '../store/actions/auth';
 import {initOrderCart} from '../store/actions/cart';
 import {getRetailerList} from '../store/actions/retailer';
+import DeviceInfo from 'react-native-device-info';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 const SignInScreen = ({navigation}) => {
@@ -33,11 +34,25 @@ const SignInScreen = ({navigation}) => {
 
   const emailRef = useRef();
   const passwordRef = useRef();
+  const deviceInfo = useRef({
+    deviceId: null,
+    deviceName: null,
+    deviceVersion: null,
+  });
+
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isPwdHidden, setIsPwdHidden] = useState(true);
+
+  const getDeviceInfo = async () => {
+    deviceInfo.current.deviceId = await DeviceInfo.getUniqueId();
+    deviceInfo.current.deviceVersion = DeviceInfo.getSystemVersion();
+    deviceInfo.current.deviceName = await DeviceInfo.getDeviceName();
+  };
+
+  useEffect(()=>{getDeviceInfo();},[]);
 
   const validateAndLogin = () => {
     if (email === '') {
@@ -49,6 +64,9 @@ const SignInScreen = ({navigation}) => {
       return;
     }
 
+    if( ! deviceInfo.current.deviceId || ! deviceInfo.current.deviceName || ! deviceInfo.current.deviceVersion){
+        getDeviceInfo();
+    }
     onSumbit();
   };
 
@@ -56,7 +74,7 @@ const SignInScreen = ({navigation}) => {
     Keyboard.dismiss();
     setIsLoading(true);
 
-    login(email, password)
+    login(email, password,deviceInfo.current)
       .then(res => {
         const {data, success, errors} = res.data;
 
@@ -78,9 +96,13 @@ const SignInScreen = ({navigation}) => {
           navigation.replace(ROUTES.bottomtab_stack);
         } else {
           setIsLoading(false);
-
+          console.log(errors);
           if (errors?.email) {
             Alert.alert('Fail', errors.email);
+            return;
+          }
+          else{
+            Alert.alert('Fail', Object.values(errors).join(', '));
             return;
           }
         }

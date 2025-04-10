@@ -78,7 +78,7 @@ const AboutPalanjali = ({navigation}) => (
                 style={{width: 80, height: 60, marginRight: 10}}
                 source={IMAGE.ramdev}
               />
-              <Text>Yogshi Swami Ramdev Ji</Text>
+              <Text style={{color:'black'}}>Yogshi Swami Ramdev Ji</Text>
             </View>
           </View>
           <View
@@ -105,7 +105,7 @@ const AboutPalanjali = ({navigation}) => (
                 style={{width: 80, height: 60, marginRight: 10}}
                 source={IMAGE.bal}
               />
-              <Text>Vaidyaraj Acharya Balkrishna Ji</Text>
+              <Text style={{color:'black'}}>Vaidyaraj Acharya Balkrishna Ji</Text>
             </View>
           </View>
         </View>

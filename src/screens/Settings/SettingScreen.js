@@ -202,7 +202,7 @@ const SettingScreen = ({navigation}) => {
             <Divider />
           </>)}
 
-        {!(role === 'promoter' || role === 'kam') && (
+        {!(role === 'promoter' || role === 'kam' || role === 'dsm') && (
           <>
             <Divider />
             <List.Item
