@@ -183,7 +183,7 @@ const MyVisitScreen = ({navigation}) => {
                   style={[
                     styles.chip,
                     {
-                      marginLeft: 10,
+                      marginTop: 5,
                       backgroundColor: COLORS.accentSecondary,
                     },
                   ]}>

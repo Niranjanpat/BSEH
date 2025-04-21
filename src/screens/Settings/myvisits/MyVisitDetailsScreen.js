@@ -51,6 +51,7 @@ import MMKVStorage from 'react-native-mmkv-storage';
 import dayjs from 'dayjs';
 import {sendOTP} from '../../../services/activity_service';
 import PromotionalItemsModal from '../../../components/promotional_item/PromotionalItemsModal';
+import LoadingView from '../../../components/LoadingView';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -70,6 +71,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
   // const [isCheckOutDisabled, setCheckOutDisabled] = useState(false);
   const [promotionalVisible, setPromotionalVisible] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -201,6 +203,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       });
   };
   async function fetchCustomerDetails() {
+    setLoadingDetails(true);
     const url = URLS.customer + data._id;
     try {
       const res = await client.get(url);
@@ -214,6 +217,8 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       }
     } catch (error) {
       console.log('fetchCustomerDetails:::', error.toString());
+    } finally {
+      setLoadingDetails(false);
     }
   }
 
@@ -528,6 +533,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             </>
           )}
         </ScrollView>
+        {loadingDetails && <LoadingView />}
       </View>
 
       <ReturnOptionsModal

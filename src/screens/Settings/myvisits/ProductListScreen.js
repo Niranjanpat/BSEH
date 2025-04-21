@@ -1,6 +1,13 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Caption, List, Searchbar, Text} from 'react-native-paper';
-import {FlatList, View, StyleSheet, ScrollView, RefreshControl} from 'react-native';
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import ProductQuantity from '../../../components/ProductQuantity';
@@ -76,17 +83,18 @@ const ProductListScreen = ({route}) => {
         onChangeText={setSearchQuery}
         style={styles.searchBar}
       />
-      <ScrollView nestedScrollEnabled refreshControl={<RefreshControl
+      <ScrollView
+        nestedScrollEnabled
+        refreshControl={
+          <RefreshControl
             refreshing={isLoading}
             onRefresh={() => {
               getProduct();
               getScheme();
             }}
-          />}>
+          />
+        }>
         <FlatList
-          style={{
-            width: '100%',
-          }}
           horizontal
           data={scheme}
           renderItem={({item, index}) => {
@@ -100,105 +108,110 @@ const ProductListScreen = ({route}) => {
                   borderWidth: 1,
                   borderColor: COLORS.accentPrimary,
                   justifyContent: 'center',
+                  width: 180,
                 }}>
-                <View style={{width: '100%', padding: 10}}>
-                  <View
-                    style={{
-                      marginHorizontal: 10,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#000',
-                    }}>
-                    <Text
+                <TouchableOpacity
+                  onPress={() => setSearchQuery(item.product_name)}>
+                  <View style={{padding: 10}}>
+                    <View
                       style={{
-                        color: COLORS.accentPrimary,
-                        fontWeight: 'bold',
-                        fontSize: 12,
-                        marginVertical: 10,
+                        marginHorizontal: 10,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#000',
                       }}>
-                      MONTHLY SCHEME
-                    </Text>
+                      <Text
+                        style={{
+                          color: COLORS.accentPrimary,
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          marginBottom: 10,
+                        }}>
+                        MONTHLY SCHEME
+                      </Text>
+                    </View>
+                    <View style={{alignItems: 'center', marginTop: 10}}>
+                      {/*<Text style={{color:'#000',fontWeight:'bold',fontSize:12}}>COMBO OFFER</Text>*/}
+                      <Text
+                        numberOfLines={2}
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          color: COLORS.accentPrimary,
+                        }}>
+                        {item.product_name}
+                      </Text>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: '#000',
+                          }}>
+                          SAP Code:
+                        </Text>
+                        <Text style={{fontSize: 12, color: '#000'}}>
+                          {' '}
+                          {item.product_sap_code}
+                        </Text>
+                      </View>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: '#000',
+                          }}>
+                          Unit:
+                        </Text>
+                        <Text style={{fontSize: 12, color: '#000'}}>
+                          {' '}
+                          {item.product_unit}
+                        </Text>
+                      </View>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: '#000',
+                          }}>
+                          Discount:
+                        </Text>
+                        <Text style={{fontSize: 12, color: '#000'}}>
+                          {' '}
+                          {item.primary_discount
+                            ? item.primary_discount + '% (P)'
+                            : null}{' '}
+                          {item.secondary_discount
+                            ? item.secondary_discount + '% (S)'
+                            : null}
+                        </Text>
+                      </View>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: '#000',
+                          }}>
+                          End Date:
+                        </Text>
+                        <Text style={{fontSize: 12, color: '#000'}}>
+                          {' '}
+                          {item.primary_end_date
+                            ? item.primary_end_date + ' (P)'
+                            : null}{' '}
+                          {item.secondary_end_date
+                            ? item.secondary_end_date + ' (S)'
+                            : null}
+                        </Text>
+                      </View>
+                      {/*<Text>{item.items[0].item_image}</Text>*/}
+                    </View>
                   </View>
-                  <View style={{alignItems: 'center', marginVertical: 10}}>
-                    {/*<Text style={{color:'#000',fontWeight:'bold',fontSize:12}}>COMBO OFFER</Text>*/}
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: COLORS.accentPrimary,
-                      }}>
-                      {item.product_name}
-                    </Text>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: '#000',
-                        }}>
-                        SAP Code:
-                      </Text>
-                      <Text style={{fontSize: 12, color: '#000'}}>
-                        {' '}
-                        {item.product_sap_code}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: '#000',
-                        }}>
-                        Unit:
-                      </Text>
-                      <Text style={{fontSize: 12, color: '#000'}}>
-                        {' '}
-                        {item.product_unit}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: '#000',
-                        }}>
-                        Discount:
-                      </Text>
-                      <Text style={{fontSize: 12, color: '#000'}}>
-                        {' '}
-                        {item.primary_discount
-                          ? item.primary_discount + '% (P)'
-                          : null}{' '}
-                        {item.secondary_discount
-                          ? item.secondary_discount + '% (S)'
-                          : null}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: '#000',
-                        }}>
-                        End Date:
-                      </Text>
-                      <Text style={{fontSize: 12, color: '#000'}}>
-                        {' '}
-                        {item.primary_end_date
-                          ? item.primary_end_date + ' (P)'
-                          : null}{' '}
-                        {item.secondary_end_date
-                          ? item.secondary_end_date + ' (S)'
-                          : null}
-                      </Text>
-                    </View>
-                    {/*<Text>{item.items[0].item_image}</Text>*/}
-                  </View>
-                </View>
+                </TouchableOpacity>
               </View>
             );
           }}

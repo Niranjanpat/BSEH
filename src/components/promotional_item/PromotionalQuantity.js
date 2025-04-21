@@ -93,5 +93,6 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.body2,
     height: 35,
     fontSize: 12,
+    color: '#000',
   },
 });

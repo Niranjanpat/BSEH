@@ -25,7 +25,7 @@ const ActivityScreen = ({navigation}) => {
           <Divider />
         </>
       )}
-      <List.Item
+      {/* <List.Item
         style={styles.list}
         title="Route Map"
         onPress={() => {
@@ -35,7 +35,7 @@ const ActivityScreen = ({navigation}) => {
         right={props => <List.Icon {...props} icon="chevron-right" />}
       />
       <Divider />
-      <Divider />
+      <Divider /> */}
       <List.Item
         style={styles.list}
         title="Total Visited"
@@ -88,7 +88,7 @@ const ActivityScreen = ({navigation}) => {
           <Divider />
         </>
       )}
-      <List.Item
+      {/* <List.Item
         style={styles.list}
         title="Route Map"
         onPress={() => {
@@ -98,7 +98,7 @@ const ActivityScreen = ({navigation}) => {
         right={props => <List.Icon {...props} icon="chevron-right" />}
       />
       <Divider />
-      <Divider />
+      <Divider /> */}
       <List.Item
         style={styles.list}
         title="Total Visited"

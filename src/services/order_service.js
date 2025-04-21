@@ -82,3 +82,10 @@ export const addPromoterSales = async data => {
 export const addPromoterClosingStock = async data => {
   return await client.post(URLS.promoterClosingStock, data);
 };
+
+export const getSchemes = async (data, id) => {
+  return await client.post(`${URLS.products}/schemes`, {
+    products: JSON.stringify(data),
+    customer_id: id,
+  });
+};

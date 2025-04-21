@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {FlatList, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Button, Caption, List, Subheading, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -13,6 +13,7 @@ import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
 import PromotionalItemWithRemove from '../../../components/promotional_item/PromotionalItemWithRemove';
 import { useNavigation } from '@react-navigation/native';
+import { getSchemes } from '../../../services/order_service';
 
 const OrderCartScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const OrderCartScreen = ({navigation}) => {
 
   const [isProductCollapsed, setIsProductCollapsed] = useState(false);
   const [isPromotionalCollapsed, setIsPromotionalCollapsed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const cartProductItems = useMemo(
     () => (isProductCollapsed ? [] : cartItems),
@@ -34,7 +36,27 @@ const OrderCartScreen = ({navigation}) => {
     [isPromotionalCollapsed, cartPromoItems],
   );
 
-  console.log('dfdfdf', customerForOnCall);
+  const handleNext = () => {
+    setLoading(true);
+    getSchemes(cartItems, customer?.customer_id ?? customerForOnCall._id)
+      .then(res => {
+        setLoading(false);
+        const {success, data, errors} = res?.data;
+        console.log(data);
+        
+        if (success) {
+          navigation.navigate(ROUTES.order_checkout, {data: data});
+        } else if (errors) {
+          Alert.alert('Error', Object.values(errors).join(', '));
+        }
+      })
+      .catch(err => {
+        setLoading(false);
+
+        console.log('err-----------', err);
+      });
+  };
+
   return (
     <>
       <View style={styles.heading}>
@@ -110,8 +132,9 @@ const OrderCartScreen = ({navigation}) => {
       <Button
         mode="contained"
         style={{margin: 15}}
-        disabled={cartItems.length < 1 && cartPromoItems.length < 1}
-        onPress={() => navigation.navigate(ROUTES.order_checkout)}>
+        disabled={(cartItems.length < 1 && cartPromoItems.length < 1) || loading}
+        loading={loading}
+        onPress={handleNext}>
         Next
       </Button>
     </>
