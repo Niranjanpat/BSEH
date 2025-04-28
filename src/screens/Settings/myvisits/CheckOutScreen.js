@@ -56,12 +56,12 @@ const CheckOutScreen = ({navigation, route}) => {
 
   const total = useMemo(
     () =>
-      cartItems.reduce(
+      schemes.reduce(
         (price, item) =>
-          price + parseInt(item.quantity) * parseFloat(item.retail_price),
+          price + parseFloat(item?.net_amount ?? 0),
         0.0,
       ),
-    [cartItems],
+    [schemes],
   );
 
   useEffect(() => {
@@ -312,7 +312,7 @@ const CheckOutScreen = ({navigation, route}) => {
       </View>
       <View style={styles.grandTotalContainer}>
         <Text>Total order value: </Text>
-        <Subheading>₹{total_order_amount.toFixed(2)}</Subheading>
+        <Subheading>₹{total.toFixed(2)}</Subheading>
       </View>
       <View style={styles.buttonRow}>
         {cartItems.length > 0 && (
