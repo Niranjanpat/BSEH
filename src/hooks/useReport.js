@@ -33,7 +33,7 @@ const useReport = () => {
       })
       .catch(err => {
         setLoading(false);
-        console.log('today report err', err?.response?.data);
+        //console.log('today report err', err?.response?.data);
       });
   };
 

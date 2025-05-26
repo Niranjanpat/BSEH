@@ -10,13 +10,14 @@ import {clientId, clientSecret} from '../../constants/urls';
 import {attendanceAction, authActions} from '../action_types';
 import MapplsIntouch from 'mappls-intouch-react-native';
 import {getJointWorkStatus} from '../../services/joint_service';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 export const getProfileDetail = () => {
   return async dispatch => {
     profile()
       .then(res => {
         const {data, errors, success} = res.data;
+        console.log('Profile', data);
         if (success) {
           dispatch(storeAccount(data));
           intouch(data);
@@ -52,7 +53,7 @@ const intouch = async profile => {
     try {
       MapplsIntouch.initializeWithDeviceId(
         profile.emp_code,
-        clientId, 
+        clientId,
         clientSecret,
         profile.emp_code,
         result => {
@@ -90,13 +91,15 @@ export const getAttendanceList = () => {
       });
   };
 };
-export const attendancePunchIn = datas => {
+export const attendancePunchIn = data => {
+  console.log('punch_in', data);
   return async dispatch => {
     dispatch(storeAttendanceLoading(true));
-    punchIn(datas)
+    punchIn(data)
       .then(res => {
+        //  console.log("success",res);
         const {data, errors, success} = res.data;
-        console.log(res.data);
+        
         if (success) {
           dispatch(getAttendanceStatus());
           dispatch(getAttendanceList());
@@ -113,7 +116,7 @@ export const attendancePunchIn = datas => {
         }
       })
       .catch(e => {
-        console.log(e);
+        console.log('punch-in error - ', e);
       })
       .finally(() => {
         dispatch(storeAttendanceLoading(false));
@@ -121,13 +124,14 @@ export const attendancePunchIn = datas => {
   };
 };
 
-export const attendancePunchOut = datas => {
+export const attendancePunchOut = (data) => {
+  console.log('punch_out', data);
   return async dispatch => {
     dispatch(storeAttendanceLoading(true));
-    punchOut(datas)
+    punchOut(data)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log('punch_out', res.data);
+        console.log('response data', res.data);
         if (success) {
           MapplsIntouch.getCurrentLocationUpdate();
           dispatch(getAttendanceStatus());
@@ -141,7 +145,7 @@ export const attendancePunchOut = datas => {
         }
       })
       .catch(e => {
-        console.log(e);
+        console.log('punchOut error', e);
       })
       .finally(() => {
         dispatch(storeAttendanceLoading(false));
@@ -150,13 +154,15 @@ export const attendancePunchOut = datas => {
 };
 
 export const getAttendanceStatus = () => {
+  console.log('called');
   return async dispatch => {
     attendanceStatus()
       .then(res => {
         const {data, errors, success} = res.data;
+        console.log('attendance', data);
         if (success) {
           dispatch(storeAttendanceStatus(data.status));
-          dispatch(storeTravelDistance(data.advance_distance));
+          dispatch(storeTravelDistance(data.distance_travel));
         } else {
         }
       })

@@ -2,6 +2,9 @@ import {URLS} from '../constants/urls';
 import client from './axios_client';
 //login api
 export const login = async (email, password, deviceInfo) => {
+  console.log('deviceInfo', deviceInfo);
+  console.log('email', email);
+  console.log('password', password);
   return await client.post(URLS.login, {
     email,
     password,
@@ -26,7 +29,7 @@ export const updateUserProfile = async body => {
 
 // user attendance Status api
 export const attendanceStatus = async () => {
-  return await client.get(URLS.attendanceStatus);
+  return await client.get(URLS.punchStatus);
 };
 
 export const attendanceList = async date => {
@@ -34,9 +37,10 @@ export const attendanceList = async date => {
 };
 
 export const punchIn = async data => {
-  return await client.post(URLS.attendancePuchIn, data);
+  return await client.post(URLS.attendancePunchIn, data);
 };
-export const punchOut = async data => {
+export const punchOut = async (data) => {
+  console.log('punchOut-data', data);
   return await client.post(URLS.attendancePunchOut, data);
 };
 

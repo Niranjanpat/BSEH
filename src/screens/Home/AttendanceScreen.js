@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect,useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Appbar,
@@ -8,8 +8,11 @@ import {
   Text,
 } from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, StyleSheet, FlatList, Alert} from 'react-native';
+import {View, StyleSheet, FlatList, TextInput, Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
+import PunchInModal from '../../components/PunchInModal';
+import PunchOutModal from '../../components/PunchOutModal';
+ 
 
 import {
   attendancePunchIn,
@@ -21,8 +24,11 @@ import useLocationPermission from '../../utils/useLocationPermission';
 import ScheduleSummaryModal from '../../components/ScheduleSummaryModal';
 import {COLORS} from '../../constants/theme/colors';
 
-const AttendanceScreen = ({navigation}) => {
+
+const AttendanceScreen = ({navigation}) => { 
   const dispatch = useDispatch();
+  const punchInRef= useRef(null);
+  const punchOutRef=useRef(null);
 
   const {attendanceStatus, attendanceList, attendanceLoading, role} =
     useSelector(state => state.auth);
@@ -51,8 +57,10 @@ const AttendanceScreen = ({navigation}) => {
           onPress={() => navigation.navigate('AttendanceDetail')}
         />
       </Appbar.Header>
-
+        
       <View style={styles.attendanceBox}>
+      <PunchInModal  ref={punchInRef} ></PunchInModal> 
+        <PunchOutModal ref={punchOutRef} ></PunchOutModal> 
         <Subheading style={styles.dateText}>
           {dayjs().format('YYYY MMM DD')}
         </Subheading>
@@ -86,10 +94,13 @@ const AttendanceScreen = ({navigation}) => {
                         setIsSummaryVisible(true);
                         return;
                       }
-
-                      dispatch(attendancePunchOut(data));
-                    } else {
-                      dispatch(attendancePunchIn(data));
+                       punchOutRef.current.showPunchOut(true);
+                    // dispatch(attendancePunchOut(data));
+                    } else 
+                    {
+                     
+                      punchInRef.current.showPunchIn(true);
+                      //dispatch(attendancePunchIn(data));
                     }
                   },
                   error => {

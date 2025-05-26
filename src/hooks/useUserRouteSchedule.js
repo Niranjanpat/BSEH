@@ -31,6 +31,7 @@ const useUserRouteSchedule = () => {
           setHasMore(data.has_more);
           if (page === 1) {
             setUserRouteSchedules(data.route_schedules);
+            console.log('user route schedules', data.route_schedules);
           } else {
             setUserRouteSchedules(
               userRouteSchedules.concat(data.route_schedules),

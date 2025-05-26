@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, {useEffect, useState, memo} from 'react';
+import React, {useEffect, useRef, useState, memo} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {View, StyleSheet} from 'react-native';
 import {Button, Text, Avatar, IconButton} from 'react-native-paper';
@@ -8,6 +8,8 @@ import {useSelector} from 'react-redux';
 import {COLORS} from '../constants/theme/colors';
 import MapplsIntouch from 'mappls-intouch-react-native';
 import {ROUTES} from '../constants/routes';
+import ListModal from './ListModal';
+import {getDataFromMmkv, setDataInMmkv} from '../store/MMKVStore';
 
 const WelcomeMessage = () => {
   const hourOfDay = dayjs().format('H');
@@ -15,7 +17,15 @@ const WelcomeMessage = () => {
     useSelector(state => state.auth);
   const [greeting, setGreeting] = useState('Good Morning');
   const navigation = useNavigation();
-
+  const presentRef = useRef();
+  const absentRef = useRef();
+  const [channel, setChannel] = useState(null);
+  const [selection, setSelection] = useState(null);
+  useEffect(() => {
+    const attendance = getDataFromMmkv('Attendance') || null;
+    console.log('attendance', attendance);
+    setSelection('Present');
+  }, []);
   useEffect(() => {
     generateGreetings();
     trackingOn();
@@ -98,16 +108,80 @@ const WelcomeMessage = () => {
           styles.row,
           {justifyContent: 'flex-end', alignItems: 'flex-end'},
         ]}>
-        <Button
-          onPress={() => navigation.navigate('AttendanceScreen')}
-          icon={() => (
-            <Icon name="calendar-check" size={20} color={COLORS.light} />
-          )}
-          mode="contained">
-          <Text style={{fontSize: 12, fontWeight: 'bold', color: COLORS.light}}>
-            Take attendance
-          </Text>
-        </Button>
+        {selection === null && (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <>
+              <Button
+                onPress={() => {
+                  setChannel('Present');
+                  presentRef.current?.showList(true);
+                }}
+                mode="contained">
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                    color: COLORS.light,
+                  }}>
+                  Mark as Present
+                </Text>
+              </Button>
+              <ListModal
+                channel={channel}
+                setSelection={setSelection}
+                ref={presentRef}
+              />
+            </>
+            <>
+              <Button
+                onPress={() => {
+                  setChannel('Absent');
+                  absentRef.current?.showList(true);
+                }}
+                mode="contained">
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                    color: COLORS.light,
+                  }}>
+                  Mark as Absent
+                </Text>
+              </Button>
+              <ListModal
+                channel={channel}
+                ref={absentRef}
+                setSelection={setSelection}
+              />
+            </>
+          </View>
+        )}
+        {selection === 'Present' && (
+          <Button
+            onPress={() => navigation.navigate('AttendanceScreen')}
+            icon={() => (
+              <Icon name="calendar-check" size={20} color={COLORS.light} />
+            )}
+            mode="contained">
+            <Text
+              style={{fontSize: 12, fontWeight: 'bold', color: COLORS.light}}>
+              Take attendance
+            </Text>
+          </Button>
+        )}
+        {selection === 'Absent' && (
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{color: 'black', fontWeight: 'bold'}}>Status :</Text>
+            <Text style={{color: 'black'}}>
+              {getDataFromMmkv('AbsentReason')}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );

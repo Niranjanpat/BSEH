@@ -1,18 +1,19 @@
 export const URLS = {
   // base: 'http://182.18.155.185/ruchi-soya-nutrition/api/', //test
   // base: 'http://182.18.142.47/ruchi-soya-nutrition/api/', //live
-  base: 'http://182.18.142.21/ruchi-soya-nutrition/api/', //local test
+  base: 'http://182.18.142.21/divya-prakashan/api/', //local test
 
   login: 'users/login',
   profile: 'users/profile',
   errorLog: 'error-logs',
-  customer: 'customers/',
+  customerToday: 'customers/',
+  customer: 'customers/today',
   customerVisits: 'customer-visits',
   lastVisits: 'latest-customer-visits',
   orderSummary: 'order-summary',
   topProducts: 'top-products',
   attendanceStatus: 'attendances/punch-status',
-  attendancePuchIn: 'attendances/punch-in',
+  attendancePunchIn: 'attendances/punch-in',
   attendancePunchOut: 'attendances/punch-out',
   attendance: 'attendances/',
   todaysOrder: 'user-performance/today-orders',
@@ -82,6 +83,17 @@ export const URLS = {
 
   //monthly travel
   monthlyAttendanceTravel: 'attendances/monthly',
+  //divya prakshan
+  present: 'daily-attendances/present-reasons',
+  absent: 'daily-attendances/absent-reasons',
+  markPresent: 'daily-attendances/mark-present',
+  markAbsent: 'daily-attendances/mark-absent',
+  workType: 'attendances/work-type',
+  vehicleType: 'attendances/vehicle-type',
+  dailyAllowance: 'attendances/daily-allowance',
+  punchStatus: 'attendances/punch-status',
+  status: 'daily-attendances/status',
+  attendanceMonthly: '/daily-attendances/monthly',
 };
 
 export const clientId =

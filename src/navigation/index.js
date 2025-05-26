@@ -36,7 +36,7 @@ export default function AppNavigation() {
       if (isAndroid) {
         const isDevModeOn = await JailMonkey.isDevelopmentSettingsMode();
 
-        if (isDevModeOn) {
+        if (false) {
           Alert.alert(
             'Dev mode on',
             'Your mobile device has developer option enabled. \n Please turn the option off and restart the app in order to continue.',

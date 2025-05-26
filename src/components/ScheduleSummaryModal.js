@@ -90,7 +90,7 @@ const ScheduleSummaryModal = ({visible = false, onClose = () => {}}) => {
                   latitude: position.coords.latitude,
                   longitude: position.coords.longitude,
                 };
-                dispatch(attendancePunchOut(data));
+               // dispatch(attendancePunchOut(data));
                 onClose(false);
               },
               error => {

@@ -1,31 +1,14 @@
-import {URLS} from '../constants/urls';
-import client from './axios_client';
+import {URLS} from '../../../constants/urls';
+import client from '../../../services/axios_client';
 
-// get all customers and also there is remaining to add the pagination 
+// user profile api
 export const getRetailer = async () => {
   return await client.get(URLS.customer);
 };
-//get all customers with pagination
-// export const getRetailer = async (page) => {
-//   return await client.get(URLS.customer, { params: {page, start_date, end_date, status}})
-// }
 
-//get customer detail by id
-export const getRetailerDetailById = async id => {
-  return await client.get(`${URLS.customer}/${id}`);
-}
-
-export const getTodayRetailer= async () =>{
-  return await client.get(URLS.customerToday);
-}
-
-
-//create customer api :-working 
 export const addShop = async data => {
   return await client.post(URLS.customer, data);
 };
-
-//update customer api :- working
 export const editShop = async (data, id) => {
   return await client.put(URLS.customer + id, data);
 };
