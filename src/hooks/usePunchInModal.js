@@ -4,10 +4,10 @@ import {Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
 import {getWorkType, getVehicleType} from '../services/punch_service';
-import {attendancePunchIn} from '../store/actions/auth';
+import {attendancePunchIn, storeAttendanceLoading} from '../store/actions/auth';
 import useLocationPermission from '../utils/useLocationPermission';
 
-const usePunchInModal = (hideModal) => {
+const usePunchInModal = () => {
   const dispatch = useDispatch();
   const [startKm, setStartKm] = useState('');
   const [image, setImage] = useState(null);
@@ -15,6 +15,7 @@ const usePunchInModal = (hideModal) => {
   const [workTypeSelected, setWorkTypeSelected] = useState(null);
   const [workType, setWorkType] = useState([]);
   const [vehicleType, setVehicleType] = useState([]);
+  const [remark, setRemark] = useState('');
   const [requestLocationPermission] = useLocationPermission();
   const longitude = useRef(null);
   const latitude = useRef(null);
@@ -53,36 +54,49 @@ const usePunchInModal = (hideModal) => {
     }
   };
 
-  const onSubmit = () => {
+  const onSubmit = async (isRemark) => {
+    if (isRemark) {
+      if (!remark || !workTypeSelected || !vehicleTypeSelected) {
+        Alert.alert('Error', 'Please fill all fields');
+        return;
+      }  
+    } else {
+      if (!image || !startKm || !workTypeSelected || !vehicleTypeSelected) {
+        Alert.alert('Error', 'Please fill all fields and select an image.');
+        return;
+      }
+    }
+    dispatch(storeAttendanceLoading(true));
     Geolocation.getCurrentPosition(
       position => {
         latitude.current = position.coords.latitude;
         longitude.current = position.coords.longitude;
 
         const formData = new FormData();
-        formData.append('punch_in_photo', {
-          uri: image,
-          type: 'image/jpeg',
-          name: 'punchin.jpeg',
-        });
+        if (image) {
+          formData.append('punch_in_photo', {
+            uri: image,
+            type: 'image/jpeg',
+            name: 'punchin.jpeg',
+          });
+        }
         formData.append('longitude', longitude.current);
         formData.append('latitude', latitude.current);
         formData.append('work_type', workTypeSelected);
         formData.append('vehicle_type', vehicleTypeSelected);
-        formData.append('start_km', startKm);
-
-        if (!image || !startKm || !workTypeSelected || !vehicleTypeSelected) {
-          Alert.alert('Error', 'Please fill all fields and select an image.');
-          return;
+        if (isRemark) {
+          formData.append('remarks', remark);
+        } else {
+          formData.append('start_vehicle_km', startKm);
         }
 
         dispatch(attendancePunchIn(formData));
-        hideModal();
-
         resetForm();
       },
       error => {
         console.error('Geolocation error:', error);
+        dispatch(storeAttendanceLoading(false));
+        Alert.alert('Location', 'Check your location service is enable.');
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
@@ -107,6 +121,8 @@ const usePunchInModal = (hideModal) => {
     workType,
     vehicleType,
     onSubmit,
+    setRemark,
+    remark,
   };
 };
 

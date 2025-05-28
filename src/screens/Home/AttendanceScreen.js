@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, {useEffect,useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Appbar,
@@ -12,7 +12,6 @@ import {View, StyleSheet, FlatList, TextInput, Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import PunchInModal from '../../components/PunchInModal';
 import PunchOutModal from '../../components/PunchOutModal';
- 
 
 import {
   attendancePunchIn,
@@ -24,11 +23,10 @@ import useLocationPermission from '../../utils/useLocationPermission';
 import ScheduleSummaryModal from '../../components/ScheduleSummaryModal';
 import {COLORS} from '../../constants/theme/colors';
 
-
-const AttendanceScreen = ({navigation}) => { 
+const AttendanceScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const punchInRef= useRef(null);
-  const punchOutRef=useRef(null);
+  const punchInRef = useRef(null);
+  const punchOutRef = useRef(null);
 
   const {attendanceStatus, attendanceList, attendanceLoading, role} =
     useSelector(state => state.auth);
@@ -57,10 +55,10 @@ const AttendanceScreen = ({navigation}) => {
           onPress={() => navigation.navigate('AttendanceDetail')}
         />
       </Appbar.Header>
-        
+
       <View style={styles.attendanceBox}>
-      <PunchInModal  ref={punchInRef} ></PunchInModal> 
-        <PunchOutModal ref={punchOutRef} ></PunchOutModal> 
+        <PunchInModal ref={punchInRef}></PunchInModal>
+        <PunchOutModal ref={punchOutRef}></PunchOutModal>
         <Subheading style={styles.dateText}>
           {dayjs().format('YYYY MMM DD')}
         </Subheading>
@@ -72,47 +70,25 @@ const AttendanceScreen = ({navigation}) => {
             <Switch
               style={styles.switchStyle}
               onValueChange={_ => {
-                dispatch(storeAttendanceLoading(true));
-                Geolocation.getCurrentPosition(
-                  position => {
-                    var data = {
-                      latitude: position.coords.latitude,
-                      longitude: position.coords.longitude,
-                    };
-                    if (attendanceStatus) {
-                      if (customerVisitStatus.status) {
-                        Alert.alert(
-                          'Check out pending',
-                          'Please check out from the customer in order to punch out.',
-                        );
-                        dispatch(storeAttendanceLoading(false));
-                        return;
-                      }
-
-                      if (role === 'kam' || role === 'sales-officer') {
-                        dispatch(storeAttendanceLoading(false));
-                        setIsSummaryVisible(true);
-                        return;
-                      }
-                       punchOutRef.current.showPunchOut(true);
-                    // dispatch(attendancePunchOut(data));
-                    } else 
-                    {
-                     
-                      punchInRef.current.showPunchIn(true);
-                      //dispatch(attendancePunchIn(data));
-                    }
-                  },
-                  error => {
+                if (attendanceStatus) {
+                  if (customerVisitStatus.status) {
+                    Alert.alert(
+                      'Check out pending',
+                      'Please check out from the customer in order to punch out.',
+                    );
                     dispatch(storeAttendanceLoading(false));
-                    console.log(error.code, error.message);
-                  },
-                  {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 10000,
-                  },
-                );
+                    return;
+                  }
+
+                  if (role === 'kam' || role === 'sales-officer') {
+                    dispatch(storeAttendanceLoading(false));
+                    setIsSummaryVisible(true);
+                    return;
+                  }
+                  punchOutRef.current.showPunchOut(true);
+                } else {
+                  punchInRef.current.showPunchIn(true);
+                }
               }}
               value={attendanceStatus}
             />

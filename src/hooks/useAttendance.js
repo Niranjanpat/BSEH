@@ -1,17 +1,22 @@
 import {useRef, useState} from 'react';
 import {Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {getAbsentReason, getPresentReason, saveMarkPresent, saveMarkAbsent} from '../services/punch_service'; // Adjust paths
+import {
+  getAbsentReason,
+  getPresentReason,
+  saveMarkPresent,
+  saveMarkAbsent,
+  getAttendanceStatus,
+} from '../services/punch_service'; // Adjust paths
 import {ROUTES} from '../constants/routes'; // Adjust path
 import {useNavigation} from '@react-navigation/native';
-import {getDataFromMmkv, setDataInMmkv} from '../store/MMKVStore'; // Adjust path
 
 export const useAttendance = () => {
   const navigation = useNavigation();
   const latitude = useRef(null);
   const longitude = useRef(null);
   const [data, setData] = useState([]);
-  const [loading, setLoading]= useState(false);
+  const [loading, setLoading] = useState(false);
 
   const getAbsentReasons = () => {
     setLoading(true);
@@ -29,8 +34,7 @@ export const useAttendance = () => {
       })
       .finally(() => {
         setLoading(false);
-      }
-    );  
+      });
   };
 
   const getPresentReasons = () => {
@@ -46,19 +50,18 @@ export const useAttendance = () => {
       })
       .catch(e => {
         console.log('getPresentReasons', e);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    );
+      });
   };
 
-  const markPresent = (attendanceData, hideModal, channel,setSelection) => {
+  const markPresent = (attendanceData, hideModal, channel, setSelection) => {
     setLoading(true);
     saveMarkPresent(attendanceData)
       .then(res => {
         const {data, errors, success} = res.data;
         if (success) {
-          setDataInMmkv('Attendance', channel);
           setSelection(channel);
           navigation.navigate(ROUTES.attendance);
           hideModal();
@@ -68,20 +71,24 @@ export const useAttendance = () => {
       })
       .catch(e => {
         console.log('markPresent', e);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    );
+      });
   };
 
-  const markAbsent = (attendanceData, hideModal,channel,setSelection,selectedOption) => {
+  const markAbsent = (
+    attendanceData,
+    hideModal,
+    channel,
+    setSelection,
+    selectedOption,
+  ) => {
     setLoading(true);
     saveMarkAbsent(attendanceData)
       .then(res => {
         const {data, errors, success} = res.data;
         if (success) {
-          setDataInMmkv('Attendance', channel);
-          setDataInMmkv('AbsentReason', selectedOption);
           setSelection(channel);
           navigation.navigate(ROUTES.attendance);
           hideModal();
@@ -91,13 +98,30 @@ export const useAttendance = () => {
       })
       .catch(e => {
         console.log('markAbsent', e);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    );
+      });
   };
 
-  const onSubmit = (hideModal,channel,setSelection,selectedOption) => {
+  const checkAttendanceStatus = async (setSelection) => {
+    setLoading(true);
+    getAttendanceStatus().then(res => {
+      const {data, errors, success} = res.data;
+        if (success) {
+          setSelection(data?.status);
+        }
+    })
+    .catch(e => {
+      console.log('attendance status', e);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  }
+
+  const onSubmit = (hideModal, channel, setSelection, selectedOption) => {
+    setLoading(true);
     Geolocation.getCurrentPosition(
       position => {
         latitude.current = position.coords.latitude;
@@ -105,6 +129,7 @@ export const useAttendance = () => {
 
         if (!selectedOption) {
           Alert.alert('Please select an option');
+          setLoading(false);
           return;
         }
 
@@ -115,13 +140,20 @@ export const useAttendance = () => {
         };
 
         if (channel === 'Present') {
-          markPresent(attendanceData, hideModal,channel,setSelection);
+          markPresent(attendanceData, hideModal, channel, setSelection);
         } else {
-          markAbsent(attendanceData, hideModal, channel,setSelection,selectedOption);
+          markAbsent(
+            attendanceData,
+            hideModal,
+            channel,
+            setSelection,
+            selectedOption,
+          );
         }
       },
       error => {
         console.error('Geolocation error:', error);
+        setLoading(false);
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
@@ -133,12 +165,9 @@ export const useAttendance = () => {
     getAbsentReasons,
     getPresentReasons,
     onSubmit,
+    checkAttendanceStatus,
   };
 };
-
-
-
-
 
 //   const getAbsentReasons = () => {
 //     getAbsentReason()
@@ -169,8 +198,6 @@ export const useAttendance = () => {
 //         console.log('getPresentReasons', e);
 //       });
 //   };
-
-
 
 //   const markPresent = data => {
 //     saveMarkPresent(data)
@@ -214,8 +241,6 @@ export const useAttendance = () => {
 //       });
 //   };
 
-
-
 //     const onSubmit = () => {
 //       Geolocation.getCurrentPosition(
 //         position => {
@@ -242,7 +267,7 @@ export const useAttendance = () => {
 //         },
 //         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
 //       );
-  
+
 //       if (longitude.current && latitude.current && selectedOption) {
 //         console.log(longitude.current, latitude.current, selectedOption);
 //       }

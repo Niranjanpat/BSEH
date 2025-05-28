@@ -1,5 +1,6 @@
 import {URLS} from '../constants/urls';
 import client from './axios_client';
+import clientMultipart from './axios_multipart_client';
 //login api
 export const login = async (email, password, deviceInfo) => {
   console.log('deviceInfo', deviceInfo);
@@ -37,11 +38,13 @@ export const attendanceList = async date => {
 };
 
 export const punchIn = async data => {
-  return await client.post(URLS.attendancePunchIn, data);
+  console.log('request -', data);
+  
+  return await clientMultipart.post(URLS.attendancePunchIn, data);
 };
 export const punchOut = async (data) => {
   console.log('punchOut-data', data);
-  return await client.post(URLS.attendancePunchOut, data);
+  return await clientMultipart.post(URLS.attendancePunchOut, data);
 };
 
 export const getMonthlyAttendanceTravel = async (year, month) => {
@@ -49,6 +52,15 @@ export const getMonthlyAttendanceTravel = async (year, month) => {
     params: {
       year,
       month,
+    },
+  });
+};
+
+export const getMonthlyAttendance = async (year, month) => {
+  return await client.get(URLS.attendanceMonthly, {
+    params: {
+      year: year,
+      month: month,
     },
   });
 };
