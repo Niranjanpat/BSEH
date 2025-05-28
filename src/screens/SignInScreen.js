@@ -40,9 +40,9 @@ const SignInScreen = ({navigation}) => {
   const [isPwdHidden, setIsPwdHidden] = useState(true);
 
   const getDeviceInfo = async () => {
-    deviceInfo.current.deviceId ='inbsjcg767321';// await DeviceInfo.getUniqueId();
-    deviceInfo.current.deviceVersion ='M0'; //DeviceInfo.getSystemVersion();
-    deviceInfo.current.deviceName = '10' ;//await DeviceInfo.getDeviceName();
+    deviceInfo.current.deviceId =await DeviceInfo.getUniqueId();
+    deviceInfo.current.deviceVersion =DeviceInfo.getSystemVersion();
+    deviceInfo.current.deviceName = await DeviceInfo.getDeviceName();
   };
 
   useEffect(() => {

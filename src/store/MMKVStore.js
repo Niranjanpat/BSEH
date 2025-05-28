@@ -16,7 +16,7 @@ export const getDataFromMmkv = (key) => {
   const today = new Date().toISOString().split('T')[0];
 
   if (date !== today) {
-    mmkv.delete(key); // Invalidate
+   // mmkv.delete(key); // Invalidate
     return null;
   }
 

@@ -11,6 +11,7 @@ export const addRouteSchedule = async data => {
   return await client.post(URLS.routeSchedules, data);
 };
 
+//i have doubt in this api
 export const getRouteScehduleDetails = async id => {
   return await client.get(`${URLS.routeSchedules}/${id}`);
 };

@@ -154,7 +154,7 @@ export default function BottomTabStack({navigation}) {
               }}
               component={JWMyVisitsNavigation}
             />
-          )}
+          )} */}
 
           {role == 'asm' && (
             <Screen
