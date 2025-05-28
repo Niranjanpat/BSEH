@@ -139,7 +139,7 @@ const SettingScreen = ({navigation}) => {
                 right={props => <List.Icon {...props} icon="chevron-right" />}
               />
             )}
-
+{/* 
             {role !== 'promoter' && (
               <>
                 <Divider />
@@ -248,6 +248,19 @@ const SettingScreen = ({navigation}) => {
           title="Monthly Travel Distance"
           onPress={() => {
             navigation.navigate(ROUTES.monthly_attendance_travel);
+          }}
+          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
+          right={props => <List.Icon {...props} icon="chevron-right" />}
+        />
+
+       <Divider />
+        <Divider />
+
+        <List.Item
+          style={styles.list}
+          title="Add Expenses"
+          onPress={() => {
+            navigation.navigate(ROUTES.add_expenses);
           }}
           left={props => <List.Icon {...props} icon="calendar-month-outline" />}
           right={props => <List.Icon {...props} icon="chevron-right" />}

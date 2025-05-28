@@ -2,13 +2,29 @@ import {URLS} from '../constants/urls';
 import client from './axios_client';
 
 // get all customers and also there is remaining to add the pagination 
-export const getRetailer = async () => {
-  return await client.get(URLS.customer);
-};
+// export const getRetailer = async () => {
+//   return await client.get(URLS.customer);
+// };
 //get all customers with pagination
-// export const getRetailer = async (page) => {
-//   return await client.get(URLS.customer, { params: {page, start_date, end_date, status}})
-// }
+export const getRetailer = async (
+  routeId,
+  filterData,
+  assignee,
+  page,
+  contactNumber,
+  name,
+) => {
+  return await client.get(URLS.customer, {
+    params: {
+      route_id: routeId,
+      ...filterData,
+      assignee,
+      page,
+      name,
+      owner_contact_number: contactNumber,
+    },
+  });
+};
 
 //get customer detail by id
 export const getRetailerDetailById = async id => {

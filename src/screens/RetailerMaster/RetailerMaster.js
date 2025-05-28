@@ -1,77 +1,215 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {Text, List, Searchbar, Caption, IconButton} from 'react-native-paper';
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  Text,
+  List,
+  Searchbar,
+  Caption,
+  IconButton,
+  ActivityIndicator,
+} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import BeatModal from '../../components/BeatModal';
+import BeatModal from '../../components/retailer_master/BeatModal';
 import {ROUTES} from '../../constants/routes';
 import {SPACINGS} from '../../constants/theme';
 import {COLORS} from '../../constants/theme/colors';
-import {getRetailerList} from '../../store/actions/retailer';
+import {getRetailerList, storeRetailerList} from '../../store/actions/retailer';
+import {getBeatList, getRetailer} from '../../services/retailer_services';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const RetailerMaster = ({navigation}) => {
-  const {retailerList} = useSelector(state => state.retailer);
-  const [data, setData] = useState([]);
+const Filter = lazy(
+  () => import('../../components/retailer_master/RetailerMasterFilter'),
+);
+
+const RetailerMaster = ({navigation, route}) => {
+  const {retailerFilterData} = useSelector(state => state.retailer);
+  const [retailerList, setRetailerList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [selectedBeat, setSelectedBeat] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
+  const [beat, setBeat] = useState([]);
+  const [isPending, startTransition] = useTransition();
+  const [keyboardType, setKeyboardType] = useState('default');
+  const refreshCount = useRef(false);
+  const selectedAssignee = useRef('');
+  const page = useRef(0);
+  const searchbarRef = useRef(null);
+  const hasMore = useRef(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let result = [];
-    if (query.length > 0) {
-      result = retailerList.filter(e =>
-        e.name?.toUpperCase().includes(query.toUpperCase()),
-      );
-      setSearchResult(result);
-      return;
+    refreshCount.current = route.params?.refreshCount || false;
+    if (refreshCount.current) {
+      fetchRetailers();
+      refreshCount.current = false;
     }
-    setSearchResult(result);
-  }, [query]);
+  }, [route.params?.refreshCount]);
 
   useEffect(() => {
-    if (selectedBeat == '') {
-      setData(retailerList);
-    } else {
-      let dataList = retailerList.filter(cat => cat.route_id === selectedBeat);
-      setData(dataList);
-    }
-  }, [selectedBeat]);
+    getBeat();
+  }, []);
+
+  useEffect(() => {
+    page.current = 0;
+    fetchRetailers();
+  }, [selectedBeat, retailerFilterData]);
+
+  const fetchRetailers = () => {
+    // dispatch(getRetailerList(selectedBeat, retailerFilterData, selectedAssignee.current));
+
+    setLoading(true);
+    const currentPage = page.current + 1;
+    getRetailer(
+      selectedBeat,
+      retailerFilterData,
+      selectedAssignee.current,
+      currentPage,
+      keyboardType === 'numeric' ? query : undefined,
+      keyboardType === 'default' ? query : undefined,
+    )
+      .then(res => {
+        const {data, errors, success} = res.data;
+        if (success) {
+          page.current = currentPage;
+          if (page.current === 1) {
+            setRetailerList(data.customers);
+          } else {
+            setRetailerList([...retailerList, ...data.customers]);
+          }
+          // dispatch(storeRetailerList(data.customers));
+          hasMore.current = data.has_more;
+        } else {
+          if (errors) {
+            Alert.alert('Error!', Object.values(errors).join(', '));
+          }
+        }
+      })
+      .catch(e => {
+        console.log('getRetailerList', e);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const setSelectedBeatValue = useCallback(beatId => {
+    startTransition(() => {
+      setVisible(false);
+      setSelectedBeat(beatId);
+    });
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <IconButton
-          icon="filter-variant"
-          onPress={() => {
-            setVisible(true);
-          }}
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <IconButton
+            icon="filter-variant"
+            style={{margin: 0}}
+            onPress={() => {
+              setVisible(true);
+            }}
+          />
+
+          <Suspense fallback={<ActivityIndicator />}>
+            <Filter />
+          </Suspense>
+        </View>
       ),
     });
   }, []);
+
+  const getBeat = () => {
+    getBeatList(false)
+      .then(async res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setBeat(data.routes);
+
+          console.log(data?.routes);
+        }
+      })
+      .catch(e => {
+        Alert.alert(e);
+      });
+  };
+
+  const handleChange = e => {
+    setQuery(e);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      page.current = 0;
+      fetchRetailers();
+    }, 500);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [query]);
+
+  const handleKeyboardType = () => {
+    setKeyboardType(prevType =>
+      prevType === 'numeric' ? 'default' : 'numeric',
+    );
+    searchbarRef.current.value = '';
+    searchbarRef.current.focus();
+  };
+
   return (
     <>
       <Searchbar
         style={styles.searchbar}
-        onChangeText={setQuery}
-        placeholder="Search retailer by name"
+        onChangeText={handleChange}
+        placeholder={`Search retailer by ${keyboardType === 'numeric' ? 'mobile number' : 'name'}`}
+        right={() => (
+          <TouchableOpacity onPress={handleKeyboardType}>
+            <Icon
+              name="card-account-phone-outline"
+              size={24}
+              color={keyboardType === 'numeric' ? COLORS.primary : 'gray'}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        )}
+        keyboardType={keyboardType}
+        ref={searchbarRef}
       />
+     
       <View style={styles.container}>
         <FlatList
           onRefresh={() => {
-            dispatch(getRetailerList());
+            page.current = 0;
+            fetchRetailers();
             setQuery('');
           }}
-          data={query.length > 0 ? searchResult : data}
-          refreshing={isLoading}
+          data={retailerList}
+          refreshing={loading}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => {
-            return <Text>No iTem</Text>;
+            return <Text style={{alignSelf: 'center'}}>No item</Text>;
           }}
           keyExtractor={(item, _) => item._id}
+          onEndReached={() => {
+            if (!loading && hasMore.current) {
+              fetchRetailers();
+            }
+          }}
           renderItem={({item, index}) => {
             return (
               <List.Item
@@ -82,6 +220,8 @@ const RetailerMaster = ({navigation}) => {
                   navigation.navigate(ROUTES.retailer_detail, {
                     data: item,
                     title: item.name,
+                    refreshCount: refreshCount.current,
+                    showButtons: true,
                   });
                 }}
                 description={props => (
@@ -122,9 +262,10 @@ const RetailerMaster = ({navigation}) => {
       </View>
       <BeatModal
         visible={visible}
-        setValue={setSelectedBeat}
+        setValue={setSelectedBeatValue}
         onDismiss={setVisible}
         value={selectedBeat}
+        beat={beat}
       />
     </>
   );
@@ -149,6 +290,9 @@ const styles = StyleSheet.create({
   listRight: {
     flexDirection: 'row',
     alignSelf: 'center',
+  },
+  icon: {
+    marginRight: 20,
   },
   chip: {
     backgroundColor: COLORS.accentPrimary,

@@ -57,6 +57,7 @@ import OrderCartIcon from '../components/OrderCartIcon';
 import MonthlyTravelDistance from '../screens/Settings/MonthlyTravelDistance';
 import MonthlyAttendanceList from '../components/attendance/MonthlyAttendanceList';
 import MonthAttendanceScreen from '../screens/Settings/MonthlyAttendanceScreen';
+import AddExpensesScreen from '../screens/AddExpensesScreen';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -159,6 +160,11 @@ export const SettingsStackNavigation = () => {
         name={ROUTES.user_route_schedule_list}
         component={UserRouteScheduleListScreen}
         options={{title: 'User Route Schedules', headerShown: true}}
+      />
+       <SettingsStack.Screen
+        name={ROUTES.add_expenses}
+        component={AddExpensesScreen}
+        options={{title: 'AddExpenses', headerShown: true}}
       />
     </SettingsStack.Navigator>
   );
