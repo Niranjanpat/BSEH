@@ -6,7 +6,7 @@ import {
   Text,
   ScrollView,
   Alert,
-  Pressable
+  Pressable,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button} from 'react-native-paper';
@@ -15,22 +15,24 @@ import MyDropdown from '../components/DropDown';
 import DatePicker from 'react-native-date-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {requestCameraPermission} from '../utils/useCameraPermission';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 
 const AddExpensesScreen = () => {
-
-  useEffect(() => { 
+  useEffect(() => {
     const checkCameraPermission = async () => {
       const granted = await requestCameraPermission();
       if (granted) {
         console.log('Camera permission granted');
       } else {
-        Alert.alert('Camera permission denied', 'Please enable camera permission in settings.');
+        Alert.alert(
+          'Camera permission denied',
+          'Please enable camera permission in settings.',
+        );
       }
     };
     checkCameraPermission();
-  }, []); 
-
+  }, []);
 
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -66,7 +68,6 @@ const AddExpensesScreen = () => {
       imageUri: image,
     };
     console.log('Submitted Data:', data);
-
   };
 
   const handleOpenCamera = () => {
@@ -107,30 +108,30 @@ const AddExpensesScreen = () => {
 
   return (
     <ScrollView>
-      <View style={{flexDirction:'column',gap:10}}>
-      <View style={styles.container}>
-        <Pressable onPress={() => setOpen(true)}>  
-        <Text style={styles.label}>Date</Text>
-        <TextInput
-          value={dayjs(date).format('DD MMMM YYYY')}
-          editable={false}
-          style={styles.input}
-          label="Date"
-        />
-      </Pressable>
-      <DatePicker
-        date={date}
-        modal
-        open={open}
-        mode="date"
-        onCancel={() => setOpen(false)}
-        onConfirm={date => {
-          setOpen(false);
-          setDate(date);
-        }}
-      />
-      </View>
-       
+      <View style={{flexDirction: 'column'}}>
+        <View style={styles.container}>
+          <Pressable onPress={() => setOpen(true)}>
+            <Text style={styles.label}>Date</Text>
+            <TextInput
+              value={dayjs(date).format('DD MMMM YYYY')}
+              editable={false}
+              style={styles.input}
+              label="Date"
+            />
+          </Pressable>
+          <DatePicker
+            date={date}
+            modal
+            open={open}
+            mode="date"
+            onCancel={() => setOpen(false)}
+            onConfirm={date => {
+              setOpen(false);
+              setDate(date);
+            }}
+          />
+        </View>
+
         <MyDropdown
           selectedOption={expireTypeSelected}
           channel="Expire Type"
@@ -153,7 +154,7 @@ const AddExpensesScreen = () => {
         <View style={styles.container}>
           <Text style={styles.label}>Details</Text>
           <TextInput
-            style={[styles.input,{height: 150, textAlignVertical: 'top'}]}
+            style={[styles.input, {height: 150, textAlignVertical: 'top'}]}
             placeholder="Details"
             placeholderTextColor="#888"
             keyboardType="text"
@@ -174,44 +175,59 @@ const AddExpensesScreen = () => {
             onChangeText={setExtra}
           />
         </View>
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-         <Button mode="contained" onPress={handleOpenCamera} style={styles.closeButton}>
-          Open Camera
-        </Button>
-          <View style={{height: 10}} />
-           <Button mode="contained" onPress={handleOpenGallery} style={styles.closeButton}>
-          Pick from Gallery
-        </Button>
-          {image && (
-            <Image
-              source={{uri: image}}
-              style={{width: 200, height: 200, marginTop: 20, borderRadius: 10}  }
-            />
-          )}
+        <View>
+          {image && <Image source={{uri: image}} style={styles.image} />}
+          <View style={styles.imageContainer}>
+            <Button
+            mode="contained"
+            onPress={handleOpenCamera}
+            icon={() => <Icon name="photo-camera" size={20} color="#fff" />}
+            style={styles.imageButton}
+            contentStyle={{paddingVertical: 2, flexDirection: 'row-reverse'}}>
+            Open Camera
+          </Button>
+
+          <Button
+            mode="contained"
+            onPress={handleOpenGallery}
+            icon={() => <Icon name="photo-library" size={20} color="#fff" />}
+            style={styles.imageButton}
+            contentStyle={{paddingVertical: 2, flexDirection: 'row-reverse'}}>
+            Pick from Gallery
+          </Button>
+          </View>
+          
         </View>
-        <Button mode="contained" onPress={onSubmit} style={styles.closeButton}>
-          Submit
-        </Button>
+        <View style={[styles.container, {marginBottom: 20}]}>
+          <Button
+            mode="contained"
+            onPress={onSubmit}
+            style={[styles.closeButton]}>
+            Submit
+          </Button>
+        </View>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    backgroundColor: 'white',
+  imageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 20,
-    marginHorizontal: 20,
+  },
+  imageButton: {
     borderRadius: 10,
-    maxHeight: '90%',
-    gap: 10,
   },
   closeButton: {
     color: COLORS.primary,
-    margin: 20,
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
   },
   label: {
     fontSize: 16,
@@ -229,12 +245,21 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#f9f9f9',
   },
-   inputDate: {
+  inputDate: {
     marginVertical: 10,
     backgroundColor: COLORS.light,
     borderRadius: 8,
     borderColor: '#aaa',
     borderWidth: 1,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginVertical: 5,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    alignSelf: 'center',
   },
 });
 

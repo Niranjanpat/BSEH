@@ -27,7 +27,8 @@ const MyDropdown =({setSelectedOption ,selectedOption, item, channel}) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
   },
   label: {
     fontSize: 16,

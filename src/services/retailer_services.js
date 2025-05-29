@@ -1,5 +1,6 @@
 import {URLS} from '../constants/urls';
 import client from './axios_client';
+import clientMultipart from './axios_multipart_client';
 
 // get all customers and also there is remaining to add the pagination 
 // export const getRetailer = async () => {
@@ -38,7 +39,7 @@ export const getTodayRetailer= async () =>{
 
 //create customer api :-working 
 export const addShop = async data => {
-  return await client.post(URLS.customer, data);
+  return await clientMultipart.post(URLS.customerToday, data);
 };
 
 //update customer api :- working
@@ -71,8 +72,12 @@ export const getBeatList = async isMyVisits => {
   return await client.get(url);
 };
 
-export const getPinCodeList = async value => {
-  return await client.get(`pin-codes/search?term=${value}&page=1`);
+export const getBeatDetail = async id => {
+  return await client.get(`${URLS.route}/${id}`);
+}
+
+export const getPinCodeList = async (value,id)=> {
+  return await client.get(`pin-codes/search?page=1&city_id=${id}`);
 };
 
 export const getState = async () => {
