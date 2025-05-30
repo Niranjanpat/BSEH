@@ -39,12 +39,13 @@ export const getTodayRetailer= async () =>{
 
 //create customer api :-working 
 export const addShop = async data => {
-  return await clientMultipart.post(URLS.customerToday, data);
+  return await client.post(URLS.customer, data);
 };
 
 //update customer api :- working
 export const editShop = async (data, id) => {
-  return await client.put(URLS.customer + id, data);
+  console.log("form data",data,id);
+  return await clientMultipart.put(URLS.customerToday + id, data);
 };
 
 export const getCustomerTarget = async id => {
@@ -72,12 +73,9 @@ export const getBeatList = async isMyVisits => {
   return await client.get(url);
 };
 
-export const getBeatDetail = async id => {
-  return await client.get(`${URLS.route}/${id}`);
-}
-
-export const getPinCodeList = async (value,id)=> {
-  return await client.get(`pin-codes/search?page=1&city_id=${id}`);
+export const getPinCodeList = async( value ,id)=> {
+  console.log(value,id);
+  return await client.get(`pin-codes/search?term=${value}&page=1&city_id=${id}`);
 };
 
 export const getState = async () => {

@@ -17,32 +17,26 @@ export const getVehicleType = async () => {
   return await client.get(URLS.vehicleType);
 };
 
-export const getDailyAllowance=async ()=>{
-    return await client.get(URLS.dailyAllowance);
-}
-
-export const saveMarkPresent = async (data) => {
-  return await client.post(URLS.markPresent,data);
+export const getDailyAllowance = async () => {
+  return await client.get(URLS.dailyAllowance);
 };
 
-
-export const saveMarkAbsent = async (data) => {
-  return await client.post(URLS.markAbsent,data);
+export const saveMarkPresent = async data => {
+  return await client.post(URLS.markPresent, data);
 };
 
-export  const getMonthlyAttendanceTravel=async()=>{
-    return await client.get(URLS.attendanceMonthly,);
-}
+export const saveMarkAbsent = async data => {
+  return await client.post(URLS.markAbsent, data);
+};
 
-export const getAttendanceStatus = async () =>{
-    return await client.get(URLS.status);
-}
+export const getMonthlyAttendanceTravel = async () => {
+  return await client.get(URLS.attendanceMonthly);
+};
 
-export const getAttendance=async(date)=>{
-    return await client.get(URLS.attendance+'/'+date);
-}
+export const getAttendanceStatus = async () => {
+  return await client.get(URLS.status);
+};
 
-
-
-
-
+export const getAttendance = async date => {
+  return await client.get(URLS.attendance + '/' + date);
+};

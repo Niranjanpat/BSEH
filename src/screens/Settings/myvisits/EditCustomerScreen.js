@@ -1,66 +1,60 @@
+// AddShop.js
+import React, {useEffect, useState} from 'react';
+import {
+  PermissionsAndroid,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  Platform,
+  Image,
+  Alert,
+} from 'react-native';
+import {Button, Subheading, Text, TextInput} from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
 import {Formik} from 'formik';
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View, SafeAreaView} from 'react-native';
-import {Button, Subheading, Text, TextInput} from 'react-native-paper';
-import SearchableDropdown from 'react-native-searchable-dropdown';
+import Geolocation from 'react-native-geolocation-service';
+import {launchCamera} from 'react-native-image-picker';
+import ElementPicker from '../../../components/ElementPicker';
+
 import {COLORS} from '../../../constants/theme/colors';
 import {
   getBeatList,
   getCustomerClassList,
   getCustomerTypeList,
   getPinCodeList,
-  getCitiesList,
-  getCitiesDetail,
+  addShop,
+  getBeatDetail,
   editShop,
-  getState,
-  getCustomerActivityList,
 } from '../../../services/retailer_services';
+import {requestCameraPermission} from '../../../utils/useCameraPermission';
+
+// Helper Picker Component
+const FormPicker = ({label, selectedValue, items, onValueChange}) => (
+  <View style={styles.picker}>
+    <Picker selectedValue={selectedValue} onValueChange={onValueChange}>
+      <Picker.Item label={`Select ${label}`} value="" />
+      {items.map(item => (
+        <Picker.Item key={item._id} label={item.name} value={item._id} />
+      ))}
+    </Picker>
+  </View>
+);
 
 const EditCustomerScreen = ({navigation, route}) => {
   const data = route.params.data;
-  const initialValues = {
-    route_id: data.route_id,
-    name: data.name,
-    address: data.address,
-    customer_type_id: data.customer_type_id,
-    customer_class_id: data.customer_class_id,
-    customer_activity_category_id: data.customer_activity_category_id,
-    gst_number: data.gst_number,
-    owner_name: data.owner_name,
-    owner_email: data.owner_email,
-    owner_contact_number: data.owner_contact_number,
-    billing_address: data.billing_address,
-    billing_state_id: data.billing_state_id,
-    billing_district: data.billing_district,
-    billing_tehsil: data.billing_tehsil,
-    billing_pincode: data.billing_pincode,
-    billing_city: data.billing_city,
-    shipping_pincode: data.shipping_pincode,
-    shipping_city: data.shipping_city,
-    shipping_state_id: data.shipping_state_id,
-    shipping_district: data.shipping_district,
-    shipping_tehsil: data.shipping_tehsil,
-    shipping_address: data.shipping_address,
-    referred_by: data.referred_by,
-    town: data.town,
-  };
-
   const [beat, setBeat] = useState([]);
   const [shopClass, setShopClass] = useState([]);
   const [shopType, setShopType] = useState([]);
-  const [customerActivity, setCustomerActivity] = useState([]);
+  const [pinCodeList, setPinCodeList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState({});
-
-  const [state, setState] = useState([]);
+  const [beatDetail, setBeatDetail] = useState([]);
 
   useEffect(() => {
     getBeat();
-    getShopType();
     getShopClass();
-    getStateValue();
-    getCustomerActivity();
+    getShopType();
+    getPinCode('', data?.city_id);
   }, []);
 
   const getBeat = () => {
@@ -69,6 +63,30 @@ const EditCustomerScreen = ({navigation, route}) => {
         const {data, success, errors} = res.data;
         if (success) {
           setBeat(data.routes);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
+  const getPinCode = (text, id) => {
+    getPinCodeList(text, id)
+      .then(res => {
+        console.log('Pin codes fetched:', res.data);
+        setPinCodeList(res?.data?.data?.pin_codes || []);
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+  const getShopType = () => {
+    getCustomerTypeList()
+      .then(res => {
+        console.log(res.data);
+        const {data, success, errors} = res.data;
+        if (success) {
+          setShopType(data.customer_types);
         }
       })
       .catch(e => {
@@ -89,423 +107,408 @@ const EditCustomerScreen = ({navigation, route}) => {
       });
   };
 
-  const getShopType = () => {
-    getCustomerTypeList()
-      .then(res => {
-        const {data, success, errors} = res.data;
-        if (success) {
-          setShopType(data.customer_types);
-        }
-      })
-      .catch(e => {
-        alert(e);
-      });
+  const getCurrentLocation = async setFieldValue => {
+    if (Platform.OS === 'ios') {
+      Geolocation.requestAuthorization('always');
+    } else {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) return;
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setFieldValue('latitude', latitude);
+        setFieldValue('longitude', longitude);
+      },
+      error => console.log(error),
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
   };
 
-  const getStateValue = () => {
-    getState()
-      .then(res => {
-        const {data, success, errors} = res.data;
-        console.log('states', res.data);
-        if (success) {
-          setState(data.states);
+  const openCamera = async setFieldValue => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      Alert.alert(
+        'Permission Denied',
+        'Cannot open camera without permission.',
+      );
+      return;
+    }
+
+    launchCamera(
+      {
+        mediaType: 'photo',
+        cameraType: 'back',
+        quality: 0.5,
+        saveToPhotos: false,
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled camera');
+        } else if (response.errorCode) {
+          console.error('Camera error:', response.errorMessage);
+          Alert.alert('Camera Error', response.errorMessage);
+        } else {
+          const uri = response.assets[0].uri;
+          setFieldValue('image', uri);
         }
-      })
-      .catch(e => {
-        console.log(e);
-      });
+      },
+    );
   };
 
-  const getCustomerActivity = () => {
-    getCustomerActivityList()
-      .then(res => {
-        console.log(res.data);
-        const {data, success, errors} = res.data;
-        if (success) {
-          setCustomerActivity(data.customer_activity_categories);
-        }
-      })
-      .catch(e => {
-        alert(e);
-      });
+  const validateForm = values => {
+    const errors = {};
+    if (!values.route_id) errors.route_id = 'Beat is required';
+    if (!values.name) errors.name = 'Shop name is required';
+    if (!values.owner_name) errors.owner_name = 'Owner name is required';
+    if (!values.town) errors.town = 'Town is required';
+    if (!values.pin_code_id) errors.pin_code_id = 'Pin Code is required';
+    if (!values.customer_type_id) {
+      errors.customer_type_id = 'Shop type is required';
+    }
+    if (!values.customer_class_id) {
+      errors.customer_class_id = 'Shop class is required';
+    }
+
+    if (!values.address) {
+      errors.address = 'Address is required';
+    }
+    if (!values.owner_contact_number) {
+      errors.owner_contact_number = 'Contact number is required';
+    } else if (!/^[0-9]{10}$/.test(values.owner_contact_number)) {
+      errors.owner_contact_number = 'Enter a valid 10-digit number';
+    }
+    if (!values.image) {
+      errors.image = 'Image is required';
+    }
+    if (!values.longitude || !values.latitude) {
+      errors.longitude = 'Location is required';
+    }
+    return errors;
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.container}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={styles.container}>
       <SafeAreaView />
       <Formik
-        validateOnBlur={false}
-        validateOnChange={false}
-        initialValues={initialValues}
-        onSubmit={(values, {resetForm}) => {
+        initialValues={{
+          route_id: data.route_id || '',
+          name: data.name || '',
+          customer_type_id: data.customer_type_id || '',
+          customer_class_id: data.customer_class_id || '',
+          pin_code_id: data.pin_code_id || '',
+          divisions: '', // not present in data
+          gst_number: data.gst_number || '',
+          owner_name: data.owner_name || '',
+          owner_email: data.owner_email || '',
+          owner_contact_number: data.owner_contact_number || '',
+          owner_phone_number: data.owner_phone_number || '',
+          town: data.town || '',
+          latitude: data.latitude || '',
+          longitude: data.longitude || '',
+          image: null, // still null by default
+          city: data.city_name || '',
+          state: data.state_name || '',
+          district: data.district_name || '',
+          region: data.region_name || '',
+          address: data.address || '',
+        }}
+        onSubmit={(values, {resetForm, setErrors}) => {
+          const errors = validateForm(values);
+          if (Object.keys(errors).length) {
+            setErrors(errors);
+            return;
+          }
+          console.log(values.address);
+          const formData=new formData();
+          formData.append('address',values.address);
+          formData.append('customer_class_id',values.customer_class_id);
+          formData.append('customer_type_id',values.customer_type_id)
+          formData.append('owner_email',values.owner_email)
+          formData.append('gst_number',values.gst_number)
+          formData.append('latitude',values.latitude)
+          formData.append('longitude',values.longitude)
+          formData.append('owner_contact_number',values.owner_contact_number)
+          formData.append('pin_code_id',values.pin_code_id)
+          formData.append('town',values.town)
+          formData.append('photo', {
+            uri: values.image,
+            type: 'image/jpeg',
+            name: 'shop.jpeg',
+          });
+
           setIsLoading(true);
-          // var data = {
-          //   longitude: location.longitude,
-          //   latitude: location.latitude,
-          //   // billing_city_id: selectedCity._id,
-          //   // billing_pin_code_id: selectedPinCode._id,
-          // };
-          let temp = {
-            ...values,
-            // ...data,
-          };
-
-          console.log('post', temp);
-
-          editShop(temp, route.params.id)
+          editShop(formData, route.params.id)
             .then(res => {
-              const {data, errors, success} = res.data;
-
+              //   console.log('Add shop response:', res);
+              const {data, success, errors} = res.data;
               if (success) {
-                setIsLoading(false);
-                navigation.goBack();
-                alert('Customer is Successfully updated');
+                Alert.alert('Success', 'Customer updated successfully');
+                resetForm();
               } else {
-                // alert(JSON.stringify(errors));
-                console.log('edit shop', errors);
-                setError(errors);
+                console.log(errors);
+                setErrors(res.data.errors || {});
               }
             })
-            .catch(e => alert(e))
+            .catch(err => console.log(err))
             .finally(() => setIsLoading(false));
         }}>
-        {({handleChange, handleBlur, handleSubmit, values, errors}) => (
+        {({
+          handleChange,
+          handleSubmit,
+          setFieldValue,
+          values,
+          errors,
+          touched,
+        }) => (
           <View>
-            <Subheading style={styles.label}>Shop Information</Subheading>
-            <View style={styles.picker}>
-              <Picker
-                selectedValue={values.route_id}
-                dropdownIconColor= 'black'
-                style={{color:'black'}}
-                mode="dropdown"
-                onValueChange={handleChange('route_id')}>
-                <Picker.Item label="Select Beat (Required)" value="" />
-                {beat.map(item => (
-                  <Picker.Item
-                    key={item._id}
-                    label={item.name}
-                    value={item._id}
-                  />
-                ))}
-              </Picker>
-            </View>
-            {error.route_id && (
-              <Text style={styles.errorText}>{error.route_id}</Text>
-            )}
+            <Subheading style={{color: COLORS.accentPrimary}}>
+              Shop Information
+            </Subheading>
             <TextInput
               style={styles.input}
-              value={values.name}
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              error={error.name ? true : false}
-              label="Shop Name (Required)"
+              label="Route"
+              value={data.route_name}
               mode="outlined"
-              readOnly
+              editable={false}
             />
-            {error.name && <Text style={styles.errorText}>{error.name}</Text>}
+
             <TextInput
               style={styles.input}
+              label="Divisions"
+              value={values.divisions}
+              onChangeText={handleChange('divisions')}
+              mode="outlined"
+              editable={false}
+            />
+
+            <TextInput
+              style={styles.input}
+              label="Shop Name"
+              value={values.name}
+              // onChangeText={handleChange('name')}
+              editable={false}
+              mode="outlined"
+            />
+            <TextInput
+              style={styles.input}
+              label="Owner Name"
               value={values.owner_name}
               onChangeText={handleChange('owner_name')}
-              onBlur={handleBlur('owner_name')}
-              label="Owner Name (Required)"
-              error={error.owner_name ? true : false}
               mode="outlined"
             />
-            {error.owner_name && (
-              <Text style={styles.errorText}>{error.owner_name}</Text>
+
+            <FormPicker
+              label="Shop Type"
+              selectedValue={values.customer_type_id}
+              items={shopType}
+              onValueChange={value => setFieldValue('customer_type_id', value)}
+            />
+            {errors.customer_type_id && (
+              <Text style={styles.errorText}>{errors.customer_type_id}</Text>
             )}
-            <View style={styles.picker}>
-              <Picker
-                selectedValue={values.customer_type_id}
-                onBlur={handleBlur('customer_type_id')}
-                mode="dropdown"
-                dropdownIconColor='black'
-                style={{color:'black'}}
-                onValueChange={handleChange('customer_type_id')}>
-                <Picker.Item label="Select Shop Type" value="" />
-                {shopType.map(item => (
-                  <Picker.Item
-                    key={item._id}
-                    label={item.name}
-                    value={item._id}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <View style={styles.picker}>
-              <Picker
-                selectedValue={values.customer_class_id}
-                mode="dropdown"
-                dropdownIconColor='black'
-                style={{color:'black'}}
-                onBlur={handleBlur('customer_class_id')}
-                onValueChange={handleChange('customer_class_id')}>
-                <Picker.Item label="Select Shop CLass" value="" />
-                {shopClass.map(item => (
-                  <Picker.Item
-                    key={item._id}
-                    label={item.name}
-                    value={item._id}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <View style={styles.picker}>
-              <Picker
-                selectedValue={values.customer_activity_category_id}
-                mode="dropdown"
-                dropdownIconColor='black'
-                style={{color:'black'}}
-                onBlur={handleBlur('customer_activity_category_id')}
-                onValueChange={handleChange('customer_activity_category_id')}>
-                <Picker.Item label="Select Customer Activity" value="" />
-                {customerActivity.map(item => (
-                  <Picker.Item
-                    key={item._id}
-                    label={item.name}
-                    value={item._id}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <Subheading style={styles.label}>Contact Information</Subheading>
+
+            <FormPicker
+              label="Shop Class"
+              selectedValue={values.customer_class_id}
+              items={shopClass}
+              onValueChange={value => setFieldValue('customer_class_id', value)}
+            />
+            {errors.customer_class_id && (
+              <Text style={styles.errorText}>{errors.customer_class_id}</Text>
+            )}
+
+            <Subheading style={{marginVertical: 10}}>
+              Contact Information
+            </Subheading>
+
             <TextInput
               style={styles.input}
+              error={!!errors.location}
+              value={
+                values.latitude && values.longitude
+                  ? `${values.latitude}, ${values.longitude}`
+                  : ''
+              }
+              editable={false}
+              label="GPS Location"
+              mode="outlined"
+              right={
+                <TextInput.Icon
+                  icon="map-marker-radius-outline"
+                  onPress={() => getCurrentLocation(setFieldValue)}
+                />
+              }
+            />
+            {errors.longitude && errors.latitude && (
+              <Text style={styles.errorText}>{errors.longitude}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              label="GST Number"
               value={values.gst_number}
               onChangeText={handleChange('gst_number')}
-              label="GST number"
-              maxLength={15}
               mode="outlined"
-              keyboardType="number-pad"
-              error={error.gst_number ? true : false}
             />
-            {error.gst_number && (
-              <Text style={styles.errorText}>{error.gst_number}</Text>
-            )}
+
             <TextInput
               style={styles.input}
+              label="Address"
+              value={values.address}
+              onChangeText={handleChange('address')}
+              mode="outlined"
+              error={!!errors.address}
+            />
+            {errors.address && (
+              <Text style={styles.errorText}>{errors.address}</Text>
+            )}
+
+            <ElementPicker
+              data={pinCodeList}
+              value="_id"
+              label="name"
+              placeholder="Search pin code"
+              searchPlaceholder="Search by number"
+              onClearPress={() => setFieldValue('pin_code_id', '')}
+              selectedValue={values.pin_code_id}
+              iconName="email-newsletter"
+              onValueSelect={item => setFieldValue('pin_code_id', item?._id)}
+              onChangeText={text => {
+                if (text === '') {
+                  return;
+                }
+                getPinCode(text);
+              }}
+            />
+            {errors.pin_code_id && (
+              <Text style={styles.errorText}>{errors.pin_code_id}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              label="Town"
               value={values.town}
               onChangeText={handleChange('town')}
-              label="Town"
-              maxLength={15}
               mode="outlined"
-              error={error.town ? true : false}
+              error={!!errors.town}
             />
-            {error.town && <Text style={styles.town}>{error.town}</Text>}
+            {errors.town && <Text style={styles.errorText}>{errors.town}</Text>}
+
             <TextInput
               style={styles.input}
+              label="Contact Number"
               value={values.owner_contact_number}
-              onBlur={handleBlur('owner_contact_number')}
               onChangeText={handleChange('owner_contact_number')}
               keyboardType="phone-pad"
-              label="Contact Number (Required)"
               maxLength={10}
               mode="outlined"
-              error={error.owner_contact_number ? true : false}
+              editable={false}
             />
-            {error.owner_contact_number && (
-              <Text style={styles.errorText}>{error.owner_contact_number}</Text>
-            )}
+
             <TextInput
               style={styles.input}
+              label="Phone Number"
+              value={values.owner_phone_number}
+              onChangeText={handleChange('owner_phone_number')}
+              keyboardType="phone-pad"
+              maxLength={10}
+              mode="outlined"
+              error={!!errors.owner_phone_number}
+            />
+            {errors.owner_phone_number && (
+              <Text style={styles.errorText}>{errors.owner_phone_number}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              label="Email"
               value={values.owner_email}
-              onBlur={handleBlur('owner_email')}
               onChangeText={handleChange('owner_email')}
               keyboardType="email-address"
-              label="Email Id (Required)"
               mode="outlined"
-              error={errors.owner_email || error.owner_email ? true : false}
+              error={!!errors.owner_email}
             />
-            {(errors.owner_email || error.owner_email) && (
-              <Text style={styles.errorText}>
-                {errors.owner_email || error.owner_email}
-              </Text>
+            {errors.owner_email && (
+              <Text style={styles.errorText}>{errors.owner_email}</Text>
             )}
-            <TextInput
-              style={styles.input}
-              value={values.referred_by}
-              onBlur={handleBlur('referred_by')}
-              onChangeText={handleChange('referred_by')}
-              label="Referred by"
-              mode="outlined"
-              error={errors.referred_by || error.referred_by ? true : false}
-            />
-            {(errors.referred_by || error.referred_by) && (
-              <Text style={styles.errorText}>
-                {errors.referred_by || error.referred_by}
-              </Text>
-            )}
-            <Subheading style={styles.label}>Primary Address</Subheading>
 
-            <View style={styles.picker}>
-              <Picker
-                selectedValue={values.billing_state_id}
-                dropdownIconColor='black'
-                style={{color:'black'}}
-                onBlur={handleBlur('billing_state_id')}
-                mode="dropdown"
-                onValueChange={handleChange('billing_state_id')}>
-                <Picker.Item label="Select State" value="" />
-                {state.map(item => (
-                  <Picker.Item
-                    key={item._id}
-                    label={item.name}
-                    value={item._id}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <TextInput
-              style={styles.input}
-              value={values.billing_pincode}
-              onChangeText={handleChange('billing_pincode')}
-              onBlur={handleBlur('billing_pincode')}
-              error={error.billing_pincode ? true : false}
-              label="Pin Code"
-              mode="outlined"
-            />
-
-            {(errors.billing_pincode || error.billing_pincode) && (
-              <Text style={styles.errorText}>
-                {errors.billing_pincode || error.billing_pincode}
-              </Text>
-            )}
+            <Subheading style={{color: COLORS.accentPrimary}}>
+              Address Details
+            </Subheading>
 
             <TextInput
               style={styles.input}
-              value={values.billing_city}
-              onChangeText={handleChange('billing_city')}
-              onBlur={handleBlur('billing_city')}
-              error={error.billing_city ? true : false}
               label="City"
+              value={values.city}
+              onChangeText={handleChange('city')}
               mode="outlined"
+              error={!!errors.city}
+              editable={false}
             />
+            {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
 
-            {(errors.billing_city || error.billing_city) && (
-              <Text style={styles.errorText}>
-                {errors.billing_city || error.billing_city}
-              </Text>
+            <TextInput
+              style={styles.input}
+              label="State"
+              value={values.state}
+              onChangeText={handleChange('state')}
+              mode="outlined"
+              editable={false}
+            />
+            {errors.state && (
+              <Text style={styles.errorText}>{errors.state}</Text>
             )}
 
             <TextInput
               style={styles.input}
-              //value={cityDetail.district}
-              value={values.billing_district}
-              onChangeText={handleChange('billing_district')}
-              onBlur={handleBlur('billing_district')}
-              error={error.billing_district ? true : false}
               label="District"
+              value={values.district}
+              onChangeText={handleChange('district')}
               mode="outlined"
+              editable={false}
             />
-            {error.billing_district && (
-              <Text style={styles.errorText}>{error.billing_district}</Text>
+            {errors.district && (
+              <Text style={styles.errorText}>{errors.district}</Text>
             )}
 
             <TextInput
               style={styles.input}
-              //value={cityDetail.region}
-              value={values.billing_tehsil}
-              onChangeText={handleChange('billing_tehsil')}
-              onBlur={handleBlur('billing_tehsil')}
-              label="Tehsil "
+              label="Region"
+              value={values.region}
+              onChangeText={handleChange('region')}
               mode="outlined"
+              editable={false}
             />
-            <TextInput
-              style={styles.input}
-              value={values.billing_address}
-              onBlur={handleBlur('billing_address')}
-              onChangeText={handleChange('billing_address')}
-              label="Address"
-              mode="outlined"
-            />
-            <Subheading style={styles.label}>Shipping Address</Subheading>
-            <View style={styles.picker}>
-              <Picker
-                selectedValue={values.shipping_state_id}
-                onBlur={handleBlur('shipping_state_id')}
-                dropdownIconColor='black'
-                style={{color:'black'}}
-                mode="dropdown"
-                onValueChange={handleChange('shipping_state_id')}>
-                <Picker.Item label="Select State" value="" />
-                {state.map(item => (
-                  <Picker.Item
-                    key={item._id}
-                    label={item.name}
-                    value={item._id}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <TextInput
-              style={styles.input}
-              value={values.shipping_pincode}
-              onChangeText={handleChange('shipping_pincode')}
-              onBlur={handleBlur('shipping_pincode')}
-              error={error.shipping_pincode ? true : false}
-              label="Pin Code"
-              mode="outlined"
-            />
-
-            {(errors.shipping_pincode || error.shipping_pincode) && (
-              <Text style={styles.errorText}>
-                {errors.shipping_pincode || error.shipping_pincode}
-              </Text>
+            {errors.region && (
+              <Text style={styles.errorText}>{errors.region}</Text>
             )}
 
-            <TextInput
-              style={styles.input}
-              value={values.shipping_city}
-              onChangeText={handleChange('shipping_city')}
-              onBlur={handleBlur('shipping_city')}
-              error={error.shipping_city ? true : false}
-              label="City"
-              mode="outlined"
-            />
-
-            {(errors.shipping_city || error.shipping_city) && (
-              <Text style={styles.errorText}>
-                {errors.shipping_city || error.shipping_city}
-              </Text>
+            {values.image && (
+              <Image
+                source={{uri: values.image}}
+                style={{
+                  width: '100%',
+                  height: 200,
+                  borderRadius: 10,
+                  marginTop: 10,
+                }}
+              />
             )}
 
-            <TextInput
-              style={styles.input}
-              //value={cityDetail.district}
-              value={values.shipping_district}
-              onChangeText={handleChange('shipping_district')}
-              onBlur={handleBlur('shipping_district')}
-              error={error.shipping_district ? true : false}
-              label="District"
+            <Button
               mode="outlined"
-            />
-            {error.shipping_district && (
-              <Text style={styles.errorText}>{error.shipping_district}</Text>
+              onPress={() => openCamera(setFieldValue)}
+              style={{marginVertical: 10}}>
+              Take Photo
+            </Button>
+            {errors.image && (
+              <Text style={styles.errorText}>{errors.image}</Text>
             )}
 
-            <TextInput
-              style={styles.input}
-              //value={cityDetail.region}
-              value={values.shipping_tehsil}
-              onChangeText={handleChange('shipping_tehsil')}
-              onBlur={handleBlur('shipping_tehsil')}
-              label="Tehsil"
-              mode="outlined"
-            />
-
-            {error.shipping_tehsil && (
-              <Text style={styles.errorText}>{error.shipping_tehsil}</Text>
-            )}
-
-            <TextInput
-              style={styles.input}
-              value={values.shipping_address}
-              onBlur={handleBlur('shipping_address')}
-              onChangeText={handleChange('shipping_address')}
-              label="Address"
-              mode="outlined"
-            />
             <Button
               disabled={isLoading}
               style={styles.btn}
@@ -522,6 +525,7 @@ const EditCustomerScreen = ({navigation, route}) => {
 };
 
 export default EditCustomerScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -533,8 +537,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   picker: {
-    width: '100%',
-    border: 1,
     backgroundColor: 'white',
     borderRadius: 10,
     marginTop: 10,
@@ -545,6 +547,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: COLORS.error,
+    marginLeft: 5,
+    fontSize: 12,
   },
   btn: {
     marginBottom: 25,

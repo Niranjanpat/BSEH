@@ -212,7 +212,8 @@ const AddShop = () => {
 
           // Append all simple fields
           Object.entries(filteredValues).forEach(([key, value]) => {
-            if (key === 'image' && value) {
+            if (key === 'image' && value){
+              console.log("values",value);
               formData.append('photo', {
                 uri: value.uri,
                 type: 'image/jpeg',
