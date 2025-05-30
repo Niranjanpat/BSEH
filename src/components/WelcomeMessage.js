@@ -19,7 +19,7 @@ import {useAttendance} from '../hooks/useAttendance';
 
 const WelcomeMessage = () => {
   const hourOfDay = dayjs().format('H');
-  const {profile, attendanceStatus, jointStatus, role, travelDistance} =
+  const {profile, attendanceStatus, jointStatus, role} =
     useSelector(state => state.auth);
   const [greeting, setGreeting] = useState('Good Morning');
   const navigation = useNavigation();
@@ -92,9 +92,9 @@ const WelcomeMessage = () => {
                 color={attendanceStatus ? COLORS.success : COLORS.error}
               />
             </Text>
-            <Text style={styles.status}>
+            {/* <Text style={styles.status}>
               Travel Distance:{` ${travelDistance} KM`}
-            </Text>
+            </Text> */}
           </View>
         </View>
 

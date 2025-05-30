@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {
@@ -63,7 +63,7 @@ export const useAttendance = () => {
         const {data, errors, success} = res.data;
         if (success) {
           setSelection(channel);
-          navigation.navigate(ROUTES.attendance);
+          navigation.navigate(ROUTES.attendance, {openPunchIn: true});
           hideModal();
         } else {
           Alert.alert('Error!', Object.values(errors || {}).join(', '));
@@ -104,21 +104,22 @@ export const useAttendance = () => {
       });
   };
 
-  const checkAttendanceStatus = async (setSelection) => {
+  const checkAttendanceStatus = async setSelection => {
     setLoading(true);
-    getAttendanceStatus().then(res => {
-      const {data, errors, success} = res.data;
+    getAttendanceStatus()
+      .then(res => {
+        const {data, errors, success} = res.data;
         if (success) {
           setSelection(data?.status);
         }
-    })
-    .catch(e => {
-      console.log('attendance status', e);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-  }
+      })
+      .catch(e => {
+        console.log('attendance status', e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const onSubmit = (hideModal, channel, setSelection, selectedOption) => {
     setLoading(true);
@@ -162,6 +163,7 @@ export const useAttendance = () => {
   return {
     data,
     loading,
+    setData,
     getAbsentReasons,
     getPresentReasons,
     onSubmit,

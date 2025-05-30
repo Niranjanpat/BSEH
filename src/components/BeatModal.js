@@ -1,14 +1,41 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {Button, Dialog, RadioButton, Title} from 'react-native-paper';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {
+  Button,
+  IconButton,
+  Modal,
+  Portal,
+  RadioButton,
+  Title,
+} from 'react-native-paper';
 import {getBeatList} from '../services/retailer_services';
+import {useNavigation} from '@react-navigation/native';
 
-const BeatModal = ({isMyVisits, visible, value, setValue, onDismiss}) => {
+const BeatModal = ({isMyVisits, value, setValue}) => {
+  const [visible, setVisible] = useState(false);
   const [beat, setBeat] = useState([]);
+  const [loading, setLoading] = useState([]);
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="filter-variant"
+          onPress={() => {
+            setVisible(true);
+          }}
+        />
+      ),
+    });
+  }, []);
+
   useEffect(() => {
     getBeat();
   }, []);
+
   const getBeat = () => {
+    setLoading(true);
     getBeatList(isMyVisits)
       .then(res => {
         const {data, success, errors} = res.data;
@@ -18,36 +45,43 @@ const BeatModal = ({isMyVisits, visible, value, setValue, onDismiss}) => {
       })
       .catch(e => {
         alert(e);
-      });
+      })
+      .finally(() => setLoading(false));
   };
+
   return (
-    <Dialog
-      visible={visible}
-      style={styles.container}
-      onDismiss={() => onDismiss(false)}>
-      <Dialog.Title>Select Beat</Dialog.Title>
-      <Dialog.Content style={[styles.container]}>
+    <Portal>
+      <Modal
+        visible={visible}
+        style={styles.container}
+        onDismiss={() => setVisible(false)}>
+        <Title>Select Beat</Title>
+
         <RadioButton.Group onValueChange={setValue} value={value}>
           <RadioButton.Item label="All Beat" value="" />
-          <FlatList
-            data={beat}
-            keyExtractor={(item, _) => item._id}
-            contentContainerStyle={{paddingBottom: 15}}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            removeClippedSubviews={false}
-            renderItem={({item}) => {
-              return <RadioButton.Item label={item.name} value={item._id} />;
-            }}
-          />
+          <ScrollView
+            style={{height: 300}}
+            showsVerticalScrollIndicator={false}>
+            <FlatList
+              scrollEnabled={false}
+              data={beat}
+              keyExtractor={(item, _) => item._id}
+              keyboardShouldPersistTaps="handled"
+              removeClippedSubviews={false}
+              renderItem={({item}) => {
+                return <RadioButton.Item label={item.name} value={item._id} />;
+              }}
+            />
+          </ScrollView>
         </RadioButton.Group>
-      </Dialog.Content>
-      <Dialog.Actions>
-        <Button style={{margin: 10}} onPress={() => onDismiss(false)}>
+        <Button
+          mode="contained"
+          style={{margin: 10}}
+          onPress={() => setVisible(false)}>
           Done
         </Button>
-      </Dialog.Actions>
-    </Dialog>
+      </Modal>
+    </Portal>
   );
 };
 
@@ -55,8 +89,11 @@ export default BeatModal;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    overflow: 'hidden',
-    marginVertical: 10,
+    backgroundColor: 'white',
+    marginHorizontal: 20,
+    padding: 20,
+    borderRadius: 10,
+    height: '60%',
+    marginTop: '40%',
   },
 });

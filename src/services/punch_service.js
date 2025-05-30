@@ -6,7 +6,7 @@ export const getPresentReason = async () => {
 };
 
 export const getAbsentReason = async () => {
-  return await client.get(URLS.present);
+  return await client.get(URLS.absent);
 };
 
 export const getWorkType = async () => {

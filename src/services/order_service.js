@@ -1,8 +1,9 @@
-import {URLS} from '../constants/urls';
+import {clientId, URLS} from '../constants/urls';
 import client from './axios_client';
+import clientMultipart from './axios_multipart_client';
 
 export const CustomerCheckIn = async location => {
-  return await client.post(URLS.customerCheckIn, location);
+  return await clientMultipart.post(URLS.customerCheckIn, location);
 };
 
 export const CustomerCheckOut = async location => {

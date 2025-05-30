@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, StyleSheet, View} from 'react-native';
+import {Alert, FlatList, Image, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {Appbar, Subheading, Text, TextInput} from 'react-native-paper';
+import {Appbar, Divider, Subheading, Text, TextInput} from 'react-native-paper';
 import {COLORS} from '../../../constants/theme/colors';
 import {attendanceList} from '../../../services/auth_service';
 import DateMonthSelector from '../../../components/attendance/DateMonthSelector';
@@ -49,8 +49,12 @@ const AttendanceDetail = ({navigation}) => {
       />
       <View style={styles.attendanceBox}>
         <View style={styles.attendanceContainer}>
-          <Text style={styles.text}>Punch Out</Text>
-          <Text style={styles.text}>Punch In</Text>
+          <Text variant="titleMedium" style={styles.text}>
+            Punch In
+          </Text>
+          <Text variant="titleMedium" style={styles.text}>
+            Punch Out
+          </Text>
         </View>
         <View style={styles.attendanceListContainer}>
           <FlatList
@@ -61,13 +65,52 @@ const AttendanceDetail = ({navigation}) => {
             keyExtractor={item => '' + item._id}
             renderItem={({item}) => {
               return (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                  }}>
-                  <Text>{item.punch_in_time}</Text>
-                  <Text>{item.punch_out_time}</Text>
+                <View style={{paddingBottom: 8}}>
+                  <View style={styles.listItemContainer}>
+                    <View style={styles.listItem}>
+                      <Image
+                        source={{uri: item.punch_in_photo_path}}
+                        style={styles.listItemImage}
+                      />
+                      <View style={{flex: 1}}>
+                        <Text>{item.punch_in_time}</Text>
+                        <Text
+                          style={{flexWrap: 'wrap'}}
+                          numberOfLines={2}
+                          ellipsizeMode="tail">
+                          Reading: {item.start_vehicle_km}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.listItem}>
+                      <Image
+                        source={{uri: item.punch_out_photo_path}}
+                        style={styles.listItemImage}
+                      />
+                      <View style={{flex: 1}}>
+                        <Text>{item.punch_out_time}</Text>
+                        <Text
+                          style={{flexWrap: 'wrap'}}
+                          numberOfLines={2}
+                          ellipsizeMode="tail">
+                          Reading: {item.end_vehicle_km}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <Text variant="labelMedium">
+                    Vehicle Type: {item.vehicle_type?.toUpperCase()}
+                  </Text>
+                  <Text variant="labelMedium">
+                    Total Distance: {item.total_vehicle_km} KMs
+                  </Text>
+                  <Divider
+                    style={{
+                      backgroundColor: COLORS.primary,
+                      height: 1,
+                      marginTop: 2,
+                    }}
+                  />
                 </View>
               );
             }}
@@ -90,21 +133,38 @@ const styles = StyleSheet.create({
   text: {
     marginTop: 5,
     color: COLORS.accentPrimary,
+    flex: 1,
   },
   attendanceListContainer: {
-    width: '90%',
+    width: '95%',
     borderRadius: 5,
     marginTop: 10,
     backgroundColor: '#fff',
-    paddingVertical: 10,
+    padding: 10,
     justifyContent: 'center',
   },
   attendanceContainer: {
-    width: '90%',
+    width: '95%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: 10,
+  },
+  listItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+    flex: 1,
+  },
+  listItemImage: {
+    height: 60,
+    width: 60,
+    borderRadius: 10,
+    marginEnd: 8,
+    resizeMode: 'cover',
   },
 });

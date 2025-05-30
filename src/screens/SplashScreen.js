@@ -31,14 +31,12 @@ const SplashScreen = () => {
       dispatch(storeRole(role));
       dispatch(storeToken(token));
       dispatch(getProfileDetail());
-      if (role == 'sales-officer' || role == 'kam') {
+      if (role == 'asm' || role == 'sc') {
         dispatch(getRetailerList());
       } else {
         dispatch(fetchJointWorkStatus());
       }
 
-      if (role === 'promoter') {
-      }
       dispatch(getAttendanceStatus());
       dispatch(initOrderCart());
     }

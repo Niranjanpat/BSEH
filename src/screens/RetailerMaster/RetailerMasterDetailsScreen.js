@@ -36,7 +36,11 @@ import {getRetailerList} from '../../store/actions/retailer';
 import CustomerTarget from '../../components/CustomerTarget';
 import {getCustomerTarget} from '../../services/retailer_services';
 import {ROUTES} from '../../constants/routes';
-import { setCustomerForOrderOnCall, setHideCheckoutAfterOrderPlaces } from '../../store/actions/order';
+import {
+  setCustomerForOrderOnCall,
+  setHideCheckoutAfterOrderPlaces,
+} from '../../store/actions/order';
+import LoadingView from '../../components/LoadingView';
 
 const MyVisitDetailsScreen = ({route, navigation}) => {
   const {data, title} = route.params;
@@ -48,6 +52,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const [visitLogVisible, setVisitLogVisible] = useState(false);
   const [topSellingVisible, setTopSellingVisible] = useState(false);
   const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
   const [requestLocationPermission] = useLocationPermission();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -62,6 +67,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   }, []);
 
   async function fetchCustomerDetails() {
+    setLoadingDetails(true);
     const url = URLS.customer + data._id;
     try {
       const res = await client.get(url);
@@ -73,6 +79,8 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       }
     } catch (error) {
       console.log('fetchCustomerDetails:::', error.toString());
+    } finally {
+      setLoadingDetails(false);
     }
   }
   const fetchCustomerTarget = () => {
@@ -143,7 +151,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         <Title numberOfLines={1}>{data.name}</Title>
         <Caption>{data.owner_contact_number}</Caption>
       </View>
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         {data.is_active ? (
           <Button
             mode="contained"
@@ -164,7 +172,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             Activate
           </Button>
         )}
-      </View>
+      </View> */}
 
       <View style={styles.detailsContainer}>
         <ScrollView
@@ -176,6 +184,15 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           <Subheading>Shop Info:</Subheading>
           <Divider />
           <VerticalSpacer />
+          <View style={styles.row}>
+            <Text style={styles.detailsTitle}>SAP Code</Text>
+            <Text> : </Text>
+            {customer?.sap_code ? (
+              <Text style={styles.detailsValue}>{customer?.sap_code}</Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
           <View style={styles.row}>
             <Text style={styles.detailsTitle}>Town</Text>
             <Text> : </Text>
@@ -206,6 +223,17 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             )}
           </View>
           <View style={styles.row}>
+            <Text style={styles.detailsTitle}>Division</Text>
+            <Text> : </Text>
+            {customer?.division_names ? (
+              <Text style={styles.detailsValue}>
+                {customer?.division_names}
+              </Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
+          <View style={styles.row}>
             <Text style={styles.detailsTitle}>Owner's name</Text>
             <Text> : </Text>
             {customer?.owner_name ? (
@@ -214,7 +242,6 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
           </View>
-
           <View style={styles.row}>
             <Text style={styles.detailsTitle}>Email</Text>
             <Text> : </Text>
@@ -234,34 +261,37 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Billing address</Text>
+            <Text style={styles.detailsTitle}>Address</Text>
             <Text> : </Text>
-            {customer?.billing_address ? (
-              <Text style={styles.detailsValue}>
-                {customer?.billing_address}
-              </Text>
+            {customer?.address ? (
+              <Text style={styles.detailsValue}>{customer?.address}</Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Distributor Code</Text>
+            <Text style={styles.detailsTitle}>Region</Text>
             <Text> : </Text>
-            {customer?.distributor_code ? (
-              <Text style={styles.detailsValue}>
-                {customer?.distributor_code}
-              </Text>
+            {customer?.region_name ? (
+              <Text style={styles.detailsValue}>{customer?.region_name}</Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Distributor Name</Text>
+            <Text style={styles.detailsTitle}>District</Text>
             <Text> : </Text>
-            {customer?.distributor_name ? (
-              <Text style={styles.detailsValue}>
-                {customer?.distributor_name}
-              </Text>
+            {customer?.district_name ? (
+              <Text style={styles.detailsValue}>{customer?.district_name}</Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.detailsTitle}>State</Text>
+            <Text> : </Text>
+            {customer?.state_name ? (
+              <Text style={styles.detailsValue}>{customer?.state_name}</Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
@@ -282,7 +312,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             </View>
           </View> */}
 
-          <Divider />
+          {/* <Divider />
           <VerticalSpacer />
           <Subheading>More options:</Subheading>
           <ScrollView
@@ -315,8 +345,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 <Text>products</Text>
               </Card.Content>
             </Card>
-          </ScrollView>
+          </ScrollView> */}
         </ScrollView>
+        {loadingDetails && <LoadingView />}
       </View>
 
       <LastTenVisitsModal
@@ -406,7 +437,7 @@ const styles = StyleSheet.create({
 
   detailsTitle: {
     ...TYPOGRAPHY.caption,
-    width: size.width * 0.30,
+    width: size.width * 0.3,
     color: COLORS.accentSecondary,
   },
 

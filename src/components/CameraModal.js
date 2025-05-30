@@ -1,15 +1,13 @@
 import {StyleSheet, Image, View} from 'react-native';
-import React, {
-  useEffect,
-} from 'react';
+import React, {useEffect, useState} from 'react';
 import {launchCamera} from 'react-native-image-picker';
 import {Button} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
 import {requestCameraPermission} from '../utils/useCameraPermission';
 
-const CameraModal =({setImage,image}) => {
+const CameraModal = ({buttonText = 'Odometer', onImageSelect}) => {
+  const [image, setImage] = useState('');
 
-  console.log("cameramodal",image);
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -40,6 +38,7 @@ const CameraModal =({setImage,image}) => {
         } else {
           const uri = response.assets[0].uri;
           setImage(uri);
+          onImageSelect(uri);
         }
       },
     );
@@ -49,49 +48,55 @@ const CameraModal =({setImage,image}) => {
     <View style={styles.container}>
       {!image ? (
         <Button
-          mode="contained"
+          mode="text"
           onPress={() => {
             openCamera();
           }}
           style={styles.closeButton}>
-          Take Odometer Photo
+          Take {buttonText} Photo
         </Button>
       ) : (
         <>
-          <View style={{alignItems: 'center'}}>
-            <Image
-              source={{uri: image}}
-              style={styles.imagePreview}
-              textColor="black"
-            />
-          </View>
+          <Image
+            source={{uri: image}}
+            style={styles.imagePreview}
+            textColor="black"
+          />
           <Button
-            mode="contained"
+            mode="text"
             onPress={() => {
               openCamera();
             }}
             style={styles.closeButton}>
-            Retake Odometer Photo
+            Retake {buttonText} Photo
           </Button>
         </>
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    // paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 250,
+    marginVertical: 10,
+    borderRadius: 10,
+    borderColor: '#aaa',
+    borderWidth: 1,
   },
   closeButton: {
     color: COLORS.primary,
     alignContent: 'center',
+    position: 'absolute',
   },
   imagePreview: {
-    width: 250,
-    height: 250,
-    marginVertical: 20,
-    borderRadius: 10,
+    width: '100%',
+    height: 248,
+    borderRadius: 8,
   },
 });
 

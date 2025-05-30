@@ -84,7 +84,7 @@ const SignInScreen = ({navigation}) => {
           dispatch(storeRole(data.role));
           dispatch(storeToken(data.token));
           dispatch(getProfileDetail());
-          if (data.role == 'sales-officer' || data.role == 'kam') {
+          if (data.role == 'asm' || data.role == 'sc') {
             dispatch(getRetailerList());
           } else {
             dispatch(fetchJointWorkStatus());
