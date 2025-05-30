@@ -229,11 +229,11 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   };
   async function fetchCustomerDetails() {
     setLoadingDetails(true);
-    const url = URLS.customer + data._id;
+    const url = URLS.customerToday + data._id;
     try {
       const res = await client.get(url);
       const {data, errors, success} = res.data;
-      console.log(res.data);
+     // console.log(res.data);
 
       if (success) {
         setCustomer(data);
