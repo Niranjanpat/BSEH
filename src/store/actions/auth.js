@@ -92,12 +92,10 @@ export const getAttendanceList = () => {
   };
 };
 export const attendancePunchIn = data => {
-  console.log('punch_in', data);
   return async dispatch => {
     dispatch(storeAttendanceLoading(true));
     punchIn(data)
       .then(res => {
-        //  console.log("success",res);
         const {data, errors, success} = res.data;
         
         if (success) {
@@ -112,13 +110,13 @@ export const attendancePunchIn = data => {
             },
           });
           MapplsIntouch.getCurrentLocationUpdate();
-        } else {
+        } else if (errors) {
+          Alert.alert('Error!', Object.values(errors).join(', '));
+          dispatch(storeAttendanceLoading(false));
         }
       })
       .catch(e => {
         console.log('punch-in error - ', e);
-      })
-      .finally(() => {
         dispatch(storeAttendanceLoading(false));
       });
   };
@@ -154,7 +152,6 @@ export const attendancePunchOut = (data) => {
 };
 
 export const getAttendanceStatus = () => {
-  console.log('called');
   return async dispatch => {
     attendanceStatus()
       .then(res => {
@@ -164,11 +161,17 @@ export const getAttendanceStatus = () => {
           dispatch(storeAttendanceStatus(data.status));
           dispatch(storeTravelDistance(data.distance_travel));
         } else {
+          if (errors) {
+            Alert.alert('Error!', Object.values(errors).join(', '));
+          }
         }
       })
       .catch(e => {
         console.log('getAttendanceStatus', e);
         // Alert.alert('getAttendanceStatus', e);
+      })
+      .finally(() => {
+        dispatch(storeAttendanceLoading(false));
       });
   };
 };

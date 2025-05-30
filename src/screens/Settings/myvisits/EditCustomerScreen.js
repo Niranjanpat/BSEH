@@ -222,7 +222,6 @@ const EditCustomerScreen = ({navigation, route}) => {
             setErrors(errors);
             return;
           }
-          console.log(values.address);
           const formData=new formData();
           formData.append('address',values.address);
           formData.append('customer_class_id',values.customer_class_id);

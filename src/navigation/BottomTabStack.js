@@ -53,7 +53,7 @@ export default function BottomTabStack({navigation}) {
         component={HomeStackNavigation}
       />
 
-      {role == 'sales-officer' || role == 'kam' || role === 'promoter' || role==='asm' ? (
+      {role == 'sc' ? (
         <>
           <Screen
             name="Activity"
@@ -96,7 +96,7 @@ export default function BottomTabStack({navigation}) {
         </>
       ) : (
         <>
-          {role == 'dsm' && (
+          {role == 'sc' && (
             <>
               <Screen
                 name="AddShop"

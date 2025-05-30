@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, FlatList, Text, TouchableOpacity} from 'react-native';
 import React, {
   useState,
   useEffect,
@@ -15,10 +9,11 @@ import React, {
 import {Modal, Button, Portal} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
 import useLocationPermission from '../utils/useLocationPermission';
-import { useAttendance } from '../hooks/useAttendance';
+import {useAttendance} from '../hooks/useAttendance';
 
 const ListModal = forwardRef(({channel, setSelection}, ref) => {
-  const {data,loading,getAbsentReasons, getPresentReasons, onSubmit} = useAttendance();
+  const {data, loading, getAbsentReasons, getPresentReasons, onSubmit} =
+    useAttendance();
   const [visible, setListVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
   const [requestLocationPermission] = useLocationPermission();
@@ -45,7 +40,6 @@ const ListModal = forwardRef(({channel, setSelection}, ref) => {
       setSelectedOption(option); // Select new option
     }
   };
-
 
   return (
     <Portal>
@@ -80,6 +74,8 @@ const ListModal = forwardRef(({channel, setSelection}, ref) => {
             onPress={() => {
               onSubmit(hideModal, channel, setSelection, selectedOption);
             }}
+            disabled={loading}
+            loading={loading}
             style={styles.closeButton}>
             Submit
           </Button>
@@ -100,6 +96,7 @@ const styles = StyleSheet.create({
   closeButton: {
     color: COLORS.primary,
     alignContent: 'center',
+    marginTop: 20,
   },
   optionContainer: {
     flexDirection: 'row',

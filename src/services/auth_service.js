@@ -39,7 +39,6 @@ export const attendanceList = async date => {
 
 export const punchIn = async data => {
   console.log('request -', data);
-  
   return await clientMultipart.post(URLS.attendancePunchIn, data);
 };
 export const punchOut = async (data) => {
