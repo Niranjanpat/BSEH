@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-  TextInput,
-} from 'react-native';
+import {StyleSheet, View, ScrollView, Text, TextInput} from 'react-native';
 import React, {forwardRef, useState, useImperativeHandle} from 'react';
 import {Modal, Button, Portal} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
@@ -34,7 +28,9 @@ const PunchInModalUI = forwardRef((props, ref) => {
     workType,
     vehicleType,
     onSubmit,
-  } = usePunchInModal(hideModal);
+    remark,
+    setRemark,
+  } = usePunchInModal();
 
   const isRemarkField =
     vehicleTypeSelected === 'public-transport' ||
@@ -64,20 +60,35 @@ const PunchInModalUI = forwardRef((props, ref) => {
               <Text style={styles.label}>
                 {isRemarkField ? 'Enter Remarks' : 'Enter Start Vehicle KM'}
               </Text>
-              <TextInput
-                style={styles.input}
-                placeholder={isRemarkField ? 'Enter Remarks' : 'Enter Start Vehicle KM'}
-                placeholderTextColor="#888"
-                keyboardType={isRemarkField ? 'default' : 'numeric'}
-                value={startKm}
-                onChangeText={setStartKm}
-              />
+              {isRemarkField ? (
+                <TextInput
+                  style={styles.input}
+                  placeholder={'Enter Remarks'}
+                  placeholderTextColor="#888"
+                  value={remark}
+                  onChangeText={setRemark}
+                />
+              ) : (
+                <TextInput
+                  style={styles.input}
+                  placeholder={'Enter Start Vehicle KM'}
+                  placeholderTextColor="#888"
+                  keyboardType={'numeric'}
+                  value={startKm}
+                  onChangeText={setStartKm}
+                />
+              )}
             </View>
-            <CameraModal setImage={setImage} image={image} />
+            {!isRemarkField && (
+              <CameraModal setImage={setImage} image={image} />
+            )}
           </ScrollView>
           <Button
             mode="contained"
-            onPress={onSubmit}
+            onPress={() => {
+              onSubmit(isRemarkField);
+              hideModal();
+            }}
             style={[styles.closeButton, {marginTop: 20}]}>
             Submit
           </Button>

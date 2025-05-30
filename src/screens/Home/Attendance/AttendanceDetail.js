@@ -1,27 +1,31 @@
 import dayjs from 'dayjs';
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Alert, FlatList, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {Appbar, Subheading, Text, TextInput} from 'react-native-paper';
 import {COLORS} from '../../../constants/theme/colors';
 import {attendanceList} from '../../../services/auth_service';
+import DateMonthSelector from '../../../components/attendance/DateMonthSelector';
 
 const AttendanceDetail = ({navigation}) => {
-  const [date, setDate] = useState(new Date());
   const [data, setData] = useState([]);
-  const [showDate, setShowDate] = useState(false);
+  const date = useRef(new Date());
+
   useEffect(() => {
     getAttendanceDetail();
-  }, [date]);
+  }, []);
 
   const getAttendanceDetail = () => {
-    attendanceList(dayjs(date).format('YYYY-MM-DD'))
+    attendanceList(dayjs(date.current).format('YYYY-MM-DD'))
       .then(res => {
         const {data, errors, success} = res.data;
         if (success) {
           console.log(data);
           setData(data.attendances);
         } else {
+          if (errors) {
+            Alert.alert('Error!', Object.values(errors).join(', '));
+          }
         }
       })
       .catch(e => {});
@@ -37,38 +41,12 @@ const AttendanceDetail = ({navigation}) => {
         />
         <Appbar.Content title="Attendance" />
       </Appbar.Header>
-      <View style={styles.dateContainer}>
-        <TextInput
-          label="Start Date"
-          value={dayjs(date).format('YYYY MMM DD')}
-          right={
-            <TextInput.Icon
-              onPress={() => {
-                setShowDate(true);
-              }}
-              icon="calendar-outline"
-            />
-          }
-          style={styles.inputText}
-          editable={false}
-          mode="outlined"
-        />
-
-        <DatePicker
-          modal
-          open={showDate}
-          mode="date"
-          date={date}
-          maximumDate={new Date()}
-          onConfirm={date => {
-            setShowDate(false);
-            setDate(date);
-          }}
-          onCancel={() => {
-            setShowDate(false);
-          }}
-        />
-      </View>
+      <DateMonthSelector
+        onDateSelect={d => {
+          date.current = d;
+          getAttendanceDetail();
+        }}
+      />
       <View style={styles.attendanceBox}>
         <View style={styles.attendanceContainer}>
           <Text style={styles.text}>Punch Out</Text>
@@ -101,18 +79,13 @@ const AttendanceDetail = ({navigation}) => {
 };
 
 export default AttendanceDetail;
+
 const styles = StyleSheet.create({
   attendanceBox: {
     width: '100%',
     marginBottom: 10,
     marginTop: 10,
     alignItems: 'center',
-  },
-  dateContainer: {
-    margin: 10,
-  },
-  switchStyle: {
-    marginHorizontal: 10,
   },
   text: {
     marginTop: 5,

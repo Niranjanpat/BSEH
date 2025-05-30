@@ -21,6 +21,7 @@ export const ROUTES = {
   update_profile: 'update_profile',
   retailer_master: 'retailer_master',
   monthly_attendance_travel: 'monthly_attendance_travel',
+  monthly_attendance: 'monthly_attendance',
   today_report: 'today_report',
   cumulative_report: 'cumulative_report',
   day_wise_cumulative: 'day_wise_cumulative',

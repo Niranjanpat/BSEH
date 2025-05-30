@@ -53,9 +53,9 @@ const SettingScreen = ({navigation}) => {
         <Divider />
         <Divider />
 
-        {(role === 'sales-officer' ||
+        {(role === 'sc' ||
           role === 'kam' ||
-          role === 'dsm' ||
+          role === 'asm' ||
           role === 'promoter') && (
           <>
             <List.Item
@@ -98,7 +98,7 @@ const SettingScreen = ({navigation}) => {
             <Divider />
           </>
         )} */}
-        {role !== 'kam' && (
+        {role !== 'sc' && (
           <>
             <List.Item
               style={styles.list}
@@ -114,7 +114,7 @@ const SettingScreen = ({navigation}) => {
         )}
         {!(
           role === 'sales-officer' ||
-          role === 'kam' ||
+          role === 'sc' ||
           role === 'promoter'
         ) && (
           <>
@@ -188,7 +188,7 @@ const SettingScreen = ({navigation}) => {
           </>
         )}
         <Divider />
-        {(role === 'promoter' || role === 'kam') && (
+        {(role === 'sc' || role === 'kam') && (
           <>
             <List.Item
               style={styles.list}
@@ -202,7 +202,7 @@ const SettingScreen = ({navigation}) => {
             <Divider />
           </>)}
 
-        {!(role === 'promoter' || role === 'kam') && (
+        {!(role === 'sc' || role === 'kam') && (
           <>
             <Divider />
             <List.Item
@@ -226,6 +226,18 @@ const SettingScreen = ({navigation}) => {
           left={props => (
             <List.Icon {...props} icon="calendar-account-outline" />
           )}
+          right={props => <List.Icon {...props} icon="chevron-right" />}
+        />
+        <Divider />
+        <Divider />
+
+        <List.Item
+          style={styles.list}
+          title="Monthly attendance"
+          onPress={() => {
+            navigation.navigate(ROUTES.monthly_attendance);
+          }}
+          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
           right={props => <List.Icon {...props} icon="chevron-right" />}
         />
         <Divider />
