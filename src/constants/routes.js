@@ -27,7 +27,12 @@ export const ROUTES = {
   day_wise_cumulative: 'day_wise_cumulative',
   kam_mtd: 'kam_mtd',
   day_wise_report: 'day_wise_report',
+
+  //expense
   add_expenses: 'add_expenses',
+  update_expenses:'update_expenses',
+  expenses: 'expenses',
+  expenses_detail:'expenses_detail',
 
   // inner stacks of settings stack
   myvisit_stack: 'myvisit_stack',

@@ -1,3 +1,4 @@
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,23 +9,37 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {Button} from 'react-native-paper';
-import {COLORS} from '../constants/theme/colors';
-import MyDropdown from '../components/DropDown';
-import DatePicker from 'react-native-date-picker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {requestCameraPermission} from '../utils/useCameraPermission';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DatePicker from 'react-native-date-picker';
+import Geolocation from 'react-native-geolocation-service';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import dayjs from 'dayjs';
 
-const AddExpensesScreen = () => {
+import {COLORS} from '../constants/theme/colors';
+import MyDropdown from '../components/DropDown';
+import {requestCameraPermission} from '../utils/useCameraPermission';
+import {getExpenseType, addExpense, updateExpense} from '../services/expense_sevice';
+
+const AddExpensesScreen = ({route, navigation}) => {
+  const {channel, expenseDetail, id} = route.params;
+
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [extra, setExtra] = useState('');
+  const [expenseTypeSelected, setExpenseTypeSelected] = useState(null);
+  const [details, setDetails] = useState('');
+  const [image, setImage] = useState(null);
+  const [expenseType, setExpenseType] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const latitude = useRef(null);
+  const longitude = useRef(null);
+
   useEffect(() => {
     const checkCameraPermission = async () => {
       const granted = await requestCameraPermission();
-      if (granted) {
-        console.log('Camera permission granted');
-      } else {
+      if (!granted) {
         Alert.alert(
           'Camera permission denied',
           'Please enable camera permission in settings.',
@@ -32,83 +47,130 @@ const AddExpensesScreen = () => {
       }
     };
     checkCameraPermission();
+    fetchExpenseTypes();
   }, []);
 
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const [amount, setAmount] = useState('');
-  const [extra, setExtra] = useState('');
-  const [expireTypeSelected, setExpireTypeSelected] = useState(null);
-  const [details, setDetails] = useState('');
-  const [image, setImage] = useState(null);
-  const expireType = [];
-
-  const onSubmit = () => {
-    if (!amount || !details || !extra) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
+  useEffect(() => {
+    if (channel === 'update' && expenseDetail) {
+      const parsedDate = new Date(expenseDetail.date);
+      setDate(!isNaN(parsedDate) ? parsedDate : new Date());
+      setDetails(expenseDetail.details || '');
+      setExtra(expenseDetail.extra || '');
+      setAmount(expenseDetail.amount?.toString() || '');
+      setExpenseTypeSelected(expenseDetail.expense_type || null);
+      setImage(expenseDetail.photo_path || null);
     }
-
-    if (!expireTypeSelected) {
-      Alert.alert('Error', 'Please select an expire type');
-      return;
-    }
-
-    if (!image) {
-      Alert.alert('Error', 'Please select an image');
-      return;
-    }
-
-    const data = {
-      date: date.toISOString(),
-      amount: parseFloat(amount),
-      details,
-      extra,
-      expireType: expireTypeSelected,
-      imageUri: image,
-    };
-    console.log('Submitted Data:', data);
-  };
+  }, [channel, expenseDetail]);
 
   const handleOpenCamera = () => {
     launchCamera(
-      {
-        mediaType: 'photo',
-        cameraType: 'back',
-        saveToPhotos: true,
-      },
+      {mediaType: 'photo', cameraType: 'back', saveToPhotos: true},
       response => {
-        if (response.didCancel) {
-          console.log('User cancelled camera');
-        } else if (response.errorCode) {
-          Alert.alert('Camera error', response.errorMessage);
-        } else {
-          setImage(response.assets[0].uri);
-        }
+        if (response.didCancel) return;
+        if (response.errorCode)
+          return Alert.alert('Camera error', response.errorMessage);
+        setImage(response.assets?.[0]?.uri);
       },
     );
   };
 
   const handleOpenGallery = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (response.errorCode) {
-          Alert.alert('Gallery error', response.errorMessage);
-        } else {
-          setImage(response.assets[0].uri);
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (response.didCancel) return;
+      if (response.errorCode)
+        return Alert.alert('Gallery error', response.errorMessage);
+      setImage(response.assets?.[0]?.uri);
+    });
+  };
+
+  const resetForm = () => {
+    setDate(new Date());
+    setAmount('');
+    setExtra('');
+    setExpenseTypeSelected(null);
+    setDetails('');
+    setImage(null);
+  };
+
+  const onSubmit = () => {
+    if (!amount || !details || !extra || !expenseTypeSelected || !image) {
+      return Alert.alert(
+        'Error',
+        'Please fill in all fields and select an image.',
+      );
+    }
+
+    const formattedDate = dayjs(date).format('YYYY-MM-DD');
+    setIsLoading(true);
+
+    Geolocation.getCurrentPosition(
+      position => {
+        latitude.current = position.coords.latitude;
+        longitude.current = position.coords.longitude;
+
+        const formData = new FormData();
+        if (image) {
+          formData.append('photo', {
+            uri: image,
+            type: 'image/jpeg',
+            name: 'expense.jpeg',
+          });
         }
+        formData.append('date', formattedDate);
+        formData.append('longitude', longitude.current);
+        formData.append('latitude', latitude.current);
+        formData.append('expense_type', expenseTypeSelected);
+        formData.append('amount', amount);
+        formData.append('details', details);
+        formData.append('extra', extra);
+
+        const handleResponse = (res) => {
+          const {success, errors} = res.data;
+          if (success) {
+            Alert.alert('Success', `Expense ${channel === 'update' ? 'updated' : 'added'} successfully`);
+            if (channel === 'add') resetForm();
+            navigation.goBack();
+          } else {
+            console.log(errors);
+            Alert.alert('Error', JSON.stringify(errors));
+          }
+        };
+
+        const apiCall = channel === 'update'
+          ? updateExpense(formData, id)
+          : addExpense(formData);
+
+        apiCall
+          .then(handleResponse)
+          .catch(err => console.log(err))
+          .finally(() => setIsLoading(false));
       },
+      error => {
+        setIsLoading(false);
+        Alert.alert('Location', 'Check if your location service is enabled.');
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
+  };
+
+  const fetchExpenseTypes = async () => {
+    try {
+      const res = await getExpenseType();
+      const {data, success, errors} = res?.data;
+      if (success) {
+        setExpenseType(data.expense_types);
+      } else {
+        console.log('Expense type error:', errors);
+        Alert.alert('Error', JSON.stringify(errors));
+      }
+    } catch (error) {
+      console.log('getExpenseTypes error:', error);
+    }
   };
 
   return (
     <ScrollView>
-      <View style={{flexDirction: 'column'}}>
+      <View style={styles.containerWrap}>
         <View style={styles.container}>
           <Pressable onPress={() => setOpen(true)}>
             <Text style={styles.label}>Date</Text>
@@ -116,7 +178,6 @@ const AddExpensesScreen = () => {
               value={dayjs(date).format('DD MMMM YYYY')}
               editable={false}
               style={styles.input}
-              label="Date"
             />
           </Pressable>
           <DatePicker
@@ -125,18 +186,18 @@ const AddExpensesScreen = () => {
             open={open}
             mode="date"
             onCancel={() => setOpen(false)}
-            onConfirm={date => {
+            onConfirm={selectedDate => {
               setOpen(false);
-              setDate(date);
+              setDate(selectedDate);
             }}
           />
         </View>
 
         <MyDropdown
-          selectedOption={expireTypeSelected}
-          channel="Expire Type"
-          item={expireType}
-          setSelectedOption={setExpireTypeSelected}
+          selectedOption={expenseTypeSelected}
+          channel="Expense Type"
+          item={expenseType}
+          setSelectedOption={setExpenseTypeSelected}
         />
 
         <View style={styles.container}>
@@ -157,9 +218,8 @@ const AddExpensesScreen = () => {
             style={[styles.input, {height: 150, textAlignVertical: 'top'}]}
             placeholder="Details"
             placeholderTextColor="#888"
-            keyboardType="text"
+            multiline
             value={details}
-            multiline={true}
             onChangeText={setDetails}
           />
         </View>
@@ -170,39 +230,40 @@ const AddExpensesScreen = () => {
             style={styles.input}
             placeholder="Extra"
             placeholderTextColor="#888"
-            keyboardType="text"
             value={extra}
             onChangeText={setExtra}
           />
         </View>
-        <View>
-          {image && <Image source={{uri: image}} style={styles.image} />}
-          <View style={styles.imageContainer}>
-            <Button
-            mode="contained"
-            onPress={handleOpenCamera}
-            icon={() => <Icon name="photo-camera" size={20} color="#fff" />}
-            style={styles.imageButton}
-            contentStyle={{paddingVertical: 2, flexDirection: 'row-reverse'}}>
-            Open Camera
-          </Button>
 
-          <Button
-            mode="contained"
-            onPress={handleOpenGallery}
-            icon={() => <Icon name="photo-library" size={20} color="#fff" />}
-            style={styles.imageButton}
-            contentStyle={{paddingVertical: 2, flexDirection: 'row-reverse'}}>
-            Pick from Gallery
-          </Button>
+        <View style={styles.container}>
+          {image && <Image source={{uri: image}} style={styles.image} />}
+          <View style={styles.imageButtonRow}>
+            <Button
+              mode="contained"
+              onPress={handleOpenCamera}
+              icon={() => <Icon name="photo-camera" size={20} color="#fff" />}
+              style={styles.imageButton}
+              contentStyle={styles.buttonContent}>
+              Open Camera
+            </Button>
+            <Button
+              mode="contained"
+              onPress={handleOpenGallery}
+              icon={() => <Icon name="photo-library" size={20} color="#fff" />}
+              style={styles.imageButton}
+              contentStyle={styles.buttonContent}>
+              Pick from Gallery
+            </Button>
           </View>
-          
         </View>
+
         <View style={[styles.container, {marginBottom: 20}]}>
           <Button
             mode="contained"
             onPress={onSubmit}
-            style={[styles.closeButton]}>
+            loading={isLoading}
+            disabled={isLoading}
+            style={styles.submitButton}>
             Submit
           </Button>
         </View>
@@ -212,18 +273,8 @@ const AddExpensesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-  },
-  imageButton: {
-    borderRadius: 10,
-  },
-  closeButton: {
-    color: COLORS.primary,
+  containerWrap: {
+    flexDirection: 'column',
   },
   container: {
     paddingHorizontal: 20,
@@ -245,21 +296,32 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#f9f9f9',
   },
-  inputDate: {
-    marginVertical: 10,
-    backgroundColor: COLORS.light,
-    borderRadius: 8,
-    borderColor: '#aaa',
-    borderWidth: 1,
-  },
   image: {
     width: 200,
     height: 200,
-    marginVertical: 5,
+    marginVertical: 10,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#ccc',
     alignSelf: 'center',
+  },
+  imageButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 10,
+  },
+  imageButton: {
+    flex: 1,
+    marginHorizontal: 10,
+    borderRadius: 10,
+  },
+  buttonContent: {
+    paddingVertical: 2,
+    flexDirection: 'row-reverse',
+  },
+  submitButton: {
+    backgroundColor: COLORS.primary,
   },
 });
 

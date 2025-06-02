@@ -4,7 +4,7 @@ import {Modal, Button, Portal} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
 import MyDropdown from './DropDown';
 import CameraModal from './CameraModal';
-import usePunchInModal from '../hooks/usePunchInModal';
+import useInModal from '../hooks/usePunchInModal';
 
 const PunchInModalUI = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
