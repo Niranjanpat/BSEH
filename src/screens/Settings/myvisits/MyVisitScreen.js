@@ -12,7 +12,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Caption, IconButton, List, Searchbar, Text} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  Caption,
+  IconButton,
+  List,
+  Searchbar,
+  Text,
+} from 'react-native-paper';
 
 import {useFocusEffect} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
@@ -28,6 +36,7 @@ import client from '../../../services/axios_client';
 import {
   getCustomerVisitStatus,
   postCustomerCheckOut,
+  storeCustomerVisitStatusLoading,
 } from '../../../store/actions/order';
 
 const mmkv = new MMKVStorage.Loader().initialize();
@@ -40,9 +49,10 @@ const MyVisitScreen = ({navigation}) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBeat, setSelectedBeat] = useState('');
-  const [visible, setVisible] = useState(false);
 
-  const {customerVisitStatus} = useSelector(state => state.order);
+  const {customerVisitStatus, checkVisitLoading} = useSelector(
+    state => state.order,
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -53,19 +63,6 @@ const MyVisitScreen = ({navigation}) => {
 
   useEffect(() => {
     fetchStorageBeat();
-  }, []);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <IconButton
-          icon="filter-variant"
-          onPress={() => {
-            setVisible(true);
-          }}
-        />
-      ),
-    });
   }, []);
 
   const fetchStorageBeat = async () => {
@@ -87,7 +84,8 @@ const MyVisitScreen = ({navigation}) => {
     let dataList = fullData.filter(
       cat =>
         cat?.route_id.includes(selectedBeat) &&
-        cat?.name?.toUpperCase().includes(query.toUpperCase()),
+        (cat?.name?.toUpperCase().includes(query.toUpperCase()) ||
+          cat?.owner_contact_number.includes(query)),
     );
     return dataList;
   }, [selectedBeat, fullData, query]);
@@ -113,6 +111,7 @@ const MyVisitScreen = ({navigation}) => {
   }
 
   const checkOutFunction = async () => {
+    dispatch(storeCustomerVisitStatusLoading(true));
     Geolocation.getCurrentPosition(
       position => {
         var datas = {
@@ -125,6 +124,7 @@ const MyVisitScreen = ({navigation}) => {
       },
       error => {
         console.log(error.code, error.message);
+        dispatch(storeCustomerVisitStatusLoading(false));
       },
       {
         enableHighAccuracy: true,
@@ -144,7 +144,7 @@ const MyVisitScreen = ({navigation}) => {
       <Searchbar
         style={styles.searchbar}
         onChangeText={setQuery}
-        placeholder="Search retailer name"
+        placeholder="Search visit by name/number"
         value={query}
       />
 
@@ -167,28 +167,20 @@ const MyVisitScreen = ({navigation}) => {
             )}
             right={_ => (
               <View style={styles.listRight}>
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => navigation.navigate(ROUTES.vertical)}
-                  style={[
-                    styles.chip,
-                    {
-                      backgroundColor: COLORS.primaryDark,
-                    },
-                  ]}>
-                  <Text>Add Order</Text>
-                </TouchableOpacity>
-                <Text
-                  onPress={() => checkOutFunction()}
-                  style={[
-                    styles.chip,
-                    {
-                      marginTop: 5,
-                      backgroundColor: COLORS.accentSecondary,
-                    },
-                  ]}>
+                {/* <Button
+                  mode="contained"
+                  style={{backgroundColor: COLORS.primaryDark}}
+                  onPress={() => navigation.navigate(ROUTES.vertical)}>
+                  Add Order
+                </Button> */}
+                <Button
+                  mode="contained"
+                  style={{backgroundColor: COLORS.accentSecondary}}
+                  loading={checkVisitLoading}
+                  disabled={checkVisitLoading}
+                  onPress={checkOutFunction}>
                   Check Out
-                </Text>
+                </Button>
               </View>
             )}
           />
@@ -227,9 +219,6 @@ const MyVisitScreen = ({navigation}) => {
                 }
                 description={_ => (
                   <>
-                    <Caption numberOfLines={2}>
-                      {item.billing_address ? item.billing_address : 'N/A'}
-                    </Caption>
                     {item.sap_code ? <Text>{item.sap_code}</Text> : null}
                     {item.owner_contact_number ? (
                       <Text>{item.owner_contact_number}</Text>
@@ -268,9 +257,7 @@ const MyVisitScreen = ({navigation}) => {
         />
       </View>
       <BeatModal
-        visible={visible}
         setValue={handleBeatSelection}
-        onDismiss={setVisible}
         isMyVisits={true}
         value={selectedBeat}
       />

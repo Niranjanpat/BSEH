@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -43,7 +43,10 @@ import {
 import ReturnOptionsModal from '../../../components/myvisits/ReturnOptionsModal';
 import {initReturnCart, storeRecentVisit} from '../../../store/actions/returns';
 import OrderSummaryModal from '../../../components/myvisits/OrderSummaryModal';
-import {clearCartItems, clearCartPromotionalItems} from '../../../store/actions/cart';
+import {
+  clearCartItems,
+  clearCartPromotionalItems,
+} from '../../../store/actions/cart';
 import {getCustomerTarget} from '../../../services/retailer_services';
 import CustomerTarget from '../../../components/CustomerTarget';
 import {useFocusEffect} from '@react-navigation/core';
@@ -52,6 +55,7 @@ import dayjs from 'dayjs';
 import {sendOTP} from '../../../services/activity_service';
 import PromotionalItemsModal from '../../../components/promotional_item/PromotionalItemsModal';
 import LoadingView from '../../../components/LoadingView';
+import CustomerCheckPhotoModal from '../../../components/myvisits/CustomerCheckPhotoModal';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -62,7 +66,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const [customer, setCustomer] = useState(null);
   const [customerTarget, setCustomerTarget] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {customerVisitStatus, checkVisitLoading} = useSelector(state => state.order);
+  const {customerVisitStatus, checkVisitLoading} = useSelector(
+    state => state.order,
+  );
   const {role, token} = useSelector(state => state.auth);
 
   const [visitLogVisible, setVisitLogVisible] = useState(false);
@@ -72,6 +78,8 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   // const [isCheckOutDisabled, setCheckOutDisabled] = useState(false);
   const [promotionalVisible, setPromotionalVisible] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [customerPhotoVisible, setCustomerPhotoVisible] = useState(false);
+  const checkImage = useRef('');
 
   useFocusEffect(
     React.useCallback(() => {
@@ -86,7 +94,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     dispatch(initReturnCart());
     dispatch(storeRecentVisit(data));
     dispatch(getCustomerVisitStatus());
-    dispatch(setHideCheckoutAfterOrderPlaces(false))
+    dispatch(setHideCheckoutAfterOrderPlaces(false));
   }, []);
 
   // useEffect(() => {
@@ -143,7 +151,10 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               })
             }
           />
-          {(role === 'kam' || role === 'dsm' || role === 'sm' || role === 'rsm') && (
+          {(role === 'kam' ||
+            role === 'dsm' ||
+            role === 'sm' ||
+            role === 'rsm') && (
             <IconButton
               icon="phone"
               onPress={() =>
@@ -159,33 +170,47 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     });
   }, [customer]);
 
+  const isCheckedIn =
+    customerVisitStatus.status && customerVisitStatus.customer_id === data._id;
+
   const checkInFunction = () => {
-    {
-      dispatch(storeCustomerVisitStatusLoading(true))
-      Geolocation.getCurrentPosition(
-        position => {
+    if (checkImage.current === '' && !isCheckedIn) {
+      Alert.alert('Error', 'Photo is required.');
+      return;
+    }
+    dispatch(storeCustomerVisitStatusLoading(true));
+    Geolocation.getCurrentPosition(
+      position => {
+        if (isCheckedIn) {
           var datas = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             customer_id: data._id,
           };
-          customerVisitStatus.status
-            ? customerVisitStatus.customer_id === data._id
-              ? dispatch(postCustomerCheckOut(datas, navigation))
-              : dispatch(postCustomerCheckIn(datas, navigation))
-            : dispatch(postCustomerCheckIn(datas, navigation));
-        },
-        error => {
-          console.log(error.code, error.message);
-          dispatch(storeCustomerVisitStatusLoading(false))
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 10000,
-        },
-      );
-    }
+          dispatch(postCustomerCheckOut(datas, navigation));
+        } else {
+          const datas = new FormData();
+          datas.append('latitude', position.coords.latitude);
+          datas.append('longitude', position.coords.longitude);
+          datas.append('customer_id', data._id);
+          datas.append('photo', {
+            uri: checkImage.current,
+            type: 'image/jpeg',
+            name: 'punchin.jpeg',
+          });
+          dispatch(postCustomerCheckIn(datas, navigation));
+        }
+      },
+      error => {
+        console.log(error.code, error.message);
+        dispatch(storeCustomerVisitStatusLoading(false));
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+      },
+    );
   };
 
   const fetchCustomerTarget = () => {
@@ -256,7 +281,13 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     <View style={styles.container}>
       <View style={styles.imgContainer}>
         <Image
-          source={IMAGE.retailer}
+          source={
+            customer?.photo_url
+              ? {
+                  uri: customer?.photo_url,
+                }
+              : IMAGE.retailer
+          }
           resizeMode="contain"
           style={styles.logo}
         />
@@ -275,15 +306,13 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           mode="contained"
           loading={checkVisitLoading}
           disabled={checkVisitLoading}
-          onPress={() => checkInFunction()}>
-          {customerVisitStatus.status
-            ? customerVisitStatus.customer_id === data._id
-              ? 'Check out'
-              : 'Check in'
-            : 'Check in'}
+          onPress={() =>
+            isCheckedIn ? checkInFunction() : setCustomerPhotoVisible(true)
+          }>
+          {isCheckedIn ? 'Check out' : 'Check in'}
         </Button>
 
-        {!customer?.is_own_con_num_verified &&
+        {/* {!customer?.is_own_con_num_verified &&
           (role === 'kam' ||
             role === 'dsm' ||
             role === 'sm' ||
@@ -300,9 +329,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 Verify number
               </Button>
             </>
-          )}
+          )} */}
 
-        {role == 'promoter' &&
+        {/* {role == 'promoter' &&
           customerVisitStatus.status &&
           customerVisitStatus.customer_id === data._id && (
             <>
@@ -323,9 +352,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 Closing stock
               </Button>
             </>
-          )}
+          )} */}
 
-        {role !== 'promoter' &&
+        {/* {role !== 'promoter' &&
           customerVisitStatus.status &&
           customerVisitStatus.customer_id === data._id && (
             <>
@@ -337,17 +366,25 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 Order
               </Button>
             </>
-          )}
+          )} */}
 
         <HorizontalSpacer />
         <Button
           icon="tag-outline"
           mode="contained"
-          onPress={() => setPromotionalVisible(true)}>
-          Promotional Items
+          onPress={() => {}}>
+          Samples
         </Button>
 
-        {role !== 'promoter' && (
+        <HorizontalSpacer />
+        <Button
+          mode="contained"
+          icon="comment-account-outline"
+          onPress={() => {}}>
+          Complaint
+        </Button>
+
+        {/* {role !== 'promoter' && (
           <>
             <HorizontalSpacer />
             <Button
@@ -357,7 +394,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               Return
             </Button>
           </>
-        )}
+        )} */}
       </ScrollView>
 
       <View style={styles.detailsContainer}>
@@ -409,11 +446,11 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Customer Activity</Text>
+            <Text style={styles.detailsTitle}>Division</Text>
             <Text> : </Text>
-            {customer?.customer_activity_category_name ? (
+            {customer?.division_names ? (
               <Text style={styles.detailsValue}>
-                {customer?.customer_activity_category_name}
+                {customer?.division_names}
               </Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
@@ -447,54 +484,42 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Billing address</Text>
+            <Text style={styles.detailsTitle}>Address</Text>
             <Text> : </Text>
-            {customer?.billing_address ? (
-              <Text style={styles.detailsValue}>
-                {customer?.billing_address}
-              </Text>
+            {customer?.address ? (
+              <Text style={styles.detailsValue}>{customer?.address}</Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Distributor Code</Text>
+            <Text style={styles.detailsTitle}>Region</Text>
             <Text> : </Text>
-            {customer?.distributor_code ? (
-              <Text style={styles.detailsValue}>
-                {customer?.distributor_code}
-              </Text>
+            {customer?.region_name ? (
+              <Text style={styles.detailsValue}>{customer?.region_name}</Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Distributor Name</Text>
+            <Text style={styles.detailsTitle}>District</Text>
             <Text> : </Text>
-            {customer?.distributor_name ? (
-              <Text style={styles.detailsValue}>
-                {customer?.distributor_name}
-              </Text>
+            {customer?.district_name ? (
+              <Text style={styles.detailsValue}>{customer?.district_name}</Text>
             ) : (
               <Text style={styles.notAvailableTxt}>N/A</Text>
             )}
           </View>
-          {/* <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Distributors</Text>
+          <View style={styles.row}>
+            <Text style={styles.detailsTitle}>State</Text>
             <Text> : </Text>
-            <View>
-              {customer?.route_distributors?.length > 0 ? (
-                customer?.route_distributors?.map(item => (
-                  <Text style={[styles.detailsValue, {marginBottom: 10}]}>
-                    {item?.name} ({item?.sap_code})
-                  </Text>
-                ))
-              ) : (
-                <Text style={styles.notAvailableTxt}>N/A</Text>
-              )}
-            </View>
-          </View> */}
-          {role !== 'promoter' && (
+            {customer?.state_name ? (
+              <Text style={styles.detailsValue}>{customer?.state_name}</Text>
+            ) : (
+              <Text style={styles.notAvailableTxt}>N/A</Text>
+            )}
+          </View>
+          {/* {role !== 'promoter' && (
             <>
               <Subheading>More options:</Subheading>
               <Divider />
@@ -531,7 +556,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
                 </Card>
               </ScrollView>
             </>
-          )}
+          )} */}
         </ScrollView>
         {loadingDetails && <LoadingView />}
       </View>
@@ -560,6 +585,12 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         visible={promotionalVisible}
         onDismiss={setPromotionalVisible}
         customerId={data._id}
+      />
+      <CustomerCheckPhotoModal
+        visible={customerPhotoVisible}
+        onClose={setCustomerPhotoVisible}
+        onImageSelected={uri => (checkImage.current = uri)}
+        onSubmit={checkInFunction}
       />
     </View>
   );
@@ -633,7 +664,7 @@ const styles = StyleSheet.create({
 
   detailsTitle: {
     ...TYPOGRAPHY.caption,
-    width: size.width * 0.30,
+    width: size.width * 0.3,
     color: COLORS.accentSecondary,
   },
 

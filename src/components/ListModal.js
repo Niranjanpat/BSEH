@@ -12,7 +12,7 @@ import useLocationPermission from '../utils/useLocationPermission';
 import {useAttendance} from '../hooks/useAttendance';
 
 const ListModal = forwardRef(({channel, setSelection}, ref) => {
-  const {data, loading, getAbsentReasons, getPresentReasons, onSubmit} =
+  const {data, loading, getAbsentReasons, getPresentReasons, onSubmit, setData} =
     useAttendance();
   const [visible, setListVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
@@ -21,7 +21,10 @@ const ListModal = forwardRef(({channel, setSelection}, ref) => {
   useEffect(() => {
     requestLocationPermission();
     channel == 'Present' ? getPresentReasons() : getAbsentReasons();
-  }, []);
+    return () => {
+      setData([]);
+    }
+  }, [channel, visible]);
 
   const hideModal = () => {
     setListVisible(false);

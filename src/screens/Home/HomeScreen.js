@@ -37,10 +37,10 @@ const HomeScreen = ({}) => {
         <JointWorkingView />
         {role === 'promoter' && <PromoterVisits />}
         {role !== 'promoter' && <TodayOrder self={1} />}
-        {role === 'kam' || role === 'sales-officer' ? (
+        {role === 'sc' || role === 'asm' ? (
           <>
             <Achievement />
-            {role === 'kam' &&
+            {role === 'sc' &&
               <>
                 <DsmCurrentTarget />
                 <AttendanceInformation data={data} />
@@ -54,7 +54,7 @@ const HomeScreen = ({}) => {
         ) : (
           <>{role !== 'promoter' && <AttendanceSummary />}</>
         )}
-        {role === 'dsm' && <RecentOrder />} 
+        {role === 'asm' && <RecentOrder />} 
         {role !== 'promoter' && (
           <>
             <TopCustomerTable />

@@ -23,7 +23,8 @@ import useLocationPermission from '../../utils/useLocationPermission';
 import ScheduleSummaryModal from '../../components/ScheduleSummaryModal';
 import {COLORS} from '../../constants/theme/colors';
 
-const AttendanceScreen = ({navigation}) => {
+const AttendanceScreen = ({navigation, route}) => {
+  const {openPunchIn} = route.params ?? false;
   const dispatch = useDispatch();
   const punchInRef = useRef(null);
   const punchOutRef = useRef(null);
@@ -40,6 +41,12 @@ const AttendanceScreen = ({navigation}) => {
     requestLocationPermission();
     dispatch(getAttendanceList());
   }, []);
+
+  useEffect(() => {
+    if (openPunchIn) {
+      punchInRef.current.showPunchIn(true);
+    }
+  }, [openPunchIn]);
 
   return (
     <View style={{flex: 1}}>

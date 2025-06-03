@@ -5,28 +5,40 @@ import {Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
 import {getDailyAllowance} from '../services/punch_service';
-import {attendancePunchOut} from '../store/actions/auth';
+import {attendancePunchOut, storeAttendanceLoading} from '../store/actions/auth';
 import useLocationPermission from '../utils/useLocationPermission';
 
-const usePunchOutModal = (hideModal) => {
+const usePunchOutModal = () => {
   const dispatch = useDispatch();
   const [requestLocationPermission] = useLocationPermission();
 
   const [workFeedback, setWorkFeedback] = useState('');
   const [dayEndDetail, setDayEndDetail] = useState('');
   const [vehicleReading, setVehicleReading] = useState('');
-  const [totalVehicleReading, setTotalVehicleReading] = useState('');
   const [dailyAllowanceSelected, setDailyAllowanceSelected] = useState(null);
   const [dailyAllowance, setDailyAllowance] = useState([]);
   const [image, setImage] = useState(null);
 
   const longitude = useRef(null);
   const latitude = useRef(null);
+  const totalVehicleReading = useRef('');
+  var timer = null;
 
   useEffect(() => {
     requestLocationPermission();
     fetchDailyAllowances();
   }, []);
+
+  const onVehicleReadingChange = (value, startKm) => {
+    const endKms = parseFloat(value);
+    const startKms = parseFloat(startKm);
+    if (endKms > startKms) {
+      totalVehicleReading.current = endKms - startKms;
+    } else {
+      totalVehicleReading.current = '';
+    }
+    setVehicleReading(value);
+  };
 
   const fetchDailyAllowances = async () => {
     try {
@@ -42,7 +54,30 @@ const usePunchOutModal = (hideModal) => {
     }
   };
 
-  const onSubmit = () => {
+  const onSubmit = isRemarkField => {
+    if (isRemarkField) {
+      if (!workFeedback || !dayEndDetail || !dailyAllowanceSelected) {
+        Alert.alert('Error', 'Please fill all fields.');
+        return;
+      }
+    } else {
+      if (
+        !workFeedback ||
+        !dayEndDetail ||
+        vehicleReading === '' ||
+        !dailyAllowanceSelected ||
+        !image
+      ) {
+        Alert.alert('Error', 'Please fill all fields and select an image.');
+        return;
+      }
+      if (totalVehicleReading.current === '') {
+        Alert.alert('Error', 'End KMs should be greater than start KMs.');
+        return;
+      }
+    }
+
+    dispatch(storeAttendanceLoading(true));
     Geolocation.getCurrentPosition(
       position => {
         latitude.current = position.coords.latitude;
@@ -52,7 +87,7 @@ const usePunchOutModal = (hideModal) => {
         formData.append('work_feedback', workFeedback);
         formData.append('day_end_details', dayEndDetail);
         formData.append('end_vehicle_km', vehicleReading);
-        formData.append('total_vehicle_km', totalVehicleReading);
+        formData.append('total_vehicle_km', totalVehicleReading.current);
         formData.append('daily_allowance', dailyAllowanceSelected);
         formData.append('latitude', latitude.current);
         formData.append('longitude', longitude.current);
@@ -62,17 +97,13 @@ const usePunchOutModal = (hideModal) => {
           name: 'punchout.jpeg',
         });
 
-        if (!workFeedback || !dayEndDetail || !vehicleReading || !totalVehicleReading || !dailyAllowanceSelected || !image) {
-          Alert.alert('Error', 'Please fill all fields and select an image.');
-          return;
-        }
-
         dispatch(attendancePunchOut(formData));
-        hideModal();
         resetForm();
       },
       error => {
         console.error('Geolocation error:', error);
+        dispatch(storeAttendanceLoading(false));
+        Alert.alert('Location', 'Check your location service is enabled.');
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
@@ -82,7 +113,7 @@ const usePunchOutModal = (hideModal) => {
     setWorkFeedback('');
     setDayEndDetail('');
     setVehicleReading('');
-    setTotalVehicleReading('');
+    totalVehicleReading.current = '';
     setDailyAllowanceSelected(null);
     setImage(null);
   };
@@ -93,9 +124,8 @@ const usePunchOutModal = (hideModal) => {
     dayEndDetail,
     setDayEndDetail,
     vehicleReading,
-    setVehicleReading,
+    onVehicleReadingChange,
     totalVehicleReading,
-    setTotalVehicleReading,
     dailyAllowance,
     dailyAllowanceSelected,
     setDailyAllowanceSelected,

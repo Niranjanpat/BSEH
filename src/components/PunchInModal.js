@@ -1,10 +1,11 @@
-import {StyleSheet, View, ScrollView, Text, TextInput} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import React, {forwardRef, useState, useImperativeHandle} from 'react';
-import {Modal, Button, Portal} from 'react-native-paper';
+import {Modal, Button, Portal, Text} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
 import MyDropdown from './DropDown';
 import CameraModal from './CameraModal';
-import useInModal from '../hooks/usePunchInModal';
+import usePunchInModal from '../hooks/usePunchInModal';
+import InputText from './InputText';
 
 const PunchInModalUI = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
@@ -17,24 +18,16 @@ const PunchInModalUI = forwardRef((props, ref) => {
   }));
 
   const {
-    startKm,
-    setStartKm,
-    image,
-    setImage,
-    vehicleTypeSelected,
-    setVehicleTypeSelected,
-    workTypeSelected,
-    setWorkTypeSelected,
+    onKmChanged,
+    onImageSelected,
+    onVehicleTypeSelected,
+    onWorkTypeSelected,
     workType,
     vehicleType,
     onSubmit,
-    remark,
-    setRemark,
+    onRemarkChanged,
+    isRemarkField,
   } = usePunchInModal();
-
-  const isRemarkField =
-    vehicleTypeSelected === 'public-transport' ||
-    vehicleTypeSelected === 'others-enter-tada-remarks';
 
   return (
     <Portal>
@@ -42,52 +35,44 @@ const PunchInModalUI = forwardRef((props, ref) => {
         visible={visible}
         onDismiss={hideModal}
         contentContainerStyle={styles.modalContainer}>
-        <View style={{marginBottom: 20, marginTop: 20}}>
-          <ScrollView>
+        <View style={{marginBottom: 0, marginTop: 0}}>
+          <Text variant='titleLarge' style={styles.dialogTitle}>Punch In</Text>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <MyDropdown
-              selectedOption={workTypeSelected}
+              onOptionChanged={onWorkTypeSelected}
               channel="Work Type"
               item={workType}
-              setSelectedOption={setWorkTypeSelected}
             />
             <MyDropdown
-              selectedOption={vehicleTypeSelected}
+              onOptionChanged={onVehicleTypeSelected}
               channel="Vehicle Type"
-              setSelectedOption={setVehicleTypeSelected}
               item={vehicleType}
             />
-            <View style={styles.container}>
-              <Text style={styles.label}>
-                {isRemarkField ? 'Enter Remarks' : 'Enter Start Vehicle KM'}
-              </Text>
-              {isRemarkField ? (
-                <TextInput
-                  style={styles.input}
-                  placeholder={'Enter Remarks'}
-                  placeholderTextColor="#888"
-                  value={remark}
-                  onChangeText={setRemark}
-                />
-              ) : (
-                <TextInput
-                  style={styles.input}
-                  placeholder={'Enter Start Vehicle KM'}
-                  placeholderTextColor="#888"
-                  keyboardType={'numeric'}
-                  value={startKm}
-                  onChangeText={setStartKm}
-                />
-              )}
-            </View>
+
+            <Text style={styles.label}>
+              {isRemarkField ? 'Enter Remarks' : 'Enter Start Vehicle KM'}
+            </Text>
+            {isRemarkField ? (
+              <InputText
+                placeholder={'Enter Remarks'}
+                onChangeText={onRemarkChanged}
+              />
+            ) : (
+              <InputText
+                placeholder={'Enter Start Vehicle KM'}
+                keyboardType={'numeric'}
+                onChangeText={onKmChanged}
+              />
+            )}
             {!isRemarkField && (
-              <CameraModal setImage={setImage} image={image} />
+              <CameraModal onImageSelect={onImageSelected} />
             )}
           </ScrollView>
           <Button
             mode="contained"
             onPress={() => {
-              onSubmit(isRemarkField);
               hideModal();
+              onSubmit(isRemarkField);
             }}
             style={[styles.closeButton, {marginTop: 20}]}>
             Submit
@@ -120,16 +105,7 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: '600',
   },
-  input: {
-    height: 50,
-    borderColor: '#aaa',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    color: '#000',
-    backgroundColor: '#f9f9f9',
-  },
+  dialogTitle: {alignSelf: 'center', marginBottom: 10,},
 });
 
 export default PunchInModalUI;

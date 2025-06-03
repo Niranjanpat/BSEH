@@ -1,107 +1,87 @@
-import React, {useEffect, useState, memo} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import {Portal, Modal, Button, ActivityIndicator} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getBeatList} from '../services/retailer_services';
-import {COLORS} from '../constants/theme/colors';
 
-const BeatModal = ({isMyVisits, visible, value, setValue, onDismiss}) => {
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {
+  Button,
+  IconButton,
+  Modal,
+  Portal,
+  RadioButton,
+  Title,
+} from 'react-native-paper';
+import {getBeatList} from '../services/retailer_services';
+import {useNavigation} from '@react-navigation/native';
+
+
+const BeatModal = ({isMyVisits, value, setValue}) => {
+  const [visible, setVisible] = useState(false);
   const [beat, setBeat] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  const [loading, setLoading] = useState([]);
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="filter-variant"
+          onPress={() => {
+            setVisible(true);
+          }}
+        />
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     fetchBeatList();
   }, []);
 
-  const fetchBeatList = async () => {
-    try {
-      setLoading(true);
-      const res = await getBeatList(isMyVisits);
-      const {data, success} = res.data;
-      if (success) {
-        setBeat(data.routes);
-      }
-    } catch (e) {
-      alert(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSelect = id => {
-    setValue(id);
-    onDismiss(false);
-  };
-
-  const renderItem = ({item}) => {
-    const isSelected = value === item._id;
-    return (
-      <TouchableOpacity
-        style={[styles.optionContainer, isSelected && styles.selected]}
-        onPress={() => handleSelect(item._id)}>
-        <View style={[styles.radioCircle, isSelected && styles.radioSelected]}>
-          {isSelected && <View style={styles.radioDot} />}
-        </View>
-        <Icon
-          name="map-marker-radius"
-          size={20}
-          color={isSelected ? COLORS.primary : '#555'}
-          style={styles.icon}
-        />
-        <Text style={styles.optionText}>{item.name}</Text>
-      </TouchableOpacity>
-    );
+  const getBeat = () => {
+    setLoading(true);
+    getBeatList(isMyVisits)
+      .then(res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setBeat(data.routes);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={() => onDismiss(false)}
-        contentContainerStyle={styles.modalContainer}>
-        <Text style={styles.title}>Select Beat</Text>
+        style={styles.container}
+        onDismiss={() => setVisible(false)}>
+        <Title>Select Beat</Title>
 
-        <TouchableOpacity
-          style={[styles.optionContainer, value === '' && styles.selected]}
-          onPress={() => handleSelect('')}>
-          <View style={[styles.radioCircle, value === '' && styles.radioSelected]}>
-            {value === '' && <View style={styles.radioDot} />}
-          </View>
-          <Icon name="select-all" size={20} color="#555" style={styles.icon} />
-          <Text style={styles.optionText}>All Beat</Text>
-        </TouchableOpacity>
-
-        <View style={{maxHeight: 250}}>
-          {loading ? (
-            <View style={styles.centered}>
-              <ActivityIndicator />
-              <Text style={styles.loadingText}>Loading beats...</Text>
-            </View>
-          ) : (
+        <RadioButton.Group onValueChange={setValue} value={value}>
+          <RadioButton.Item label="All Beat" value="" />
+          <ScrollView
+            style={{height: 300}}
+            showsVerticalScrollIndicator={false}>
             <FlatList
+              scrollEnabled={false}
               data={beat}
-              keyExtractor={(item, index) => item._id || index.toString()}
-              renderItem={renderItem}
-              contentContainerStyle={{paddingBottom: 25}}
+              keyExtractor={(item, _) => item._id}
               keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-              ListEmptyComponent={
-                <View style={styles.centered}>
-                  <Icon name="close-box-outline" size={32} color="#999" />
-                  <Text style={styles.emptyText}>No beats available</Text>
-                </View>
-              }
+              removeClippedSubviews={false}
+              renderItem={({item}) => {
+                return <RadioButton.Item label={item.name} value={item._id} />;
+              }}
             />
-          )}
-        </View>
+          </ScrollView>
+        </RadioButton.Group>
+        <Button
+          mode="contained"
+          style={{margin: 10}}
+          onPress={() => setVisible(false)}>
 
-        <Button mode="contained" onPress={() => onDismiss(false)}>
           Done
         </Button>
       </Modal>
@@ -112,67 +92,14 @@ const BeatModal = ({isMyVisits, visible, value, setValue, onDismiss}) => {
 export default memo(BeatModal);
 
 const styles = StyleSheet.create({
-  modalContainer: {
+
+  container: {
     backgroundColor: 'white',
-    padding: 20,
     marginHorizontal: 20,
+    padding: 20,
     borderRadius: 10,
-    gap: 10,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: COLORS.primary,
-  },
-  optionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: 8,
-    paddingHorizontal: 4,
-  },
-  selected: {
-    backgroundColor: '#f0f4ff',
-  },
-  radioCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  radioSelected: {
-    borderColor: COLORS.primary,
-  },
-  radioDot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: COLORS.primary,
-  },
-  icon: {
-    marginRight: 8,
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  centered: {
-    alignItems: 'center',
-    paddingVertical: 20,
-  },
-  emptyText: {
-    marginTop: 8,
-    fontSize: 14,
-    color: '#999',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 13,
-    color: '#666',
+    height: '60%',
+    marginTop: '40%',
+
   },
 });

@@ -9,22 +9,43 @@ import useLocationPermission from '../utils/useLocationPermission';
 
 const usePunchInModal = () => {
   const dispatch = useDispatch();
-  const [startKm, setStartKm] = useState('');
-  const [image, setImage] = useState(null);
-  const [vehicleTypeSelected, setVehicleTypeSelected] = useState(null);
-  const [workTypeSelected, setWorkTypeSelected] = useState(null);
   const [workType, setWorkType] = useState([]);
   const [vehicleType, setVehicleType] = useState([]);
-  const [remark, setRemark] = useState('');
+  const [isRemarkField, setIsRemarkField] = useState(false);
   const [requestLocationPermission] = useLocationPermission();
   const longitude = useRef(null);
   const latitude = useRef(null);
+  const vehicleTypeSelected = useRef(null);
+  const workTypeSelected = useRef(null);
+  const image = useRef(null);
+  const remark = useRef('');
+  const startKm = useRef('');
 
   useEffect(() => {
     requestLocationPermission();
     fetchWorkTypes();
     fetchVehicleTypes();
   }, []);
+
+  const onWorkTypeSelected = (type) => {
+    workTypeSelected.current = type;
+  }
+
+  const onVehicleTypeSelected = (type) => {
+    setIsRemarkField(type === 'public-transport' || type === 'others-enter-tada-remarks');
+    vehicleTypeSelected.current = type;
+  }
+
+  const onImageSelected = (img) => {
+    image.current = img;
+  }
+
+  const onRemarkChanged = (value) => {
+    remark.current = value;
+  }
+  const onKmChanged = (km) => {
+    startKm.current = km;
+  }
 
   const fetchWorkTypes = async () => {
     try {
@@ -56,12 +77,12 @@ const usePunchInModal = () => {
 
   const onSubmit = async (isRemark) => {
     if (isRemark) {
-      if (!remark || !workTypeSelected || !vehicleTypeSelected) {
+      if (remark.current === '' || !workTypeSelected.current || !vehicleTypeSelected.current) {
         Alert.alert('Error', 'Please fill all fields');
         return;
       }  
     } else {
-      if (!image || !startKm || !workTypeSelected || !vehicleTypeSelected) {
+      if (!image.current || startKm.current === '' || !workTypeSelected.current || !vehicleTypeSelected.current) {
         Alert.alert('Error', 'Please fill all fields and select an image.');
         return;
       }
@@ -73,21 +94,21 @@ const usePunchInModal = () => {
         longitude.current = position.coords.longitude;
 
         const formData = new FormData();
-        if (image) {
+        if (image.current && startKm.current) {
           formData.append('punch_in_photo', {
-            uri: image,
+            uri: image.current,
             type: 'image/jpeg',
             name: 'punchin.jpeg',
           });
         }
         formData.append('longitude', longitude.current);
         formData.append('latitude', latitude.current);
-        formData.append('work_type', workTypeSelected);
-        formData.append('vehicle_type', vehicleTypeSelected);
+        formData.append('work_type', workTypeSelected.current);
+        formData.append('vehicle_type', vehicleTypeSelected.current);
         if (isRemark) {
-          formData.append('remarks', remark);
+          formData.append('remarks', remark.current);
         } else {
-          formData.append('start_vehicle_km', startKm);
+          formData.append('start_vehicle_km', startKm.current);
         }
 
         dispatch(attendancePunchIn(formData));
@@ -96,33 +117,30 @@ const usePunchInModal = () => {
       error => {
         console.error('Geolocation error:', error);
         dispatch(storeAttendanceLoading(false));
-        Alert.alert('Location', 'Check your location service is enable.');
+        Alert.alert('Location', 'Check your location service is enabled.');
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   };
 
   const resetForm = () => {
-    setStartKm('');
-    setImage(null);
-    setVehicleTypeSelected(null);
-    setWorkTypeSelected(null);
+    startKm.current = '';
+    remark.current = '';
+    image.current = null;
+    vehicleTypeSelected.current = null;
+    workTypeSelected.current = null;
   };
 
   return {
-    startKm,
-    setStartKm,
-    image,
-    setImage,
-    vehicleTypeSelected,
-    setVehicleTypeSelected,
-    workTypeSelected,
-    setWorkTypeSelected,
+    onKmChanged,
+    onImageSelected,
+    onVehicleTypeSelected,
+    onWorkTypeSelected,
     workType,
     vehicleType,
     onSubmit,
-    setRemark,
-    remark,
+    onRemarkChanged,
+    isRemarkField,
   };
 };
 

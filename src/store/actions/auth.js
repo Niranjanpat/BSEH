@@ -97,7 +97,7 @@ export const attendancePunchIn = data => {
     punchIn(data)
       .then(res => {
         const {data, errors, success} = res.data;
-        
+
         if (success) {
           dispatch(getAttendanceStatus());
           dispatch(getAttendanceList());
@@ -122,8 +122,7 @@ export const attendancePunchIn = data => {
   };
 };
 
-export const attendancePunchOut = (data) => {
-  console.log('punch_out', data);
+export const attendancePunchOut = data => {
   return async dispatch => {
     dispatch(storeAttendanceLoading(true));
     punchOut(data)
@@ -140,12 +139,11 @@ export const attendancePunchOut = (data) => {
           if (errors) {
             Alert.alert('Error!', Object.values(errors).join(', '));
           }
+          dispatch(storeAttendanceLoading(false));
         }
       })
       .catch(e => {
         console.log('punchOut error', e);
-      })
-      .finally(() => {
         dispatch(storeAttendanceLoading(false));
       });
   };
@@ -159,7 +157,12 @@ export const getAttendanceStatus = () => {
         console.log('attendance', data);
         if (success) {
           dispatch(storeAttendanceStatus(data.status));
-          dispatch(storeTravelDistance(data.distance_travel));
+          dispatch(
+            storeKilometers({
+              vehicleType: data.vehicle_type,
+              startVehicleKm: data.start_vehicle_km,
+            }),
+          );
         } else {
           if (errors) {
             Alert.alert('Error!', Object.values(errors).join(', '));
@@ -198,8 +201,8 @@ export const storeAttendanceStatus = payload => {
   return {type: attendanceAction.STORE_ATTENDANCE_STATUS, payload};
 };
 
-export const storeTravelDistance = payload => {
-  return {type: attendanceAction.STORE_TRAVEL_DISTANCE, payload};
+export const storeKilometers = payload => {
+  return {type: attendanceAction.STORE_KILOMETERS, payload};
 };
 
 export const storeAttendanceList = payload => {

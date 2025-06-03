@@ -1,20 +1,17 @@
 // components/PunchOutModalUI.js
 
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  ScrollView,
-  Text,
-} from 'react-native';
+import {StyleSheet, View, TextInput, ScrollView} from 'react-native';
 import React, {forwardRef, useState, useImperativeHandle} from 'react';
-import {Modal, Button, Portal} from 'react-native-paper';
+import {Modal, Button, Portal, Text} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
 import MyDropdown from './DropDown';
 import CameraModal from './CameraModal';
 import usePunchOutModal from '../hooks/usePunchOutModal';
+import InputText from './InputText';
+import {useSelector} from 'react-redux';
 
 const PunchOutModalUI = forwardRef((props, ref) => {
+  const {kilomerters} = useSelector(state => state.auth);
   const [visible, setVisible] = useState(false);
 
   const hideModal = () => setVisible(false);
@@ -29,17 +26,18 @@ const PunchOutModalUI = forwardRef((props, ref) => {
     setWorkFeedback,
     dayEndDetail,
     setDayEndDetail,
-    vehicleReading,
-    setVehicleReading,
+    onVehicleReadingChange,
     totalVehicleReading,
-    setTotalVehicleReading,
     dailyAllowance,
-    dailyAllowanceSelected,
     setDailyAllowanceSelected,
     image,
     setImage,
     onSubmit,
-  } = usePunchOutModal(hideModal);
+  } = usePunchOutModal();
+
+  const isRemarkField =
+    kilomerters?.vehicleType === 'public-transport' ||
+    kilomerters?.vehicleType === 'others-enter-tada-remarks';
 
   return (
     <Portal>
@@ -47,66 +45,54 @@ const PunchOutModalUI = forwardRef((props, ref) => {
         visible={visible}
         onDismiss={hideModal}
         contentContainerStyle={styles.modalContainer}>
-        <ScrollView>
-          <View style={styles.container}>
-            <Text style={styles.label}>Work feedback</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Work feedback"
-              placeholderTextColor="#888"
-              value={workFeedback}
-              onChangeText={setWorkFeedback}
-            />
-          </View>
-
-          <View style={styles.container}>
-            <Text style={styles.label}>Day end details</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Day end details"
-              placeholderTextColor="#888"
-              value={dayEndDetail}
-              onChangeText={setDayEndDetail}
-            />
-          </View>
-
-          <View style={styles.container}>
-            <Text style={styles.label}>Day End Vehicle K.M</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Day End Vehicle K.M"
-              placeholderTextColor="#888"
-              keyboardType="numeric"
-              value={vehicleReading}
-              onChangeText={setVehicleReading}
-            />
-          </View>
-
-          <View style={styles.container}>
-            <Text style={styles.label}>Total K.M.</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Total K.M."
-              placeholderTextColor="#888"
-              keyboardType="numeric"
-              value={totalVehicleReading}
-              onChangeText={setTotalVehicleReading}
-            />
-          </View>
-
+        <Text variant="titleLarge" style={styles.dialogTitle}>
+          Punch Out
+        </Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={styles.label}>Work feedback</Text>
+          <InputText
+            placeholder="Work feedback"
+            onChangeText={setWorkFeedback}
+          />
+          <View style={styles.container} />
+          <Text style={styles.label}>Day end details</Text>
+          <InputText
+            placeholder="Day end details"
+            onChangeText={setDayEndDetail}
+          />
+          {!isRemarkField && (
+            <>
+              <View style={styles.container} />
+              <Text style={styles.label}>
+                Day End Vehicle K.M (Start KMs: {kilomerters?.startVehicleKm})
+              </Text>
+              <InputText
+                placeholder="Day End Vehicle K.M"
+                keyboardType="numeric"
+                onChangeText={v =>
+                  onVehicleReadingChange(v, kilomerters?.startVehicleKm)
+                }
+              />
+              <Text variant="labelSmall" style={{alignSelf: 'flex-end'}}>
+                Total K.M.: {totalVehicleReading.current}
+              </Text>
+            </>
+          )}
+          <View style={styles.container} />
           <MyDropdown
-            selectedOption={dailyAllowanceSelected}
             channel="Daily Allowance"
             item={dailyAllowance}
-            setSelectedOption={setDailyAllowanceSelected}
+            onOptionChanged={setDailyAllowanceSelected}
           />
-
-          <CameraModal setImage={setImage} image={image} />
+          {!isRemarkField && <CameraModal onImageSelect={setImage} />}
         </ScrollView>
 
         <Button
           mode="contained"
-          onPress={onSubmit}
+          onPress={() => {
+            hideModal();
+            onSubmit();
+          }}
           style={styles.closeButton}>
           Submit
         </Button>
@@ -126,14 +112,14 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     color: COLORS.primary,
-    margin: 20,
+    marginTop: 20,
   },
   container: {
-    padding: 20,
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 2,
     color: '#333',
     fontWeight: '600',
   },
@@ -147,6 +133,7 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#f9f9f9',
   },
+  dialogTitle: {alignSelf: 'center', marginBottom: 10},
 });
 
 export default PunchOutModalUI;
