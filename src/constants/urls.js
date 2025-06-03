@@ -93,6 +93,14 @@ export const URLS = {
   punchStatus: 'attendances/punch-status',
   status: 'daily-attendances/status',
   attendanceMonthly: '/daily-attendances/monthly',
+
+  //expense
+  expenseType:'expenses/type',
+  expense:'expenses',
+
+  //complaint
+  complaints:'complaints',
+  complaints_types:'complaint-types',
 };
 
 export const clientId =

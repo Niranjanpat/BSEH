@@ -1,3 +1,4 @@
+
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
 import {
@@ -11,9 +12,11 @@ import {
 import {getBeatList} from '../services/retailer_services';
 import {useNavigation} from '@react-navigation/native';
 
+
 const BeatModal = ({isMyVisits, value, setValue}) => {
   const [visible, setVisible] = useState(false);
   const [beat, setBeat] = useState([]);
+
   const [loading, setLoading] = useState([]);
   const navigation = useNavigation();
 
@@ -31,7 +34,7 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
   }, []);
 
   useEffect(() => {
-    getBeat();
+    fetchBeatList();
   }, []);
 
   const getBeat = () => {
@@ -78,6 +81,7 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
           mode="contained"
           style={{margin: 10}}
           onPress={() => setVisible(false)}>
+
           Done
         </Button>
       </Modal>
@@ -85,9 +89,10 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
   );
 };
 
-export default BeatModal;
+export default memo(BeatModal);
 
 const styles = StyleSheet.create({
+
   container: {
     backgroundColor: 'white',
     marginHorizontal: 20,
@@ -95,5 +100,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: '60%',
     marginTop: '40%',
+
   },
 });
