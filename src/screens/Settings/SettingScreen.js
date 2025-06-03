@@ -265,7 +265,7 @@ const SettingScreen = ({navigation}) => {
           onPress={() => {
             navigation.navigate(ROUTES.expenses);
           }}
-          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
+          left={props => <List.Icon {...props} icon="cash-multiple" />}
           right={props => <List.Icon {...props} icon="chevron-right" />}
         />
         <Divider />
@@ -274,14 +274,43 @@ const SettingScreen = ({navigation}) => {
           style={styles.list}
           title="Add Expenses"
           onPress={() => {
-            navigation.navigate(ROUTES.add_expenses,{channel:'add',expenseDetail:null,id:null});
+            navigation.navigate(ROUTES.add_expenses, {
+              channel: 'add',
+              expenseDetail: null,
+              id: null,
+            });
+          }}
+          left={props => <List.Icon {...props} icon="wallet-plus-outline" />}
+          right={props => <List.Icon {...props} icon="chevron-right" />}
+        />
+
+        <Divider />
+        <Divider />
+        <List.Item
+          style={styles.list}
+          title="Complaint"
+          onPress={() => {
+            navigation.navigate(ROUTES.complaint);
+          }}
+          left={props => <List.Icon {...props} icon="message-alert-outline" />}
+          right={props => <List.Icon {...props} icon="chevron-right" />}
+        />
+        <Divider />
+        <Divider />
+        <List.Item
+          style={styles.list}
+          title="Add Complaint"
+          onPress={() => {
+            navigation.navigate(ROUTES.add_complaint, {
+              channel: 'add',
+              complaint: null,
+            });
           }}
           left={props => <List.Icon {...props} icon="calendar-month-outline" />}
           right={props => <List.Icon {...props} icon="chevron-right" />}
         />
         <Divider />
         <Divider />
-
         <List.Item
           style={styles.list}
           title="About Patanjali"

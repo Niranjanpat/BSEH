@@ -36,6 +36,13 @@ import AddPromoterStockScreen from '../../screens/Settings/myvisits/promoter/Add
 import CustomerPromotionalItems from '../../screens/Settings/promotional_items/CustomerPromotionalItems';
 import UserPromotionalItems from '../../screens/Settings/promotional_items/UserPromotionalItems';
 
+//complaint
+import ComplaintListScreen from '../../screens/Settings/complaints/ComplaintListScreen';
+import AddComplaintScreen from '../../screens/Settings/complaints/AddComplaintScreen';
+import ExpensesListScreen from '../../screens/Settings/Expense/ExpensesScreen';
+import AddExpensesScreen from '../../screens/Settings/Expense/AddExpensesScreen';
+import ExpenseDetailScreen from '../../screens/Settings/Expense/ExpenseDetailScreen';
+
 const {Navigator, Screen} = createNativeStackNavigator();
 
 export const MyVisitStack = () => {
@@ -259,3 +266,62 @@ const ReturnOrderStack = () => {
     </Navigator>
   );
 };
+
+export const ComplaintStack = () => {
+  <Navigator>
+    <Screen
+      name={ROUTES.complaint}
+      component={ComplaintListScreen}
+      options={{
+        title: 'Complaints',
+      }}
+    />
+    <Screen
+      name={ROUTES.add_complaint}
+      component={AddComplaintScreen}
+      options={{
+        title: 'Add Complaints',
+      }}
+    />
+    <Screen
+      name={ROUTES.update_complaint}
+      component={AddComplaintScreen}
+      options={{
+        title: 'Update Compliants',
+      }}
+    />
+  </Navigator>;
+};
+
+// export const ExpenseStack = () => {
+//   <Navigator>
+//     <Screen
+//       name={ROUTES.expenses}
+//       component={ExpensesListScreen}
+//       options={{
+//         title: 'Expenses',
+//       }}
+//     />
+//     <Screen
+//       name={ROUTES.add_expenses}
+//       component={AddExpensesScreen}
+//       options={{
+//         title: 'Add Expenses',
+//       }}
+//     />
+//     <Screen
+//       name={ROUTES.update_complaint}
+//       component={AddExpensesScreen}
+//       options={{
+//         title: 'Update Expenses',
+//       }}
+//     />
+//     <Screen
+//       name={ROUTES.expenses_detail}
+//       component={ExpenseDetailScreen}
+//       options={{
+//         title: 'Expense Detail',
+//       }}
+//     />
+//   </Navigator>
+// };

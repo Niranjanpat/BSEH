@@ -11,7 +11,8 @@ export const getComplaintsType = async () => {
 };
 
 export const addComplaints = async (data) =>{
-  return await clientMultipart.post(URLS.complaints,data);
+    console.log("when api call",data);
+  return await client.post(URLS.complaints,data);
 };
 export const updateComplaints = async (data,id) =>{
   return await clientMultipart.put(URLS.complaints+'/'+id,data);

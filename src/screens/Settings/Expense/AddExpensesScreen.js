@@ -16,10 +16,10 @@ import Geolocation from 'react-native-geolocation-service';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import dayjs from 'dayjs';
 
-import {COLORS} from '../constants/theme/colors';
-import MyDropdown from '../components/DropDown';
-import {requestCameraPermission} from '../utils/useCameraPermission';
-import {getExpenseType, addExpense, updateExpense} from '../services/expense_sevice';
+import {COLORS} from '../../../constants/theme/colors';
+import MyDropdown from '../../../components/DropDown';
+import {requestCameraPermission} from '../../../utils/useCameraPermission';
+import {getExpenseType, addExpense, updateExpense} from '../../../services/expense_sevice';
 
 const AddExpensesScreen = ({route, navigation}) => {
   const {channel, expenseDetail, id} = route.params;

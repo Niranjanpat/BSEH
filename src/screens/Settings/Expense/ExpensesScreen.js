@@ -9,9 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {COLORS} from '../constants/theme/colors';
-import {ROUTES} from '../constants/routes';
-import {getExpense} from '../services/expense_sevice';
+import {COLORS} from '../../../constants/theme/colors';
+import {ROUTES} from '../../../constants/routes';
+import {getExpense} from '../../../services/expense_sevice';
 
 const STATUS_COLORS = {
   approved: 'green',
@@ -63,7 +63,7 @@ const ExpensesListScreen = () => {
     <TouchableOpacity
       style={[styles.card, {borderLeftColor: getStatusColor(item.status)}]}
       onPress={() =>
-        navigation.navigate(ROUTES.expenses_detail, {expense: item})
+        navigation.navigate(ROUTES.expenses_detail, {expense: item , editable: item.status === 'pending',})
       }>
       <Text style={styles.title}>₹ {item.amount}</Text>
       <Text style={styles.text}>Date: {item.date}</Text>
@@ -82,7 +82,8 @@ const ExpensesListScreen = () => {
     ) : null;
 
   return (
-    <FlatList
+    <>
+        {expense.length ? (<FlatList
       data={expense}
       keyExtractor={item => item._id}
       renderItem={renderItem}
@@ -90,7 +91,9 @@ const ExpensesListScreen = () => {
       onEndReached={() => fetchExpenses(page)}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
-    />
+    />) :(<View style={styles.empty}><Text>No Expense available</Text></View>) }
+    </>
+    
   );
 };
 
@@ -107,6 +110,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: {width: 0, height: 2},
     borderLeftWidth: 5,
+  },
+  empty:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center'
   },
   title: {
     fontSize: 18,

@@ -29,11 +29,18 @@ export const ROUTES = {
   day_wise_report: 'day_wise_report',
 
   //expense
+  expense_stack:'expense_stack',
   add_expenses: 'add_expenses',
   update_expenses:'update_expenses',
   expenses: 'expenses',
   expenses_detail:'expenses_detail',
 
+  //complaints
+  complaint_stack:'complaint_stack',
+  add_complaint:'add_complaint',
+  update_complaint:'update_complaint',
+  complaint:'complaint',
+  
   // inner stacks of settings stack
   myvisit_stack: 'myvisit_stack',
   return_stack: 'return_stack',

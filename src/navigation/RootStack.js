@@ -57,9 +57,12 @@ import OrderCartIcon from '../components/OrderCartIcon';
 import MonthlyTravelDistance from '../screens/Settings/MonthlyTravelDistance';
 import MonthlyAttendanceList from '../components/attendance/MonthlyAttendanceList';
 import MonthAttendanceScreen from '../screens/Settings/MonthlyAttendanceScreen';
-import AddExpensesScreen from '../screens/AddExpensesScreen';
-import ExpensesScreen from '../screens/ExpensesScreen';
-import ExpenseDetailScreen from '../screens/ExpenseDetailScreen';
+import AddExpensesScreen from '../screens/Settings/Expense/AddExpensesScreen';
+import ExpensesScreen from '../screens/Settings/Expense/ExpensesScreen';
+import ExpenseDetailScreen from '../screens/Settings/Expense/ExpenseDetailScreen';
+import {ComplaintStack} from './settings_stack/index';
+import AddComplaintScreen from '../screens/Settings/complaints/AddComplaintScreen';
+import ComplaintListScreen from '../screens/Settings/complaints/ComplaintListScreen';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -168,7 +171,7 @@ export const SettingsStackNavigation = () => {
         component={AddExpensesScreen}
         options={{title: 'AddExpenses', headerShown: true}}
       />
-       <SettingsStack.Screen
+      <SettingsStack.Screen
         name={ROUTES.update_expenses}
         component={AddExpensesScreen}
         options={{title: 'UpdateExpenses', headerShown: true}}
@@ -182,6 +185,21 @@ export const SettingsStackNavigation = () => {
         name={ROUTES.expenses_detail}
         component={ExpenseDetailScreen}
         options={{title: 'Expenses Detail', headerShown: true}}
+      />
+       <SettingsStack.Screen
+        name={ROUTES.complaint}
+        component={ComplaintListScreen}
+        options={{title: 'Complaint', headerShown: true}}
+      />
+       <SettingsStack.Screen
+        name={ROUTES.add_complaint}
+        component={AddComplaintScreen}
+        options={{title: 'Add Complaint', headerShown: true}}
+      />
+        <SettingsStack.Screen
+        name={ROUTES.update_complaint}
+        component={AddComplaintScreen}
+        options={{title: 'Update Complaint', headerShown: true}}
       />
     </SettingsStack.Navigator>
   );

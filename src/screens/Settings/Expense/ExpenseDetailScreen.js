@@ -8,10 +8,10 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {COLORS} from '../constants/theme/colors';
+import {COLORS} from '../../../constants/theme/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {getExpenseDetail} from '../services/expense_sevice';
-import {ROUTES} from '../constants/routes';
+import {getExpenseDetail} from '../../../services/expense_sevice';
+import {ROUTES} from '../../../constants/routes';
 
 const getStatusColor = {
   approved: 'green',
@@ -20,24 +20,29 @@ const getStatusColor = {
 };
 
 const ExpenseDetailScreen = ({route, navigation}) => {
-  const {expense} = route.params;
+  const {expense, editable} = route.params;
   const [expenseDetail, setExpenseDetail] = useState({});
 
-  // 🔧 Set up Edit button in header
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => handleEdit()}
-          style={{marginRight: 15}}>
-          <Icon name="edit" size={24} color={COLORS.primary} />
-        </TouchableOpacity>
-      ),
-    });
+    if (editable) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => handleEdit()}
+            style={{marginRight: 15}}>
+            <Icon name="edit" size={24} color={COLORS.primary} />
+          </TouchableOpacity>
+        ),
+      });
+    }
   }, [navigation, expenseDetail]);
 
   const handleEdit = () => {
-    navigation.navigate(ROUTES.update_expenses,{channel:'update',expenseDetail:expenseDetail,id:expense._id});
+    navigation.navigate(ROUTES.update_expenses, {
+      channel: 'update',
+      expenseDetail: expenseDetail,
+      id: expense._id,
+    });
   };
 
   useEffect(() => {
@@ -91,15 +96,31 @@ const ExpenseDetailScreen = ({route, navigation}) => {
 
         {status === 'approved' && approved_by_name && (
           <>
-            <DetailRow icon="verified-user" label="Approved By" value={approved_by_name} />
-            <DetailRow icon="access-time" label="Approved At" value={approved_at} />
+            <DetailRow
+              icon="verified-user"
+              label="Approved By"
+              value={approved_by_name}
+            />
+            <DetailRow
+              icon="access-time"
+              label="Approved At"
+              value={approved_at}
+            />
           </>
         )}
 
         {status === 'rejected' && rejected_by_name && (
           <>
-            <DetailRow icon="cancel" label="Rejected By" value={rejected_by_name} />
-            <DetailRow icon="access-time" label="Rejected At" value={rejected_at} />
+            <DetailRow
+              icon="cancel"
+              label="Rejected By"
+              value={rejected_by_name}
+            />
+            <DetailRow
+              icon="access-time"
+              label="Rejected At"
+              value={rejected_at}
+            />
           </>
         )}
 
@@ -120,7 +141,10 @@ const DetailRow = ({icon, label, value, valueStyle = {}}) => (
   <View style={styles.row}>
     <Icon name={icon} size={20} color={COLORS.primary} style={styles.icon} />
     <Text style={styles.label}>{label}:</Text>
-    <Text style={[styles.value, valueStyle]} numberOfLines={1} ellipsizeMode="tail">
+    <Text
+      style={[styles.value, valueStyle]}
+      numberOfLines={1}
+      ellipsizeMode="tail">
       {value}
     </Text>
   </View>
@@ -128,7 +152,7 @@ const DetailRow = ({icon, label, value, valueStyle = {}}) => (
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     padding: 20,
     backgroundColor: '#fff',
   },
