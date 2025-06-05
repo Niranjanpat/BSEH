@@ -1,21 +1,19 @@
 import React from 'react';
-import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {
   Appbar,
   Avatar,
   Button,
   Caption,
-  Divider,
   Subheading,
   Text,
   Title,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import VerticalSpacer from '../../components/VerticalSpacer';
 
 import {ROUTES} from '../../constants/routes';
 import {COLORS} from '../../constants/theme/colors';
-import {SPACINGS, TYPOGRAPHY} from '../../constants/theme';
+import {SPACINGS} from '../../constants/theme';
 
 const ProfileScreen = ({navigation}) => {
   const {profile, role} = useSelector(state => state.auth);
@@ -24,109 +22,58 @@ const ProfileScreen = ({navigation}) => {
     navigation.navigate(ROUTES.update_profile);
   };
 
+  // Prepare dictionary object with profile fields
+  const profileFields = {
+    Address: profile?.address || 'N/A',
+    'Contact Number': profile?.contact_number || 'N/A',
+    DOB: profile?.date_of_birth || 'N/A',
+    'E-mail': profile?.email || 'N/A',
+    'Emp Code': profile?.emp_code || 'N/A',
+    Gender: profile?.gender || 'N/A',
+    Verticals: profile?.verticals || 'N/A',
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <Appbar.Header theme={{colors: {primary: COLORS.light}}}>
-        <Appbar.BackAction
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
+      <Appbar.Header style={styles.appbar}>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Profile" />
       </Appbar.Header>
-      <View style={styles.imgContainer}>
+
+      <View style={styles.profileCard}>
+        <Button
+          style={styles.editButton}
+          mode="contained"
+          icon="account-edit"
+          onPress={handleEditPressed}>
+          Edit Profile
+        </Button>
         <Avatar.Text
-          style={styles.avater}
+          style={styles.avatar}
           size={100}
-          label={profile.name ? profile.name.charAt(0) : 'P'}
+          label={profile?.name ? profile.name.charAt(0) : 'P'}
+          color="#fff"
         />
-      </View>
-      <View style={styles.retailerBasicDetails}>
-        <Title numberOfLines={1}>{profile.name}</Title>
-        <Caption>{role}</Caption>
+        <Title style={styles.name}>{profile?.name || 'User'}</Title>
+        <Caption style={styles.role}>{role || 'N/A'}</Caption>
       </View>
 
       <View style={styles.detailsContainer}>
-        <ScrollView
-          contentContainerStyle={styles.bottomDetailsContentContainer}
-          showsVerticalScrollIndicator={false}>
-          <Button
-            style={styles.btnEdit}
-            compact
-            mode="contained"
-            onPress={handleEditPressed}
-            icon={'account-edit'}>
-            Edit
-          </Button>
-          <Subheading>Profile Info:</Subheading>
-          <Divider />
-          <VerticalSpacer />
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Address</Text>
-            <Text> : </Text>
-            {profile?.address ? (
-              <Text style={styles.detailsValue}>{profile?.address}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Contact Number</Text>
-            <Text> : </Text>
-            {profile?.contact_number ? (
-              <Text style={styles.detailsValue}>{profile?.contact_number}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>DOB</Text>
-            <Text> : </Text>
-            {profile?.date_of_birth ? (
-              <Text style={styles.detailsValue}>{profile?.date_of_birth}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>E-mail</Text>
-            <Text> : </Text>
-            {profile?.email ? (
-              <Text style={styles.detailsValue}>{profile?.email}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Emp Code</Text>
-            <Text> : </Text>
-            {profile?.emp_code ? (
-              <Text style={styles.detailsValue}>{profile?.emp_code}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Gender</Text>
-            <Text> : </Text>
-            {profile?.gender ? (
-              <Text style={styles.detailsValue}>{profile?.gender}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.detailsTitle}>Verticals</Text>
-            <Text> : </Text>
-            {profile?.verticals ? (
-              <Text style={styles.detailsValue}>{profile?.verticals}</Text>
-            ) : (
-              <Text style={styles.notAvailableTxt}>N/A</Text>
-            )}
-          </View>
+        <Subheading style={styles.sectionTitle}>Profile Info</Subheading>
 
-          <Divider />
-        </ScrollView>
+        <View style={styles.dictionaryContainer}>
+          {Object.entries(profileFields).map(([key, value]) => (
+            <View style={styles.fieldRow} key={key}>
+              <Text style={styles.fieldLabel}>{key}:</Text>
+              <Text
+                style={
+                  value === 'N/A' ? styles.notAvailableValue : styles.fieldValue
+                }>
+                {value}
+              </Text>
+            </View>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -134,83 +81,85 @@ const ProfileScreen = ({navigation}) => {
 
 export default ProfileScreen;
 
-const size = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background || '#f5f7fa',
   },
-  btnEdit: {
-    alignSelf: 'flex-end',
+  appbar: {
+    elevation: 0,
   },
-  avater: {
-    alignSelf: 'center',
-  },
-  imgContainer: {
-    borderRadius: 5,
-    overflow: 'hidden',
-    padding: SPACINGS.xxs,
-    marginTop: SPACINGS.sm,
-    // backgroundColor: COLORS.light,
-  },
-
-  retailerBasicDetails: {
+  profileCard: {
     alignItems: 'center',
-    padding: SPACINGS.xs,
+    paddingVertical: SPACINGS.lg,
+    backgroundColor: '#fff',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    marginBottom: SPACINGS.md,
   },
-
-  buttonGroupStyle: {
-    alignSelf: 'center',
-    maxHeight: size.width * 0.12,
-    marginBottom: SPACINGS.sm,
+  avatar: {
+    backgroundColor: COLORS.primary,
   },
-
-  buttonGroupContentContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingHorizontal: SPACINGS.md,
+  name: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: COLORS.textDark || '#212121',
+    marginTop: 10,
   },
-
-  bottomButtonGroup: {
-    width: size.width,
-    flexDirection: 'row',
+  role: {
+    fontSize: 14,
+    color: COLORS.textLight || '#757575',
+    marginTop: 2,
   },
-
   detailsContainer: {
-    flex: 1,
-    overflow: 'hidden',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    backgroundColor: '#cfd8dc',
-    width: size.width,
+    paddingHorizontal: SPACINGS.lg,
+    paddingVertical: SPACINGS.md,
   },
-
-  bottomDetailsContentContainer: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: COLORS.primary,
+    marginBottom: SPACINGS.sm,
+  },
+  dictionaryContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
     padding: SPACINGS.md,
+    // Optional shadow for subtle elevation:
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 1 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 2,
+    // elevation: 2,
   },
-
-  row: {
+  fieldRow: {
     flexDirection: 'row',
     marginBottom: SPACINGS.sm,
-    flex: 1,
+    flexWrap: 'wrap',
   },
-
-  detailsTitle: {
-    ...TYPOGRAPHY.caption,
-    width: size.width * 0.22,
-    color: COLORS.accentSecondary,
+  fieldLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.textLight || '#777',
+    marginRight: 8,
   },
-
-  detailsValue: {
-    flex: 1,
+  fieldValue: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: COLORS.textDark || '#222',
+    flexShrink: 1,
   },
-
-  notAvailableTxt: {
-    color: COLORS.accentPrimary,
+  notAvailableValue: {
+    fontSize: 15,
+    fontWeight: '400',
+    fontStyle: 'italic',
+    color: '#b0bec5',
+    flexShrink: 1,
   },
-
-  button: {
-    padding: SPACINGS.sm,
+  editButton: {
+    alignSelf: 'flex-end',
+    marginBottom: SPACINGS.md,
+    backgroundColor: COLORS.primary,
+    marginRight:SPACINGS.sm,
   },
 });

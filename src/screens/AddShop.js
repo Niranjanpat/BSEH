@@ -60,6 +60,10 @@ const AddShop = () => {
     console.log('AddShop component mounted', pinCodeList);
   }, []);
 
+  useEffect(() => {
+    getPinCode(beatDetail?.city_id);
+  }, [beatDetail]);
+
   const getBeat = () => {
     getBeatList()
       .then(res => {
@@ -74,7 +78,7 @@ const AddShop = () => {
   };
 
   const getPinCode = text => {
-    getPinCodeList(text,beatDetail?.city_id)
+    getPinCodeList(text, beatDetail?.city_id)
       .then(res => {
         console.log('Pin codes fetched:', res.data);
         setPinCodeList(res?.data?.data?.pin_codes || []);
@@ -83,9 +87,9 @@ const AddShop = () => {
         alert(e);
       });
   };
-  useEffect(() =>{
-    getPinCode();
-  },[beatDetail])
+  useEffect(() => {
+    getPinCode('', beatDetail?.city_id);
+  }, [beatDetail]);
   const getShopType = () => {
     getCustomerTypeList()
       .then(res => {
@@ -206,23 +210,31 @@ const AddShop = () => {
             return;
           }
 
-          const {divisions, city, state, district, region, ...filteredValues} = values;
-
           const formData = new FormData();
 
-          // Append all simple fields
-          Object.entries(filteredValues).forEach(([key, value]) => {
-            if (key === 'image' && value){
-              console.log("values",value);
-              formData.append('photo', {
-                uri: value.uri,
-                type: 'image/jpeg',
-                name: 'shop.jpeg',
-              });
-            }else{
-              formData.append(key, value);
-            }
-          });
+          formData.append('route_id', values.route_id);
+          formData.append('name', values.name);
+          formData.append('customer_type_id', values.customer_type_id);
+          formData.append('customer_class_id', values.customer_class_id);
+          formData.append('pin_code_id', values.pin_code_id);
+          formData.append('divisions', values.divisions);
+          formData.append('gst_number', values.gst_number);
+          formData.append('owner_name', values.owner_name);
+          formData.append('owner_email', values.owner_email);
+          formData.append('owner_contact_number', values.owner_contact_number);
+          formData.append('owner_phone_number', values.owner_phone_number);
+          formData.append('town', values.town);
+          formData.append('latitude', values.latitude);
+          formData.append('longitude', values.longitude);
+          formData.append('address',values.address);
+
+          if (values.image) {
+            formData.append('photo', {
+              uri: values.image.uri,
+              type: 'image/jpeg',
+              name: 'shop.jpeg',
+            });
+          }
 
           setIsLoading(true);
           addShop(formData)
@@ -231,7 +243,7 @@ const AddShop = () => {
               const {data, success, errors} = res.data;
               if (success) {
                 Alert.alert('Success', 'Customer added successfully');
-                resetForm();
+                resetForm(); 
               } else {
                 setErrors(res.data.errors || {});
               }
@@ -260,7 +272,6 @@ const AddShop = () => {
                 setFieldValue('route_id', value);
                 getBeatDetail(value).then(res => {
                   const {data} = res.data;
-                  console.log(data);
                   if (res.data.success) {
                     setBeatDetail(data);
                     setFieldValue('city', data.city_name);

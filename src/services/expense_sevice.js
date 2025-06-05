@@ -14,6 +14,7 @@ export const addExpense = async (data) =>{
   return await clientMultipart.post(URLS.expense,data);
 };
 export const updateExpense = async (data,id) =>{
+    console.log("data in api ",data,id);
   return await clientMultipart.put(URLS.expense+'/'+id,data);
 };
 

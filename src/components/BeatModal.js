@@ -1,5 +1,5 @@
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState,memo} from 'react';
 import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
 import {
   Button,
@@ -33,9 +33,9 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
     });
   }, []);
 
-  useEffect(() => {
-    fetchBeatList();
-  }, []);
+  // useEffect(() => {
+  //   fetchBeatList();
+  // }, []);
 
   const getBeat = () => {
     setLoading(true);

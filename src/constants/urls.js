@@ -101,6 +101,11 @@ export const URLS = {
   //complaint
   complaints:'complaints',
   complaints_types:'complaint-types',
+
+
+  //user_complaint
+  user_complaint:'user-complaints',
+  
 };
 
 export const clientId =
