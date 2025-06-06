@@ -10,7 +10,13 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import {Button, Subheading, Text, TextInput} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  Subheading,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
 import {Formik} from 'formik';
 import Geolocation from 'react-native-geolocation-service';
@@ -47,7 +53,8 @@ const AddShop = () => {
   const [shopType, setShopType] = useState([]);
   const [pinCodeList, setPinCodeList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [beatDetail, setBeatDetail] = useState([]);
+  const [beatDetail, setBeatDetail] = useState({});
+  const [beatDetailLoading, setBeatDetailLoading] = useState(false);
 
   useEffect(() => {
     getBeat();
@@ -74,7 +81,7 @@ const AddShop = () => {
   };
 
   const getPinCode = text => {
-    getPinCodeList(text,beatDetail?.city_id)
+    getPinCodeList(text, beatDetail?.city_id)
       .then(res => {
         console.log('Pin codes fetched:', res.data);
         setPinCodeList(res?.data?.data?.pin_codes || []);
@@ -83,9 +90,13 @@ const AddShop = () => {
         alert(e);
       });
   };
-  useEffect(() =>{
-    getPinCode();
-  },[beatDetail])
+
+  useEffect(() => {
+    if (Object.keys(beatDetail).length) {
+      getPinCode('');
+    }
+  }, [beatDetail]);
+
   const getShopType = () => {
     getCustomerTypeList()
       .then(res => {
@@ -137,7 +148,7 @@ const AddShop = () => {
   const handleImagePick = setFieldValue => {
     launchCamera({mediaType: 'photo', quality: 0.7}, response => {
       if (response?.assets?.length) {
-        setFieldValue('image', response.assets[0]);
+        setFieldValue('image', response.assets[0].uri);
       }
     });
   };
@@ -206,28 +217,28 @@ const AddShop = () => {
             return;
           }
 
-          const {divisions, city, state, district, region, ...filteredValues} = values;
+          // const {divisions, city, state, district, region, ...filteredValues} =
+          //   values;
+          setIsLoading(true);
 
           const formData = new FormData();
 
           // Append all simple fields
-          Object.entries(filteredValues).forEach(([key, value]) => {
-            if (key === 'image' && value){
-              console.log("values",value);
+          Object.entries(values).forEach(([key, value]) => {
+            if (key === 'image' && value) {
               formData.append('photo', {
-                uri: value.uri,
+                uri: value,
                 type: 'image/jpeg',
                 name: 'shop.jpeg',
               });
-            }else{
+            } else {
               formData.append(key, value);
             }
           });
 
-          setIsLoading(true);
           addShop(formData)
             .then(res => {
-              console.log('Add shop response:', res);
+              console.log(res);
               const {data, success, errors} = res.data;
               if (success) {
                 Alert.alert('Success', 'Customer added successfully');
@@ -251,27 +262,37 @@ const AddShop = () => {
             <Subheading style={{color: COLORS.accentPrimary}}>
               Shop Information
             </Subheading>
-
-            <FormPicker
-              label="Beat"
-              selectedValue={values.route_id}
-              items={beat}
-              onValueChange={value => {
-                setFieldValue('route_id', value);
-                getBeatDetail(value).then(res => {
-                  const {data} = res.data;
-                  console.log(data);
-                  if (res.data.success) {
-                    setBeatDetail(data);
-                    setFieldValue('city', data.city_name);
-                    setFieldValue('state', data.state_name);
-                    setFieldValue('district', data.district_name);
-                    setFieldValue('region', data.region_name);
-                    setFieldValue('divisions', data.division_names);
-                  }
-                });
-              }}
-            />
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+              <FormPicker
+                label="Beat"
+                selectedValue={values.route_id}
+                items={beat}
+                onValueChange={value => {
+                  setBeatDetailLoading(true);
+                  setFieldValue('route_id', value);
+                  getBeatDetail(value)
+                    .then(res => {
+                      const {data} = res.data;
+                      console.log(data);
+                      if (res.data.success) {
+                        setBeatDetail(data);
+                        setFieldValue('city', data.city_name);
+                        setFieldValue('state', data.state_name);
+                        setFieldValue('district', data.district_name);
+                        setFieldValue('region', data.region_name);
+                        setFieldValue('divisions', data.division_names);
+                      } else {
+                        setBeatDetail({});
+                      }
+                    })
+                    .finally(() => setBeatDetailLoading(false));
+                }}
+              />
+              <ActivityIndicator
+                animating={beatDetailLoading}
+                style={{position: 'absolute', marginEnd: '7%'}}
+              />
+            </View>
             {errors.route_id && (
               <Text style={styles.errorText}>{errors.route_id}</Text>
             )}
@@ -500,7 +521,7 @@ const AddShop = () => {
 
             {values.image && (
               <Image
-                source={{uri: values.image.uri}}
+                source={{uri: values.image}}
                 style={{
                   width: '100%',
                   height: 200,
@@ -513,7 +534,7 @@ const AddShop = () => {
             <Button
               mode="outlined"
               onPress={() => handleImagePick(setFieldValue)}
-              style={{marginVertical: 10}}>
+              style={{marginVertical: 10, borderColor: COLORS.primary}}>
               Take Photo
             </Button>
             {errors.image && (
@@ -548,6 +569,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   picker: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 10,
     marginTop: 10,
