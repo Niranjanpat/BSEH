@@ -1,25 +1,24 @@
-import {FlatList, StyleSheet, View} from 'react-native';
-import React, {memo, useCallback, useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
-  Button,
-  Dialog,
-  Modal,
-  Portal,
-  RadioButton,
+  FlatList,
+  StyleSheet,
+  View,
   Text,
-} from 'react-native-paper';
+  TouchableOpacity,
+} from 'react-native';
+import React, {memo, useCallback, useEffect, useState} from 'react';
+import {Button, Modal, Portal, ActivityIndicator} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   storeRetailerFilterData,
   storeShowRetailerFilter,
 } from '../../store/actions/retailer';
 import {useRetailerMaster} from '../../hooks/useRetailerMaster';
+import {COLORS} from '../../constants/theme/colors';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const RetailerMasterFilterModal = () => {
   const {showRetailerFilter, selectedRetailerFilterMenu, retailerFilterData} =
     useSelector(state => state.retailer);
-
   const dispatch = useDispatch();
 
   const [visible, setVisible] = useState(false);
@@ -36,21 +35,11 @@ const RetailerMasterFilterModal = () => {
   useEffect(() => {
     switch (selectedRetailerFilterMenu) {
       case 'Active':
-        const filterDataActive = {
-          ...retailerFilterData,
-          status: true,
-        };
-        dispatch(storeRetailerFilterData(filterDataActive));
+        dispatch(storeRetailerFilterData({...retailerFilterData, status: true}));
         break;
       case 'Inactive':
-        const filterDataInactive = {
-          ...retailerFilterData,
-          status: false,
-        };
-        dispatch(storeRetailerFilterData(filterDataInactive));
+        dispatch(storeRetailerFilterData({...retailerFilterData, status: false}));
         break;
-      default:
-        console.log('Invalid menu');
     }
   }, [selectedRetailerFilterMenu]);
 
@@ -62,18 +51,17 @@ const RetailerMasterFilterModal = () => {
     }
   }, [showRetailerFilter, retailerFilterData]);
 
-  const closeDialog = () => dispatch(storeShowRetailerFilter(false));
+  const closeModal = () => dispatch(storeShowRetailerFilter(false));
 
-  const setSelectedCustomerValue = useCallback(value => {
-    closeDialog();
-    const type = getFilterType(selectedRetailerFilterMenu);
-    if (type === '') return;
-    const filterData = {
-      ...retailerFilterData,
-      [type]: value,
-    };
-    dispatch(storeRetailerFilterData(filterData));
-  }, [selectedRetailerFilterMenu]);
+  const setSelectedCustomerValue = useCallback(
+    value => {
+      closeModal();
+      const type = getFilterType(selectedRetailerFilterMenu);
+      if (type === '') return;
+      dispatch(storeRetailerFilterData({...retailerFilterData, [type]: value}));
+    },
+    [selectedRetailerFilterMenu],
+  );
 
   const getFilterType = menu => {
     switch (menu) {
@@ -85,56 +73,75 @@ const RetailerMasterFilterModal = () => {
       case 'Inactive':
         return 'status';
       default:
-        console.log('Invalid menu');
         return '';
     }
   };
 
+  const renderItem = ({item}) => {
+    const isSelected = item._id === selectedValue;
+    return (
+      <TouchableOpacity
+        style={[styles.optionContainer, isSelected && styles.selected]}
+        onPress={() => setSelectedCustomerValue(item._id)}>
+        <View style={[styles.radioCircle, isSelected && styles.radioSelected]}>
+          {isSelected && <View style={styles.radioDot} />}
+        </View>
+        <Icon
+          name="account-outline"
+          size={20}
+          color={isSelected ? COLORS.primary : '#555'}
+          style={styles.icon}
+        />
+        <Text style={styles.optionText}>{item.name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <Portal>
-      <Dialog
-        visible={visible}
-        style={styles.container}
-        onDismiss={() => closeDialog()}>
-        <Dialog.Title>{`Select Customer ${selectedRetailerFilterMenu}`}</Dialog.Title>
-        <Dialog.Content style={[styles.container]}>
-          <RadioButton.Group
-            onValueChange={(v) => setSelectedCustomerValue(v)}
-            value={selectedValue}>
-            <RadioButton.Item
-              label={`All ${selectedRetailerFilterMenu}`}
-              value=""
-            />
-            <View style={{height: 235}}>
-              <FlatList
-                data={data}
-                keyExtractor={(item, _) => item._id}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                removeClippedSubviews={false}
-                scrollEnabled={true}
-                ListHeaderComponent={loading && <ActivityIndicator />}
-                ListEmptyComponent={
-                  !loading && (
-                    <Text
-                      style={{
-                        alignSelf: 'center',
-                      }}>{`No ${selectedRetailerFilterMenu}`}</Text>
-                  )
-                }
-                renderItem={({item}) => {
-                  return (
-                    <RadioButton.Item label={item.name} value={item._id} />
-                  );
-                }}
-              />
+      <Modal visible={visible} onDismiss={closeModal} contentContainerStyle={styles.modalContainer}>
+        <Text style={styles.title}>Select Customer {selectedRetailerFilterMenu}</Text>
+
+        <TouchableOpacity
+          style={[styles.optionContainer, selectedValue === '' && styles.selected]}
+          onPress={() => setSelectedCustomerValue('')}>
+          <View style={[styles.radioCircle, selectedValue === '' && styles.radioSelected]}>
+            {selectedValue === '' && <View style={styles.radioDot} />}
+          </View>
+          <Icon name="select-all" size={20} color="#555" style={styles.icon} />
+          <Text style={styles.optionText}>All {selectedRetailerFilterMenu}</Text>
+        </TouchableOpacity>
+
+        <View style={{maxHeight: 250}}>
+          {loading ? (
+            <View style={styles.centered}>
+              <ActivityIndicator />
+              <Text style={styles.loadingText}>Loading...</Text>
             </View>
-          </RadioButton.Group>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => closeDialog()}>Done</Button>
-        </Dialog.Actions>
-      </Dialog>
+          ) : (
+            <FlatList
+              data={data}
+              keyExtractor={item => item._id}
+              renderItem={renderItem}
+              contentContainerStyle={{paddingBottom: 25}}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={styles.centered}>
+                  <Icon name="close-box-outline" size={32} color="#999" />
+                  <Text style={styles.emptyText}>
+                    No {selectedRetailerFilterMenu} found
+                  </Text>
+                </View>
+              }
+            />
+          )}
+        </View>
+
+        <Button mode="contained" onPress={closeModal} style={styles.submitButton}>
+          Done
+        </Button>
+      </Modal>
     </Portal>
   );
 };
@@ -142,7 +149,70 @@ const RetailerMasterFilterModal = () => {
 export default memo(RetailerMasterFilterModal);
 
 const styles = StyleSheet.create({
-  container: {
-    overflow: 'hidden',
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    gap: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: COLORS.primary,
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderRadius: 8,
+    paddingHorizontal: 4,
+  },
+  selected: {
+    backgroundColor: '#f0f4ff',
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  radioSelected: {
+    borderColor: COLORS.primary,
+  },
+  radioDot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: COLORS.primary,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  centered: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  emptyText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#999',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 13,
+    color: '#666',
+  },
+  submitButton: {
+    backgroundColor: COLORS.primary,
   },
 });
