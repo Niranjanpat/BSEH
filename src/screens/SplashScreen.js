@@ -44,8 +44,8 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.primary} />
-      <Image style={styles.coverImage} source={IMAGE.splash} />
+      <StatusBar backgroundColor={"#fbf5e9"} />
+      <Image style={styles.coverImage} source={IMAGE.logo_ruchi} />
 
       <Text style={styles.text}>विकल्प रहित संकल्प ।</Text>
       <Text style={styles.text}>अखण्ड, प्रचण्ड पुरुषार्थ ।</Text>
@@ -63,7 +63,7 @@ export default SplashScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#fbf5e9',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
 
   coverImage: {
-    height: 200,
+    height: 300,
     width: 400,
     resizeMode: 'contain',
   },
