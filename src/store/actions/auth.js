@@ -94,33 +94,36 @@ export const getAttendanceList = () => {
 export const attendancePunchIn = data => {
   return async dispatch => {
     dispatch(storeAttendanceLoading(true));
-    punchIn(data)
-      .then(res => {
-        const {data, errors, success} = res.data;
 
-        if (success) {
-          dispatch(getAttendanceStatus());
-          dispatch(getAttendanceList());
+    try {
+      const res = await punchIn(data); // data can be FormData or plain object
+      const { data: responseData, errors, success } = res?.data ?? {};
 
-          MapplsIntouch.startTrackingWithCustomConfig({
-            standByTimeInMins: 15, //mandatory
-            timeWhileMovingInSec: 10, //mandatory enableRequestPermissionIfMissing:true
-            autoTrackingConfig: {
-              endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
-            },
-          });
-          MapplsIntouch.getCurrentLocationUpdate();
-        } else if (errors) {
-          Alert.alert('Error!', Object.values(errors).join(', '));
-          dispatch(storeAttendanceLoading(false));
-        }
-      })
-      .catch(e => {
-        console.log('punch-in error - ', e);
-        dispatch(storeAttendanceLoading(false));
-      });
+      if (success) {
+        dispatch(getAttendanceStatus());
+        dispatch(getAttendanceList());
+
+        MapplsIntouch.startTrackingWithCustomConfig({
+          standByTimeInMins: 15,
+          timeWhileMovingInSec: 10,
+          autoTrackingConfig: {
+            endTimeConfig: { hour: 10, minute: 0, amPm: 'pm' },
+          },
+        });
+
+        MapplsIntouch.getCurrentLocationUpdate();
+      } else if (errors) {
+        Alert.alert('Error!', Object.values(errors).join(', '));
+      }
+    } catch (error) {
+      console.error('Punch-in error:', error);
+      Alert.alert('Error', 'Something went wrong during punch-in.');
+    } finally {
+      dispatch(storeAttendanceLoading(false));
+    }
   };
 };
+
 
 export const attendancePunchOut = data => {
   return async dispatch => {

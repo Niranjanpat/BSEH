@@ -93,7 +93,6 @@ const usePunchOutModal = () => {
         formData.append('daily_allowance', dailyAllowanceSelected);
         formData.append('latitude', latitude.current);
         formData.append('longitude', longitude.current);
-        console.log('image', isRemarkField);
         if(!isRemarkField){
            formData.append('total_vehicle_km', totalVehicleReading.current);
         formData.append('punch_out_photo', {

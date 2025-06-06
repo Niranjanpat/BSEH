@@ -27,25 +27,27 @@ const usePunchInModal = () => {
     fetchVehicleTypes();
   }, []);
 
-  const onWorkTypeSelected = (type) => {
+  const onWorkTypeSelected = type => {
     workTypeSelected.current = type;
-  }
+  };
 
-  const onVehicleTypeSelected = (type) => {
-    setIsRemarkField(type === 'public-transport' || type === 'others-enter-tada-remarks');
+  const onVehicleTypeSelected = type => {
+    setIsRemarkField(
+      type === 'public-transport' || type === 'others-enter-tada-remarks',
+    );
     vehicleTypeSelected.current = type;
-  }
+  };
 
-  const onImageSelected = (img) => {
+  const onImageSelected = img => {
     image.current = img;
-  }
+  };
 
-  const onRemarkChanged = (value) => {
+  const onRemarkChanged = value => {
     remark.current = value;
-  }
-  const onKmChanged = (km) => {
+  };
+  const onKmChanged = km => {
     startKm.current = km;
-  }
+  };
 
   const fetchWorkTypes = async () => {
     try {
@@ -75,14 +77,23 @@ const usePunchInModal = () => {
     }
   };
 
-  const onSubmit = async (isRemark) => {
+  const onSubmit = async isRemark => {
     if (isRemark) {
-      if (remark.current === '' || !workTypeSelected.current || !vehicleTypeSelected.current) {
+      if (
+        remark.current === '' ||
+        !workTypeSelected.current ||
+        !vehicleTypeSelected.current
+      ) {
         Alert.alert('Error', 'Please fill all fields');
         return;
-      }  
+      }
     } else {
-      if (!image.current || startKm.current === '' || !workTypeSelected.current || !vehicleTypeSelected.current) {
+      if (
+        !image.current ||
+        startKm.current === '' ||
+        !workTypeSelected.current ||
+        !vehicleTypeSelected.current
+      ) {
         Alert.alert('Error', 'Please fill all fields and select an image.');
         return;
       }
@@ -94,6 +105,7 @@ const usePunchInModal = () => {
         longitude.current = position.coords.longitude;
 
         const formData = new FormData();
+
         if (image.current && startKm.current) {
           formData.append('punch_in_photo', {
             uri: image.current,
@@ -101,14 +113,19 @@ const usePunchInModal = () => {
             name: 'punchin.jpeg',
           });
         }
-        formData.append('longitude', longitude.current);
-        formData.append('latitude', latitude.current);
-        formData.append('work_type', workTypeSelected.current);
-        formData.append('vehicle_type', vehicleTypeSelected.current);
+
+        formData.append('longitude', String(longitude.current || ''));
+        formData.append('latitude', String(latitude.current || ''));
+        formData.append('work_type', String(workTypeSelected.current || ''));
+        formData.append(
+          'vehicle_type',
+          String(vehicleTypeSelected.current || ''),
+        );
+
         if (isRemark) {
-          formData.append('remarks', remark.current);
+          formData.append('remarks', String(remark.current || ''));
         } else {
-          formData.append('start_vehicle_km', startKm.current);
+          formData.append('start_vehicle_km', String(startKm.current || ''));
         }
 
         dispatch(attendancePunchIn(formData));
