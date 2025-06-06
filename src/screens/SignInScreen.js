@@ -40,8 +40,8 @@ const SignInScreen = ({navigation}) => {
   const [isPwdHidden, setIsPwdHidden] = useState(true);
 
   const getDeviceInfo = async () => {
-    deviceInfo.current.deviceId =await DeviceInfo.getUniqueId();
-    deviceInfo.current.deviceVersion =DeviceInfo.getSystemVersion();
+    deviceInfo.current.deviceId = await DeviceInfo.getUniqueId();
+    deviceInfo.current.deviceVersion = DeviceInfo.getSystemVersion();
     deviceInfo.current.deviceName = await DeviceInfo.getDeviceName();
   };
 
@@ -65,7 +65,7 @@ const SignInScreen = ({navigation}) => {
     ) {
       await getDeviceInfo();
     }
-    
+
     onSumbit();
   };
 
@@ -114,11 +114,15 @@ const SignInScreen = ({navigation}) => {
 
   return (
     <>
-      <Wave1 />
-      <View style={{flex: 1}} />
-      <Wave2 />
+      {/* <Wave1 /> */}
+      <Image
+        style={{height: '100%', width: '100%'}}
+        source={IMAGE.gyanpath_bg}
+      />
+      {/* <View style={{flex: 1}} /> */}
+      {/* <Wave2 /> */}
       <View style={styles.container}>
-        <Image source={IMAGE.logo_ruchi} style={styles.image} />
+        {/* <Image source={IMAGE.logo_ruchi} style={styles.image} /> */}
         <Text style={styles.text}>LOGIN</Text>
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 3}}>
@@ -203,8 +207,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   image: {
-    height: 180,
-    width: 180,
+    height: 280,
+    width: 280,
     alignSelf: 'center',
     resizeMode: 'contain',
   },

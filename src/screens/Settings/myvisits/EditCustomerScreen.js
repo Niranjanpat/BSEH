@@ -181,9 +181,7 @@ const EditCustomerScreen = ({navigation, route}) => {
     } else if (!/^[0-9]{10}$/.test(values.owner_contact_number)) {
       errors.owner_contact_number = 'Enter a valid 10-digit number';
     }
-    if (!values.image) {
-      errors.image = 'Image is required';
-    }
+    
     if (!values.longitude || !values.latitude) {
       errors.longitude = 'Location is required';
     }
@@ -195,26 +193,26 @@ const EditCustomerScreen = ({navigation, route}) => {
       <SafeAreaView />
       <Formik
         initialValues={{
-          route_id: data.route_id || '',
-          name: data.name || '',
-          customer_type_id: data.customer_type_id || '',
-          customer_class_id: data.customer_class_id || '',
-          pin_code_id: data.pin_code_id || '',
+          route_id: data?.route_id || '',
+          name: data?.name || '',
+          customer_type_id: data?.customer_type_id || '',
+          customer_class_id: data?.customer_class_id || '',
+          pin_code_id: data?.pin_code_id || '',
           divisions: '', // not present in data
-          gst_number: data.gst_number || '',
-          owner_name: data.owner_name || '',
-          owner_email: data.owner_email || '',
-          owner_contact_number: data.owner_contact_number || '',
-          owner_phone_number: data.owner_phone_number || '',
-          town: data.town || '',
-          latitude: data.latitude || '',
-          longitude: data.longitude || '',
+          gst_number: data?.gst_number || '',
+          owner_name: data?.owner_name || '',
+          owner_email: data?.owner_email || '',
+          owner_contact_number: data?.owner_contact_number || '',
+          owner_phone_number: data?.owner_phone_number || '',
+          town: data?.town || '',
+          latitude: data?.latitude || '',
+          longitude: data?.longitude || '',
           image: null, // still null by default
-          city: data.city_name || '',
-          state: data.state_name || '',
-          district: data.district_name || '',
-          region: data.region_name || '',
-          address: data.address || '',
+          city: data?.city_name || '',
+          state: data?.state_name || '',
+          district: data?.district_name || '',
+          region: data?.region_name || '',
+          address: data?.address || '',
         }}
         onSubmit={(values, {resetForm, setErrors}) => {
           const errors = validateForm(values);
@@ -222,31 +220,33 @@ const EditCustomerScreen = ({navigation, route}) => {
             setErrors(errors);
             return;
           }
-          const formData = new FormData();
-          formData.append('_method', 'PUT');
-          formData.append('name', values.name);
-          formData.append('customer_type_id', values.customer_type_id);
-          formData.append('customer_class_id', values.customer_class_id);
-          formData.append('pin_code_id', values.pin_code_id);
-          formData.append('gst_number', values.gst_number);
-          formData.append('owner_name', values.owner_name);
-          formData.append('owner_email', values.owner_email);
-          formData.append('owner_contact_number', values.owner_contact_number);
-          formData.append('owner_phone_number', values.owner_phone_number);
-          formData.append('town', values.town);
-          formData.append('latitude', values.latitude);
-          formData.append('longitude', values.longitude);
-          formData.append('address', values.address);
-          formData.append('photo', {
-            uri: values.image,
-            type: 'image/jpeg',
-            name: 'shop.jpeg',
-          });
-
           setIsLoading(true);
+
+          const formData=new formData();
+          formData.append('_method', 'PUT');
+          formData.append('address',values.address);
+          formData.append('customer_class_id',values.customer_class_id);
+          formData.append('customer_type_id',values.customer_type_id)
+          formData.append('owner_email',values.owner_email)
+          formData.append('gst_number',values.gst_number)
+          formData.append('latitude',values.latitude)
+          formData.append('longitude',values.longitude)
+          formData.append('owner_contact_number',values.owner_contact_number)
+          formData.append('pin_code_id',values.pin_code_id)
+          formData.append('town',values.town)
+          console.log('image ', values.image);
+          
+          if (values.image) {
+            formData.append('photo', {
+              uri: values.image,
+              type: 'image/jpeg',
+              name: 'shop.jpeg',
+            });
+          }
+
           editShop(formData, route.params.id)
             .then(res => {
-              console.log("response",res);
+              console.log('Add shop response:', res);
               const {data, success, errors} = res.data;
               if (success) {
                 Alert.alert('Success', 'Customer updated successfully');
@@ -274,7 +274,7 @@ const EditCustomerScreen = ({navigation, route}) => {
             <TextInput
               style={styles.input}
               label="Route"
-              value={data.route_name}
+              value={data?.route_name}
               mode="outlined"
               editable={false}
             />

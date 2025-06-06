@@ -38,14 +38,14 @@ export const getTodayRetailer= async () =>{
 
 
 //create customer api :-working 
-export const addShop = async (data) => {
-  return await clientMultipart.post(URLS.customer, data);
+export const addShop = async data => {
+  return await clientMultipart.post(URLS.customer.replace('/', ''), data);
 };
 
 //update customer api :- working
 export const editShop = async (data, id) => {
   console.log("form data",data,id);
-  return await clientMultipart.put(`${URLS.customer}${id}?_method=PUT`, data);
+  return await clientMultipart.post(URLS.customerToday + id, data);
 };
 
 export const getCustomerTarget = async id => {
@@ -72,12 +72,12 @@ export const getBeatList = async isMyVisits => {
   const url = isMyVisits ? URLS.routesToday : URLS.route;
   return await client.get(url);
 };
-  
+
 export const getBeatDetail = async id => {
   return await client.get(`${URLS.route}/${id}`);
 }
 
-export const getPinCodeList = async( value ,id)=> {
+export const getPinCodeList = async(value ,id)=> {
   console.log(value,id);
   return await client.get(`pin-codes/search?term=${value}&page=1&city_id=${id}`);
 };

@@ -229,7 +229,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   };
   async function fetchCustomerDetails() {
     setLoadingDetails(true);
-    const url = URLS.customerToday + data._id;
+    const url = URLS.customer + data._id;
     try {
       const res = await client.get(url);
       const {data, errors, success} = res.data;
@@ -238,7 +238,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       if (success) {
         setCustomer(data);
       } else {
-        console.log('fetchCustomerDetails:::', errors.toString());
+        if (errors) {
+          Alert.alert('Error!', Object.values(errors).join(', '));
+        }
       }
     } catch (error) {
       console.log('fetchCustomerDetails:::', error.toString());
