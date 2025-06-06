@@ -120,11 +120,6 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
           navigation.navigate(ROUTES.monthly_attendance_travel),
         )}
-
-        {renderItem('Expenses', 'cash-multiple', () =>
-          navigation.navigate(ROUTES.expenses),
-        )}
-
         {renderItem('Add Expenses', 'wallet-plus-outline', () =>
           navigation.navigate(ROUTES.add_expenses, {
             channel: 'add',
@@ -132,19 +127,20 @@ const SettingScreen = ({navigation}) => {
             id: null,
           }),
         )}
+        {renderItem('Expenses', 'cash-multiple', () =>
+          navigation.navigate(ROUTES.expenses),
+        )}
 
         {renderItem('Complaint', 'message-alert-outline', () =>
           navigation.navigate(ROUTES.complaint),
         )}
-
+        {renderItem('Subordinate Complaint', 'account-alert', () =>
+          navigation.navigate(ROUTES.user_complaint),
+        )}
         {renderItem('TaDas', 'message-alert-outline', () =>
           navigation.navigate(ROUTES.ta_das_stack, {
             screen: ROUTES.ta_das,
           }),
-        )}
-
-        {renderItem('User Complaint', 'account-alert', () =>
-          navigation.navigate(ROUTES.user_complaint),
         )}
 
         {renderItem('About Patanjali', 'office-building', () =>
