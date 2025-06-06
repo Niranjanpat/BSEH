@@ -1,11 +1,11 @@
 import {View, StyleSheet, Platform} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import { useState } from 'react';
-import { Text } from 'react-native-paper';
+import {useState} from 'react';
+import {Text} from 'react-native-paper';
 
 const MyDropdown = ({onOptionChanged, item, channel}) => {
-    const [selectedOption, setSelectedOption] = useState(null);
-    
+  const [selectedOption, setSelectedOption] = useState(null);
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{channel}</Text>
@@ -35,13 +35,13 @@ const MyDropdown = ({onOptionChanged, item, channel}) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 10,
+    paddingHorizontal: 20,
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
     color: '#333',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   pickerWrapper: {
     borderWidth: 1,

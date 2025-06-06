@@ -40,6 +40,15 @@ export const ROUTES = {
   add_complaint:'add_complaint',
   update_complaint:'update_complaint',
   complaint:'complaint',
+  complaint_detail:'complaint_detail',
+
+
+  //user_complaint
+  user_complaint_stack:'user_compliant_stack',
+  user_complaint:'user_complaint',
+  add_user_complaint:'add_user_complaint',
+  update_user_complaint:'update_user_complaint',
+  detail_user_complaint:'detail_user_complaint',
   
   // inner stacks of settings stack
   myvisit_stack: 'myvisit_stack',

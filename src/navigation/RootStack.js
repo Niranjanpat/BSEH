@@ -57,12 +57,16 @@ import OrderCartIcon from '../components/OrderCartIcon';
 import MonthlyTravelDistance from '../screens/Settings/MonthlyTravelDistance';
 import MonthlyAttendanceList from '../components/attendance/MonthlyAttendanceList';
 import MonthAttendanceScreen from '../screens/Settings/MonthlyAttendanceScreen';
-import AddExpensesScreen from '../screens/Settings/Expense/AddExpensesScreen';
-import ExpensesScreen from '../screens/Settings/Expense/ExpensesScreen';
-import ExpenseDetailScreen from '../screens/Settings/Expense/ExpenseDetailScreen';
+import AddExpensesScreen from '../screens/Settings/expenses/AddExpensesScreen';
+import ExpensesScreen from '../screens/Settings/expenses/ExpensesScreen';
+import ExpenseDetailScreen from '../screens/Settings/expenses/ExpenseDetailScreen';
 import {ComplaintStack} from './settings_stack/index';
 import AddComplaintScreen from '../screens/Settings/complaints/AddComplaintScreen';
 import ComplaintListScreen from '../screens/Settings/complaints/ComplaintListScreen';
+import ComplaintDetailScreen from '../screens/Settings/complaints/ComplaintDetailScreen';
+import UserComplaintScreen from  '../screens/Settings/user_complaint/UserComplaintListScreen';
+import UserComplaintDetailScreen from '../screens/Settings/user_complaint/UserComplaintDetailScreen';
+import AddUserComplaintScreen from '../screens/Settings/user_complaint/UpdateComplaintScreen';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -191,15 +195,36 @@ export const SettingsStackNavigation = () => {
         component={ComplaintListScreen}
         options={{title: 'Complaint', headerShown: true}}
       />
-       <SettingsStack.Screen
-        name={ROUTES.add_complaint}
-        component={AddComplaintScreen}
-        options={{title: 'Add Complaint', headerShown: true}}
-      />
         <SettingsStack.Screen
         name={ROUTES.update_complaint}
         component={AddComplaintScreen}
         options={{title: 'Update Complaint', headerShown: true}}
+      />
+       
+       <SettingsStack.Screen
+        name={ROUTES.complaint_detail}
+        component={ComplaintDetailScreen}
+        options={{title: 'Complaint Detail', headerShown: true}}
+      /> 
+       <SettingsStack.Screen
+        name={ROUTES.update_user_complaint}
+        component={AddUserComplaintScreen}
+        options={{title: 'Update User Complaint', headerShown: true}}
+      />
+      <SettingsStack.Screen
+        name={ROUTES.user_complaint}
+        component={UserComplaintScreen}
+        options={{title: 'User Complaint', headerShown: true}}
+      />
+       <SettingsStack.Screen
+        name={ROUTES.detail_user_complaint}
+        component={UserComplaintDetailScreen}
+        options={{title: 'User Complaint', headerShown: true}}
+      />
+       <SettingsStack.Screen
+        name={ROUTES.add_user_complaint}
+        component={AddUserComplaintScreen}
+        options={{title: 'Add User Complaint', headerShown: true}}
       />
     </SettingsStack.Navigator>
   );
@@ -296,6 +321,11 @@ export const RetailerStackNavigation = () => {
         options={{
           title: 'Confirm items & proceed',
         }}
+      />
+        <RetailerStack.Screen
+        name={ROUTES.add_complaint}
+        component={AddComplaintScreen}
+        options={{title: 'Add Complaint', headerShown: true}}
       />
     </RetailerStack.Navigator>
   );

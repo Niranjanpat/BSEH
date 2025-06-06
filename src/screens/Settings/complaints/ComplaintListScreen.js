@@ -6,35 +6,19 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Alert
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
+import {getComplaints} from '../../../services/complaint_service';
 
 const STATUS_COLORS = {
   open: COLORS.primary,
   closed: 'green',
-  pending: 'orange',
-  rejected: 'red',
 };
 
 const getStatusColor = status => STATUS_COLORS[status] || COLORS.primary;
-
-// 🧪 Dummy data
-const dummyData = Array.from({length: 25}).map((_, i) => ({
-  _id: `${i + 1}`,
-  complaint_type_name: `Complaint Type ${i + 1}`,
-  subject: `Subject ${i + 1}`,
-  customer_sap_code: `SAP_${i + 1}`,
-  customer_name: `Customer ${i + 1}`,
-  customer_route: `Route ${Math.ceil(i / 5) + 1}`,
-  status: i % 3 === 0 ? 'open' : i % 3 === 1 ? 'closed' : 'pending',
-  created_at: '2025-06-02 17:37:16',
-  is_editable: i % 2 === 0,
-}));
-
-const PAGE_SIZE = 10;
 
 const ComplaintListScreen = () => {
   const [complaints, setComplaints] = useState([]);
@@ -45,41 +29,46 @@ const ComplaintListScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    loadMoreData(page);
+    fetchComplaintList(1);
   }, []);
 
-  const loadMoreData = currentPage => {
+  const fetchComplaintList = async currentPage => {
     if (isLoading || !hasMore) return;
-
     setIsLoading(true);
+    try {
+      const res = await getComplaints(currentPage);
+      const {data, success, errors} = res?.data;
+      if (success) {
+        const newComplaints = data?.complaints || [];
+    
+        setComplaints(prev => [...prev, ...newComplaints]);
 
-    setTimeout(() => {
-      const start = (currentPage - 1) * PAGE_SIZE;
-      const end = start + PAGE_SIZE;
-      const nextBatch = dummyData.slice(start, end);
+        setHasMore(data?.has_more);
 
-      if (nextBatch.length === 0) {
-        setHasMore(false);
+        if (data?.has_more) {
+          setPage(prev => prev + 1);
+        }
       } else {
-        setComplaints(prev => [...prev, ...nextBatch]);
-        setPage(prev => prev + 1);
+        Alert.alert('Error', JSON.stringify(errors));
       }
-
+    } catch (error) {
+      console.error('fetchComplaintList error:', error);
+      Alert.alert('Error', 'Something went wrong while fetching complaints.');
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   const renderItem = ({item}) => (
     <TouchableOpacity
       style={[styles.card, {borderLeftColor: getStatusColor(item.status)}]}
       onPress={() => {
-        if (item.is_editable) {
-          navigation.navigate(ROUTES.update_complaint, {
-            complaint: item,
-            channel: 'update',
+        if (item.status === 'open') {
+          navigation.navigate(ROUTES.complaint_detail, {
+            id: item._id,
           });
-        }else{
-            Alert.alert('Error','Editble is Not allowed');
+        } else {
+          Alert.alert('Error', 'Edit not allowed');
         }
       }}>
       <Text style={styles.title}>{item.subject}</Text>
@@ -101,15 +90,23 @@ const ComplaintListScreen = () => {
       </View>
     ) : null;
 
+  const renderEmpty = () =>
+    !isLoading && (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No complaints found.</Text>
+      </View>
+    );
+
   return (
     <FlatList
       data={complaints}
       keyExtractor={item => item._id}
       renderItem={renderItem}
-      contentContainerStyle={{padding: 16}}
-      onEndReached={() => loadMoreData(page)}
+      contentContainerStyle={{padding: 16, flexGrow: 1}}
+      onEndReached={() => fetchComplaintList(page)}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
+      ListEmptyComponent={renderEmpty}
     />
   );
 };
@@ -146,34 +143,14 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: 'center',
   },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+  },
+  emptyText: {
+    color: '#888',
+    fontSize: 16,
+  },
 });
-
-//  useEffect(() => {
-//         fetchExpenses(page);
-//       }, []);
-
-//         const fetchExpenses = async currentPage => {
-//           if (isLoading || !hasMore) return;
-
-//           setIsLoading(true);
-//           try {
-//             const res = await getComplaints(currentPage); // Adjust this as per your API
-//             const {data, success, errors} = res?.data;
-//             if (success) {
-//               const newExpenses = data.expense || [];
-//               setExpense(prev => [...prev, ...newExpenses]);
-
-//               if (newExpenses.length === 0) {
-//                 setHasMore(false); // No more data
-//               } else {
-//                 setPage(prev => prev + 1);
-//               }
-//             } else {
-//               Alert.alert('Error', JSON.stringify(errors));
-//             }
-//           } catch (error) {
-//             console.log('getExpenses', error);
-//           } finally {
-//             setIsLoading(false);
-//           }
-//         };

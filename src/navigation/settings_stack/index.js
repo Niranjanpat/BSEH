@@ -39,9 +39,9 @@ import UserPromotionalItems from '../../screens/Settings/promotional_items/UserP
 //complaint
 import ComplaintListScreen from '../../screens/Settings/complaints/ComplaintListScreen';
 import AddComplaintScreen from '../../screens/Settings/complaints/AddComplaintScreen';
-import ExpensesListScreen from '../../screens/Settings/Expense/ExpensesScreen';
-import AddExpensesScreen from '../../screens/Settings/Expense/AddExpensesScreen';
-import ExpenseDetailScreen from '../../screens/Settings/Expense/ExpenseDetailScreen';
+import ExpensesListScreen from '../../screens/Settings/expenses/ExpensesScreen';
+import AddExpensesScreen from '../../screens/Settings/expenses/AddExpensesScreen';
+import ExpenseDetailScreen from '../../screens/Settings/expenses/ExpenseDetailScreen';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 

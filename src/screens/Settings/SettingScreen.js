@@ -12,8 +12,10 @@ import {
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../constants/routes';
+import {COLORS} from '../../constants/theme/colors'; // Add this import
 
 const mmkv = new MMKVStorage.Loader().initialize();
+
 const SettingScreen = ({navigation}) => {
   const {profile, role, attendanceStatus} = useSelector(state => state.auth);
 
@@ -27,6 +29,22 @@ const SettingScreen = ({navigation}) => {
     navigation.replace(ROUTES.auth_stack);
     MapplsIntouch.stopTracking();
   };
+
+  const renderItem = (title, icon, onPress) => (
+    <List.Item
+      style={styles.list}
+      title={title}
+      titleStyle={styles.listTitle}
+      onPress={onPress}
+      left={props => (
+        <View style={styles.iconWrapper}>
+          <List.Icon  icon={icon} color={COLORS.primary} />
+        </View>
+      )}
+      right={props => <List.Icon {...props} icon="chevron-right" />}
+    />
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView />
@@ -34,311 +52,103 @@ const SettingScreen = ({navigation}) => {
         <Avatar.Text
           size={100}
           label={profile.name ? profile.name.charAt(0) : 'P'}
+          style={{ backgroundColor: COLORS.primary }}
         />
-        <Title>{profile.name}</Title>
-        <Subheading>{role}</Subheading>
-        <Subheading>{profile.contact_number}</Subheading>
-        <Subheading>{profile.email}</Subheading>
+        <Title style={styles.title}>{profile.name}</Title>
+        <Subheading style={styles.subheading}>{role}</Subheading>
+        <Subheading style={styles.subheading}>{profile.contact_number}</Subheading>
+        <Subheading style={styles.subheading}>{profile.email}</Subheading>
       </View>
+
       <View>
-        <List.Item
-          style={styles.list}
-          title="Profile"
-          onPress={() => {
-            navigation.navigate(ROUTES.profile);
-          }}
-          left={props => <List.Icon {...props} icon="account" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
+        {renderItem('Profile', 'account', () =>
+          navigation.navigate(ROUTES.profile)
+        )}
 
-        {(role === 'sc' ||
-          role === 'kam' ||
-          role === 'asm' ||
-          role === 'promoter') && (
+        {(role === 'sc' || role === 'kam' || role === 'asm' || role === 'promoter') && (
           <>
-            <List.Item
-              style={styles.list}
-              title="Retailer Masters"
-              onPress={() => {
-                navigation.navigate(ROUTES.retailer_master);
-              }}
-              left={props => <List.Icon {...props} icon="bookmark-outline" />}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
-            <Divider />
-            {role !== 'promoter' && (
-              <List.Item
-                style={styles.list}
-                title="Performance"
-                onPress={() => {
-                  navigation.navigate(ROUTES.performance);
-                }}
-                left={props => <List.Icon {...props} icon="star-outline" />}
-                right={props => <List.Icon {...props} icon="chevron-right" />}
-              />
+            {renderItem('Retailer Masters', 'bookmark-outline', () =>
+              navigation.navigate(ROUTES.retailer_master)
             )}
-            <Divider />
-            <Divider />
-          </>
-        )}
-        {/* {role === 'kam' && (
-          <>
-            <List.Item
-              style={styles.list}
-              title="Today's report"
-              onPress={() => {
-                navigation.navigate(ROUTES.today_report, {id: null});
-              }}
-              left={props => <List.Icon {...props} icon="chart-line" />}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
-          </>
-        )} */}
-        {role !== 'sc' && (
-          <>
-            <List.Item
-              style={styles.list}
-              title="Cumulative report"
-              onPress={() => {
-                navigation.navigate(ROUTES.cumulative_report);
-              }}
-              left={props => <List.Icon {...props} icon="account-details" />}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
-          </>
-        )}
-        {!(
-          role === 'sales-officer' ||
-          role === 'sc' ||
-          role === 'promoter'
-        ) && (
-          <>
-            <List.Item
-              style={styles.list}
-              title="User Hierarchy"
-              onPress={() => {
-                navigation.navigate(ROUTES.user_hierarchy_stack);
-              }}
-              left={props => <List.Icon {...props} icon="file-tree-outline" />}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
-            {role === 'asm' && (
-              <List.Item
-                style={styles.list}
-                title="Retailer Masters"
-                onPress={() => {
-                  navigation.navigate(ROUTES.retailer_master);
-                }}
-                left={props => <List.Icon {...props} icon="bookmark-outline" />}
-                right={props => <List.Icon {...props} icon="chevron-right" />}
-              />
-            )}
-            {/* 
-            {role !== 'promoter' && (
-              <>
-                <Divider />
-                <List.Item
-                  style={styles.list}
-                  title="Joint Work List"
-                  onPress={() => {
-                    navigation.navigate(ROUTES.my_joint_work);
-                  }}
-                  left={props => <List.Icon {...props} icon="handshake" />}
-                  right={props => <List.Icon {...props} icon="chevron-right" />}
-                />
-                <Divider />
-              </>
-            )}
-            {!(role === 'kam' || role === 'dsm' || role === 'promoter') && (
-              <>
-                <Divider />
-                <List.Item
-                  style={styles.list}
-                  title="Joint Work Tracking"
-                  onPress={() => {
-                    navigation.navigate(ROUTES.joint_stack);
-                  }}
-                  left={props => (
-                    <List.Icon {...props} icon="account-multiple" />
-                  )}
-                  right={props => <List.Icon {...props} icon="chevron-right" />}
-                />
-                <Divider />
-              </>
-            )}
-            <Divider />
-
-            <List.Item
-              style={styles.list}
-              title="Tracking"
-              onPress={() => {
-                navigation.navigate(ROUTES.tracking_stack);
-              }}
-              left={props => <List.Icon {...props} icon="map-search-outline" />}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
-            {/* <Divider /> */}
-          </>
-        )}
-        <Divider />
-        {(role === 'sc' || role === 'kam') && (
-          <>
-            <List.Item
-              style={styles.list}
-              title="Route schedules"
-              onPress={() => {
-                navigation.navigate(ROUTES.route_schedule_stack);
-              }}
-              left={props => (
-                <List.Icon {...props} icon="map-marker-distance" />
+            {role !== 'promoter' &&
+              renderItem('Performance', 'star-outline', () =>
+                navigation.navigate(ROUTES.performance)
               )}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
           </>
         )}
 
-        {!(role === 'sc' || role === 'kam') && (
-          <>
-            <Divider />
-            <List.Item
-              style={styles.list}
-              title="User route schedules"
-              onPress={() => {
-                navigation.navigate(ROUTES.user_route_schedule_list);
-              }}
-              left={props => <List.Icon {...props} icon="map-marker" />}
-              right={props => <List.Icon {...props} icon="chevron-right" />}
-            />
-            <Divider />
-          </>
-        )}
-        <List.Item
-          style={styles.list}
-          title="Attendance"
-          onPress={() => {
-            navigation.navigate(ROUTES.attendance);
-          }}
-          left={props => (
-            <List.Icon {...props} icon="calendar-account-outline" />
+        {role !== 'sc' &&
+          renderItem('Cumulative report', 'account-details', () =>
+            navigation.navigate(ROUTES.cumulative_report)
           )}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
 
-        <List.Item
-          style={styles.list}
-          title="Monthly attendance"
-          onPress={() => {
-            navigation.navigate(ROUTES.monthly_attendance);
-          }}
-          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
+        {!['sales-officer', 'sc', 'promoter'].includes(role) && (
+          <>
+            {renderItem('User Hierarchy', 'file-tree-outline', () =>
+              navigation.navigate(ROUTES.user_hierarchy_stack)
+            )}
+            {role === 'asm' &&
+              renderItem('Retailer Masters', 'bookmark-outline', () =>
+                navigation.navigate(ROUTES.retailer_master)
+              )}
+          </>
+        )}
 
-        <List.Item
-          style={styles.list}
-          title="Monthly Travel Distance"
-          onPress={() => {
-            navigation.navigate(ROUTES.monthly_attendance_travel);
-          }}
-          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
+        {(role === 'sc' || role === 'kam') &&
+          renderItem('Route schedules', 'map-marker-distance', () =>
+            navigation.navigate(ROUTES.route_schedule_stack)
+          )}
 
-        <Divider />
-        <Divider />
+        {!['sc', 'kam'].includes(role) &&
+          renderItem('User route schedules', 'map-marker', () =>
+            navigation.navigate(ROUTES.user_route_schedule_list)
+          )}
 
-        <List.Item
-          style={styles.list}
-          title="Expenses"
-          onPress={() => {
-            navigation.navigate(ROUTES.expenses);
-          }}
-          left={props => <List.Icon {...props} icon="cash-multiple" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
-        <List.Item
-          style={styles.list}
-          title="Add Expenses"
-          onPress={() => {
-            navigation.navigate(ROUTES.add_expenses, {
-              channel: 'add',
-              expenseDetail: null,
-              id: null,
-            });
-          }}
-          left={props => <List.Icon {...props} icon="wallet-plus-outline" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
+        {renderItem('Attendance', 'calendar-account-outline', () =>
+          navigation.navigate(ROUTES.attendance)
+        )}
 
-        <Divider />
-        <Divider />
-        <List.Item
-          style={styles.list}
-          title="Complaint"
-          onPress={() => {
-            navigation.navigate(ROUTES.complaint);
-          }}
-          left={props => <List.Icon {...props} icon="message-alert-outline" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
-        <List.Item
-          style={styles.list}
-          title="Add Complaint"
-          onPress={() => {
-            navigation.navigate(ROUTES.add_complaint, {
-              channel: 'add',
-              complaint: null,
-            });
-          }}
-          left={props => <List.Icon {...props} icon="calendar-month-outline" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
-        <List.Item
-          style={styles.list}
-          title="About Patanjali"
-          onPress={() => {
-            navigation.navigate(ROUTES.about);
-          }}
-          left={props => <List.Icon {...props} icon="office-building" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
-        <Divider />
+        {renderItem('Monthly attendance', 'calendar-month-outline', () =>
+          navigation.navigate(ROUTES.monthly_attendance)
+        )}
 
-        <List.Item
-          style={styles.list}
-          title="About Us"
-          onPress={() => {
-            navigation.navigate(ROUTES.aboutus);
-          }}
-          left={props => <List.Icon {...props} icon="information-outline" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-        />
-        <Divider />
+        {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
+          navigation.navigate(ROUTES.monthly_attendance_travel)
+        )}
+
+        {renderItem('Expenses', 'cash-multiple', () =>
+          navigation.navigate(ROUTES.expenses)
+        )}
+
+        {renderItem('Add Expenses', 'wallet-plus-outline', () =>
+          navigation.navigate(ROUTES.add_expenses, {
+            channel: 'add',
+            expenseDetail: null,
+            id: null,
+          })
+        )}
+
+        {renderItem('Complaint', 'message-alert-outline', () =>
+          navigation.navigate(ROUTES.complaint)
+        )}
+
+        {renderItem('User Complaint', 'account-alert', () =>
+          navigation.navigate(ROUTES.user_complaint)
+        )}
+
+        {renderItem('About Patanjali', 'office-building', () =>
+          navigation.navigate(ROUTES.about)
+        )}
+
+        {renderItem('About Us', 'information-outline', () =>
+          navigation.navigate(ROUTES.aboutus)
+        )}
 
         <Button
           icon="logout"
           style={styles.logout}
           mode="contained"
-          onPress={() => logout()}>
+          onPress={logout}>
           Logout
         </Button>
       </View>
@@ -351,23 +161,54 @@ export default SettingScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    backgroundColor: '#f9f9f9',
   },
   logout: {
     marginVertical: 20,
-    backgroundColor: '#e74c3c',
-    color: '#fff',
+    backgroundColor: COLORS.primary,
   },
   profileDetail: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     marginBottom: 20,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 4,
   },
   list: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    marginVertical: 3,
+    paddingLeft: 8,
+    elevation: 0.5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+  },
+  listTitle: {
+    fontWeight: 'bold',
+    color: '#212121',
+  },
+  iconWrapper: {
+    backgroundColor: '#f1f9fe', // Optional: Replace with a derived light primary color if needed
+    borderRadius: 10,
+    padding:8,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  title: {
+    color: '#212121',
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  subheading: {
+    color: '#424242',
   },
 });

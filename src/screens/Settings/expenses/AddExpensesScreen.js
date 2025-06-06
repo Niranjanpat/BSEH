@@ -19,22 +19,29 @@ import dayjs from 'dayjs';
 import {COLORS} from '../../../constants/theme/colors';
 import MyDropdown from '../../../components/DropDown';
 import {requestCameraPermission} from '../../../utils/useCameraPermission';
-import {getExpenseType, addExpense, updateExpense} from '../../../services/expense_sevice';
+import {
+  getExpenseType,
+  addExpense,
+  updateExpense,
+} from '../../../services/expense_sevice';
 
 const AddExpensesScreen = ({route, navigation}) => {
   const {channel, expenseDetail, id} = route.params;
-
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState('');
   const [extra, setExtra] = useState('');
-  const [expenseTypeSelected, setExpenseTypeSelected] = useState(null);
+  const expenseTypeSelected = useRef(null);
   const [details, setDetails] = useState('');
   const [image, setImage] = useState(null);
   const [expenseType, setExpenseType] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const latitude = useRef(null);
   const longitude = useRef(null);
+
+  const onExpenseTypeSelected = type => {
+    expenseTypeSelected.current = type;
+  };
 
   useEffect(() => {
     const checkCameraPermission = async () => {
@@ -57,7 +64,7 @@ const AddExpensesScreen = ({route, navigation}) => {
       setDetails(expenseDetail.details || '');
       setExtra(expenseDetail.extra || '');
       setAmount(expenseDetail.amount?.toString() || '');
-      setExpenseTypeSelected(expenseDetail.expense_type || null);
+      expenseTypeSelected.current=expenseDetail.expense_type || null;
       setImage(expenseDetail.photo_path || null);
     }
   }, [channel, expenseDetail]);
@@ -87,13 +94,19 @@ const AddExpensesScreen = ({route, navigation}) => {
     setDate(new Date());
     setAmount('');
     setExtra('');
-    setExpenseTypeSelected(null);
+    expenseTypeSelected.current=null;
     setDetails('');
     setImage(null);
   };
 
   const onSubmit = () => {
-    if (!amount || !details || !extra || !expenseTypeSelected || !image) {
+    if (
+      !amount ||
+      !details ||
+      !extra ||
+      !expenseTypeSelected.current ||
+      !image
+    ) {
       return Alert.alert(
         'Error',
         'Please fill in all fields and select an image.',
@@ -109,6 +122,9 @@ const AddExpensesScreen = ({route, navigation}) => {
         longitude.current = position.coords.longitude;
 
         const formData = new FormData();
+        if(channel === 'update'){
+          formData.append('_method', 'PUT');
+        }
         if (image) {
           formData.append('photo', {
             uri: image,
@@ -119,15 +135,20 @@ const AddExpensesScreen = ({route, navigation}) => {
         formData.append('date', formattedDate);
         formData.append('longitude', longitude.current);
         formData.append('latitude', latitude.current);
-        formData.append('expense_type', expenseTypeSelected);
+        formData.append('expense_type', expenseTypeSelected.current);
         formData.append('amount', amount);
         formData.append('details', details);
         formData.append('extra', extra);
 
-        const handleResponse = (res) => {
+        const handleResponse = res => {
           const {success, errors} = res.data;
           if (success) {
-            Alert.alert('Success', `Expense ${channel === 'update' ? 'updated' : 'added'} successfully`);
+            Alert.alert(
+              'Success',
+              `Expense ${
+                channel === 'update' ? 'updated' : 'added'
+              } successfully`,
+            );
             if (channel === 'add') resetForm();
             navigation.goBack();
           } else {
@@ -136,9 +157,10 @@ const AddExpensesScreen = ({route, navigation}) => {
           }
         };
 
-        const apiCall = channel === 'update'
-          ? updateExpense(formData, id)
-          : addExpense(formData);
+        const apiCall =
+          channel === 'update'
+            ? updateExpense(formData, id)
+            : addExpense(formData);
 
         apiCall
           .then(handleResponse)
@@ -194,10 +216,9 @@ const AddExpensesScreen = ({route, navigation}) => {
         </View>
 
         <MyDropdown
-          selectedOption={expenseTypeSelected}
           channel="Expense Type"
           item={expenseType}
-          setSelectedOption={setExpenseTypeSelected}
+          onOptionChanged={onExpenseTypeSelected}
         />
 
         <View style={styles.container}>

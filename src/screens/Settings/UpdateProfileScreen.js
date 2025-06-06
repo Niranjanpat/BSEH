@@ -1,5 +1,5 @@
-import dayjs, {Dayjs} from 'dayjs';
-import React, {useState} from 'react';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
 import {
   Button,
   TextInput,
@@ -7,79 +7,57 @@ import {
   Text,
   Subheading,
 } from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-native-date-picker';
-import {Alert, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import {SPACINGS} from '../../constants/theme';
-import {updateUserProfile} from '../../services/auth_service';
-import {storeAccount} from '../../store/actions/auth';
+import { SPACINGS } from '../../constants/theme';
+import { updateUserProfile } from '../../services/auth_service';
+import { storeAccount } from '../../store/actions/auth';
+import { COLORS } from '../../constants/theme/colors';
 
 const maximumDate = dayjs().subtract(13, 'year').toDate();
-const UpdateProfileScreen = ({}) => {
+
+const UpdateProfileScreen = () => {
   const dispatch = useDispatch();
-  const {profile} = useSelector(state => state.auth);
+  const { profile } = useSelector(state => state.auth);
 
-  // initial date will be string received from api
-  // change string date to date format
-  const date =
-    profile.date_of_birth !== null
-      ? dayjs(profile.date_of_birth).toDate()
-      : null;
+  const initialDate = profile.date_of_birth ? dayjs(profile.date_of_birth).toDate() : null;
 
-  const [dob, setDob] = useState(date);
-  const [email, setEmail] = useState(profile.email);
-  const [phone, setPhone] = useState(profile.contact_number);
-  const [address, setAddress] = useState(profile.address);
-  const [gender, setGender] = useState(
-    profile.gender ? profile.gender : 'male',
-  );
+  const [dob, setDob] = useState(initialDate);
+  const [email, setEmail] = useState(profile.email || '');
+  const [phone, setPhone] = useState(profile.contact_number || '');
+  const [address, setAddress] = useState(profile.address || '');
+  const [gender, setGender] = useState(profile.gender || 'male');
 
   const [isDobVisible, setIsDobVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // disable button if one of them is null or empty string
   const btnSubmitEnabled = dob && email && phone && address;
 
-  // format date in YYYY-MM-DD to send in the api
-  const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : null;
+  const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
 
   const handleDobModal = () => {
     setIsDobVisible(true);
   };
 
-  const handleSubmit = () => {
-    if (validation()) {
-      updateProfile();
-    }
-  };
-
   const validation = () => {
-    if (dob === null) {
+    if (!dob) {
       Alert.alert(null, 'Please select your date of birth');
-
       return false;
     }
-
-    if (!email.includes('@') && !email.includes('.')) {
+    if (!email.includes('@') || !email.includes('.')) {
       Alert.alert(null, 'Email address you entered is invalid');
-
       return false;
     }
-
-    const phoneRegex = new RegExp(/^[0-9\b]+$/);
-    if (!phone.match(phoneRegex) || phone.length !== 10) {
+    if (!/^[0-9]{10}$/.test(phone)) {
       Alert.alert(null, 'Phone number you entered is invalid');
-
       return false;
     }
-
-    if (address === '') {
+    if (!address.trim()) {
       Alert.alert(null, 'Address you entered is invalid');
-
       return false;
     }
-
     return true;
   };
 
@@ -88,84 +66,114 @@ const UpdateProfileScreen = ({}) => {
     const body = {
       gender,
       date_of_birth: formattedDob,
-      email: email,
+      email,
       contact_number: phone,
-      address: address,
+      address,
     };
 
     updateUserProfile(body)
       .then(res => {
-        const {data, success, errors} = res.data;
-
+        const { data, success, errors } = res.data;
         if (success) {
-          console.log(data);
-          dispatch(storeAccount({...profile, ...body}));
+          dispatch(storeAccount({ ...profile, ...body }));
           Alert.alert('Success', 'Your profile has been successfully updated.');
         } else {
           Alert.alert(null, JSON.stringify(errors));
         }
       })
       .catch(err => {
-        console.log('update profile', err);
+        console.error('update profile error:', err);
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
 
+  const handleSubmit = () => {
+    if (validation()) {
+      updateProfile();
+    }
+  };
+
   return (
     <ScrollView
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={styles.contentContainer}>
-      <View style={styles.input}>
-        <Subheading>Gender</Subheading>
-        <RadioButton.Group onValueChange={val => setGender(val)} value={gender}>
+      contentContainerStyle={styles.contentContainer}
+    >
+      <View style={styles.section}>
+        <Subheading style={styles.sectionTitle}>Gender</Subheading>
+        <RadioButton.Group onValueChange={setGender} value={gender}>
           <View style={styles.genderRow}>
             <RadioButton value="male" />
-            <Text>Male</Text>
+            <Text style={styles.genderLabel}>Male</Text>
           </View>
           <View style={styles.genderRow}>
             <RadioButton value="female" />
-            <Text>Female</Text>
+            <Text style={styles.genderLabel}>Female</Text>
           </View>
         </RadioButton.Group>
       </View>
 
-      <View style={styles.input}>
-        <Pressable onPress={handleDobModal}>
+      <View style={styles.section}>
+        <Subheading style={styles.sectionTitle}>Date of Birth</Subheading>
+        <Pressable onPress={handleDobModal} style={styles.dateInputWrapper} android_ripple={{ color: '#eee' }}>
           <TextInput
             editable={false}
             value={formattedDob}
-            label="Date of birth"
+            placeholder="Select your date of birth"
+            style={styles.dateInput}
+            pointerEvents="none"
+            mode="outlined"
           />
         </Pressable>
       </View>
-      <View style={styles.input}>
+
+      <View style={styles.section}>
         <TextInput
+          label="Email"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
-          label="Email"
+          mode="outlined"
+          style={styles.textInput}
+          autoCapitalize="none"
+          autoComplete="email"
         />
       </View>
-      <View style={styles.input}>
+
+      <View style={styles.section}>
         <TextInput
-          value={phone}
-          keyboardType="numeric"
-          onChangeText={setPhone}
           label="Contact Number"
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
           maxLength={10}
+          mode="outlined"
+          style={styles.textInput}
         />
       </View>
-      <View style={styles.input}>
-        <TextInput value={address} onChangeText={setAddress} label="Address" />
+
+      <View style={styles.section}>
+        <TextInput
+          label="Address"
+          value={address}
+          onChangeText={setAddress}
+          mode="outlined"
+          multiline
+          numberOfLines={2}
+          style={styles.textInput}
+        />
       </View>
 
       <Button
+        mode="contained"
         onPress={handleSubmit}
+        labelStyle={{fontWeight:'bold',color:'black'}}
         disabled={!btnSubmitEnabled || isLoading}
         loading={isLoading}
-        mode="contained">
+        style={styles.submitButton}
+        contentStyle={{ height: 48 }}
+      >
         Submit
       </Button>
 
@@ -174,12 +182,12 @@ const UpdateProfileScreen = ({}) => {
         mode="date"
         open={isDobVisible}
         maximumDate={maximumDate}
-        onConfirm={val => {
+        date={dob || maximumDate}
+        onConfirm={date => {
           setIsDobVisible(false);
-          setDob(val);
+          setDob(date);
         }}
         onCancel={() => setIsDobVisible(false)}
-        date={dob ? dob : maximumDate}
       />
     </ScrollView>
   );
@@ -189,16 +197,40 @@ export default UpdateProfileScreen;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flex: 1,
-    padding: SPACINGS.sm,
+    padding: SPACINGS.md,
+    backgroundColor: '#fff',
+    flexGrow: 1,
   },
-
-  input: {
+  section: {
     marginBottom: SPACINGS.sm,
   },
-
+  sectionTitle: {
+    marginBottom: SPACINGS.sm,
+    fontWeight: '600',
+    fontSize: 16,
+    color: '#444',
+  },
   genderRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: SPACINGS.sm,
+  },
+  genderLabel: {
+    fontSize: 15,
+    color: '#222',
+  },
+  dateInputWrapper: {
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  dateInput: {
+    backgroundColor: '#f9f9f9',
+  },
+  textInput: {
+    backgroundColor: '#f9f9f9',
+  },
+  submitButton: {
+    borderRadius: 8,
+    backgroundColor:COLORS.primary,
   },
 });

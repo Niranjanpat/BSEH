@@ -11,13 +11,13 @@ import {Button} from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
 import {COLORS} from '../../../constants/theme/colors';
 import {
-  addComplaints,
-  updateComplaints,
+  updateUserComplaint,
   getComplaintsType,
 } from '../../../services/complaint_service';
 
 const AddComplaintScreen = ({route, navigation}) => {
-  const {channel, complaint, id} = route.params;
+  const {complaint, id} = route.params;
+  console.log("data in apit ",complaint,id);
   const [subject, setSubject] = useState('');
   const [remark, setRemark] = useState('');
   const [complaintTypeSelected, setComplaintTypeSelected] = useState(null);
@@ -30,12 +30,10 @@ const AddComplaintScreen = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (channel === 'update' && complaint) {
-      setSubject(complaint.subject || '');
-      setRemark(complaint.remark || '');
-      setComplaintTypeSelected(complaint.complaint_type_name || null);
-    }
-  }, [channel, complaint]);
+    setSubject(complaint.subject || '');
+    setRemark(complaint.remark || '');
+    setComplaintTypeSelected(complaint.complaint_type_name || null);
+  }, [ complaint]);
 
   const fetchComplaintTypes = async () => {
     try {
@@ -43,7 +41,6 @@ const AddComplaintScreen = ({route, navigation}) => {
       const {data, success, errors} = res?.data;
 
       if (success) {
-        console.log(data);
         setComplaintType(data.complaint_types || []);
       } else {
         console.log('Complaint type error:', errors);
@@ -58,6 +55,7 @@ const AddComplaintScreen = ({route, navigation}) => {
     setSubject('');
     setRemark('');
     setComplaintTypeSelected(null);
+    setStatus(null);
   };
 
   const onSubmit = async () => {
@@ -69,26 +67,16 @@ const AddComplaintScreen = ({route, navigation}) => {
       subject: subject,
       remarks: remark,
       complaint_type_id: complaintTypeSelected,
-      ...(channel === 'add' && {customer_id: id}),
-      ...(channel === 'update' && {status:status})
+      status: status,
     };
 
     try {
-      const res =
-        channel === 'update'
-          ? await updateComplaints(data, id)
-          : await addComplaints(data);
+      const res = await updateUserComplaint(data, id);
 
       const {success, errors} = res.data;
 
       if (success) {
-        Alert.alert(
-          'Success',
-          `Complaint ${
-            channel === 'update' ? 'updated' : 'added'
-          } successfully`,
-        );
-        if (channel === 'add') resetForm();
+        Alert.alert('Success', `Complaint updated successfully`);
         navigation.goBack();
       } else {
         console.log(errors);
@@ -125,27 +113,23 @@ const AddComplaintScreen = ({route, navigation}) => {
             </Picker>
           </View>
         </View>
-        <>
-          {channel === 'update' && (
-            <View style={styles.containerWrap}>
-              <View style={styles.container}>
-                <Text style={styles.label}>Status</Text>
-                <View style={styles.pickerWrapper}>
-                  <Picker
-                    selectedValue={status}
-                    onValueChange={itemValue => setStatus(itemValue)}
-                    style={styles.picker}
-                    dropdownIconColor="#333"
-                    mode="dropdown">
-                    <Picker.Item label="Select Status" value="" color="#888" />
-                    <Picker.Item label="Open" value="open" />
-                    <Picker.Item label="Closed" value="closed" />
-                  </Picker>
-                </View>
-              </View>
+        <View style={styles.containerWrap}>
+          <View style={styles.container}>
+            <Text style={styles.label}>Status</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={status}
+                onValueChange={itemValue => setStatus(itemValue)}
+                style={styles.picker}
+                dropdownIconColor="#333"
+                mode="dropdown">
+                <Picker.Item label="Select Status" value="" color="#888" />
+                <Picker.Item label="Open" value="open" />
+                <Picker.Item label="Closed" value="closed" />
+              </Picker>
             </View>
-          )}
-        </>
+          </View>
+        </View>
 
         <View style={styles.container}>
           <Text style={styles.label}>Subject</Text>
