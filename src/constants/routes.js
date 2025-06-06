@@ -49,7 +49,14 @@ export const ROUTES = {
   add_user_complaint:'add_user_complaint',
   update_user_complaint:'update_user_complaint',
   detail_user_complaint:'detail_user_complaint',
-  
+
+
+  //tadas 
+  ta_das_stack:'ta_das_stack',
+  ta_das:'ta_das',
+  ta_das_detail:'ta_das_detail',
+
+
   // inner stacks of settings stack
   myvisit_stack: 'myvisit_stack',
   return_stack: 'return_stack',

@@ -91,7 +91,7 @@ const PunchOutModalUI = forwardRef((props, ref) => {
           mode="contained"
           onPress={() => {
             hideModal();
-            onSubmit();
+            onSubmit(isRemarkField);
           }}
           style={styles.closeButton}>
           Submit

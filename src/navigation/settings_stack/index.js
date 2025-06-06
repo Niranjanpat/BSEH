@@ -42,6 +42,8 @@ import AddComplaintScreen from '../../screens/Settings/complaints/AddComplaintSc
 import ExpensesListScreen from '../../screens/Settings/expenses/ExpensesScreen';
 import AddExpensesScreen from '../../screens/Settings/expenses/AddExpensesScreen';
 import ExpenseDetailScreen from '../../screens/Settings/expenses/ExpenseDetailScreen';
+import TaDasListScreen from '../../screens/Settings/tadas/TaDasListScreen';
+import TaDasDetailScreen from '../../screens/Settings/tadas/TaDasDetailScreen';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -325,3 +327,24 @@ export const ComplaintStack = () => {
 //     />
 //   </Navigator>
 // };
+
+export const TaDasStack = () => {
+  return (
+     <Navigator>
+    <Screen
+      name={ROUTES.ta_das}
+      component={TaDasListScreen}
+      options={{
+        title: 'TaDas',
+      }}
+    />
+    <Screen
+      name={ROUTES.ta_das_detail}
+      component={TaDasDetailScreen}
+      options={{
+        title: 'TaDas Detail',
+      }}
+    />
+  </Navigator>
+  );
+};

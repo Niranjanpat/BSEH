@@ -106,6 +106,9 @@ export const URLS = {
   //user_complaint
   user_complaint:'user-complaints',
   
+  //ta_das
+  ta_das:'/ta-das',
+  
 };
 
 export const clientId =

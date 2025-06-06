@@ -38,7 +38,7 @@ const SettingScreen = ({navigation}) => {
       onPress={onPress}
       left={props => (
         <View style={styles.iconWrapper}>
-          <List.Icon  icon={icon} color={COLORS.primary} />
+          <List.Icon icon={icon} color={COLORS.primary} />
         </View>
       )}
       right={props => <List.Icon {...props} icon="chevron-right" />}
@@ -52,72 +52,77 @@ const SettingScreen = ({navigation}) => {
         <Avatar.Text
           size={100}
           label={profile.name ? profile.name.charAt(0) : 'P'}
-          style={{ backgroundColor: COLORS.primary }}
+          style={{backgroundColor: COLORS.primary}}
         />
         <Title style={styles.title}>{profile.name}</Title>
         <Subheading style={styles.subheading}>{role}</Subheading>
-        <Subheading style={styles.subheading}>{profile.contact_number}</Subheading>
+        <Subheading style={styles.subheading}>
+          {profile.contact_number}
+        </Subheading>
         <Subheading style={styles.subheading}>{profile.email}</Subheading>
       </View>
 
       <View>
         {renderItem('Profile', 'account', () =>
-          navigation.navigate(ROUTES.profile)
+          navigation.navigate(ROUTES.profile),
         )}
 
-        {(role === 'sc' || role === 'kam' || role === 'asm' || role === 'promoter') && (
+        {(role === 'sc' ||
+          role === 'kam' ||
+          role === 'asm' ||
+          role === 'promoter') && (
           <>
             {renderItem('Retailer Masters', 'bookmark-outline', () =>
-              navigation.navigate(ROUTES.retailer_master)
+              navigation.navigate(ROUTES.retailer_master),
             )}
             {role !== 'promoter' &&
               renderItem('Performance', 'star-outline', () =>
-                navigation.navigate(ROUTES.performance)
+                navigation.navigate(ROUTES.performance),
               )}
           </>
         )}
 
         {role !== 'sc' &&
           renderItem('Cumulative report', 'account-details', () =>
-            navigation.navigate(ROUTES.cumulative_report)
+            navigation.navigate(ROUTES.cumulative_report),
           )}
 
         {!['sales-officer', 'sc', 'promoter'].includes(role) && (
           <>
             {renderItem('User Hierarchy', 'file-tree-outline', () =>
-              navigation.navigate(ROUTES.user_hierarchy_stack)
+              navigation.navigate(ROUTES.user_hierarchy_stack),
             )}
             {role === 'asm' &&
               renderItem('Retailer Masters', 'bookmark-outline', () =>
-                navigation.navigate(ROUTES.retailer_master)
+                navigation.navigate(ROUTES.retailer_master),
               )}
           </>
         )}
 
         {(role === 'sc' || role === 'kam') &&
           renderItem('Route schedules', 'map-marker-distance', () =>
-            navigation.navigate(ROUTES.route_schedule_stack)
+            navigation.navigate(ROUTES.route_schedule_stack),
           )}
 
         {!['sc', 'kam'].includes(role) &&
           renderItem('User route schedules', 'map-marker', () =>
-            navigation.navigate(ROUTES.user_route_schedule_list)
+            navigation.navigate(ROUTES.user_route_schedule_list),
           )}
 
         {renderItem('Attendance', 'calendar-account-outline', () =>
-          navigation.navigate(ROUTES.attendance)
+          navigation.navigate(ROUTES.attendance),
         )}
 
         {renderItem('Monthly attendance', 'calendar-month-outline', () =>
-          navigation.navigate(ROUTES.monthly_attendance)
+          navigation.navigate(ROUTES.monthly_attendance),
         )}
 
         {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
-          navigation.navigate(ROUTES.monthly_attendance_travel)
+          navigation.navigate(ROUTES.monthly_attendance_travel),
         )}
 
         {renderItem('Expenses', 'cash-multiple', () =>
-          navigation.navigate(ROUTES.expenses)
+          navigation.navigate(ROUTES.expenses),
         )}
 
         {renderItem('Add Expenses', 'wallet-plus-outline', () =>
@@ -125,23 +130,29 @@ const SettingScreen = ({navigation}) => {
             channel: 'add',
             expenseDetail: null,
             id: null,
-          })
+          }),
         )}
 
         {renderItem('Complaint', 'message-alert-outline', () =>
-          navigation.navigate(ROUTES.complaint)
+          navigation.navigate(ROUTES.complaint),
+        )}
+
+        {renderItem('TaDas', 'message-alert-outline', () =>
+          navigation.navigate(ROUTES.ta_das_stack, {
+            screen: ROUTES.ta_das,
+          }),
         )}
 
         {renderItem('User Complaint', 'account-alert', () =>
-          navigation.navigate(ROUTES.user_complaint)
+          navigation.navigate(ROUTES.user_complaint),
         )}
 
         {renderItem('About Patanjali', 'office-building', () =>
-          navigation.navigate(ROUTES.about)
+          navigation.navigate(ROUTES.about),
         )}
 
         {renderItem('About Us', 'information-outline', () =>
-          navigation.navigate(ROUTES.aboutus)
+          navigation.navigate(ROUTES.aboutus),
         )}
 
         <Button
@@ -199,9 +210,9 @@ const styles = StyleSheet.create({
   iconWrapper: {
     backgroundColor: '#f1f9fe', // Optional: Replace with a derived light primary color if needed
     borderRadius: 10,
-    padding:8,
-    justifyContent:'center',
-    alignItems:'center',
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     color: '#212121',

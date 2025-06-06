@@ -5,7 +5,10 @@ import {Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
 import {getDailyAllowance} from '../services/punch_service';
-import {attendancePunchOut, storeAttendanceLoading} from '../store/actions/auth';
+import {
+  attendancePunchOut,
+  storeAttendanceLoading,
+} from '../store/actions/auth';
 import useLocationPermission from '../utils/useLocationPermission';
 
 const usePunchOutModal = () => {
@@ -87,15 +90,19 @@ const usePunchOutModal = () => {
         formData.append('work_feedback', workFeedback);
         formData.append('day_end_details', dayEndDetail);
         formData.append('end_vehicle_km', vehicleReading);
-        formData.append('total_vehicle_km', totalVehicleReading.current);
         formData.append('daily_allowance', dailyAllowanceSelected);
         formData.append('latitude', latitude.current);
         formData.append('longitude', longitude.current);
+        console.log('image', isRemarkField);
+        if(!isRemarkField){
+           formData.append('total_vehicle_km', totalVehicleReading.current);
         formData.append('punch_out_photo', {
           uri: image,
           type: 'image/jpeg',
           name: 'punchout.jpeg',
         });
+        }
+       
 
         dispatch(attendancePunchOut(formData));
         resetForm();

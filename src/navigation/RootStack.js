@@ -67,6 +67,7 @@ import ComplaintDetailScreen from '../screens/Settings/complaints/ComplaintDetai
 import UserComplaintScreen from  '../screens/Settings/user_complaint/UserComplaintListScreen';
 import UserComplaintDetailScreen from '../screens/Settings/user_complaint/UserComplaintDetailScreen';
 import AddUserComplaintScreen from '../screens/Settings/user_complaint/UpdateComplaintScreen';
+import { TaDasStack } from './settings_stack';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -226,6 +227,13 @@ export const SettingsStackNavigation = () => {
         component={AddUserComplaintScreen}
         options={{title: 'Add User Complaint', headerShown: true}}
       />
+
+       <SettingsStack.Screen
+        name={ROUTES.ta_das_stack}
+        component={TaDasStack}
+      />
+
+
     </SettingsStack.Navigator>
   );
 };
