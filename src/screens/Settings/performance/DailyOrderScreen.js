@@ -24,7 +24,7 @@ import SoDailyOrderScreen from './DailyOrder/SoDailyOrderScreen';
 import {COLORS} from '../../../constants/theme/colors';
 
 const CustomerOrderScreen = ({route}) => {
-  const [value, setValue] = useState('0');
+  const [value, setValue] = useState('1');
   const [startDate, setStartDate] = useState(new Date());
   const [showStartDate, setShowStartDate] = useState(false);
   const {role} = route.params;
@@ -43,7 +43,7 @@ const CustomerOrderScreen = ({route}) => {
               icon="calendar-outline"
             />
           }
-          style={{flex:1,marginLeft:2,marginRight:2}}
+          style={styles.inputText}
           editable={false}
           mode="outlined"
         />
@@ -64,7 +64,7 @@ const CustomerOrderScreen = ({route}) => {
         />
       </View>
 
-      {role === 'dsm' && (
+      {role === 'sales-officer' && (
         <ToggleButton.Row
           style={{
             alignSelf: 'center',

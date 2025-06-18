@@ -53,7 +53,67 @@ export default function BottomTabStack({navigation}) {
         component={HomeStackNavigation}
       />
 
-      {role == 'sc' ? (
+      <Screen
+        name="Activity"
+        options={{
+          tabBarLabel: 'Activity',
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="contacts-outline"
+              color={color}
+              size={22}
+            />
+          ),
+        }}
+        component={ActivityStackNavigation}
+      />
+
+      <Screen
+        name="AddShop"
+        options={{
+          tabBarLabel: 'Add Shop',
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="shopping-outline"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+        component={AddShopNavigation}
+      />
+
+      <Screen
+        name={ROUTES.myvisit_stack}
+        options={{
+          tabBarLabel: 'My Visits',
+          tabBarIcon: ({color}) => (
+            <Fontisto name="shopping-store" color={color} size={22} />
+          ),
+        }}
+        component={MyVisitStack}
+      />
+
+      {role !== 'sc' || 'asm' && (
+        <>
+          <Screen
+            name="UserHierarchy"
+            options={{
+              tabBarLabel: 'User Hierarchy',
+              tabBarIcon: ({color}) => (
+                <MaterialCommunityIcons
+                  name="file-tree-outline"
+                  color={color}
+                  size={22}
+                />
+              ),
+            }}
+            component={UserHierarchyStack}
+          />
+        </>
+      )}
+
+      {/* {role == 'sc' ? (
         <>
           <Screen
             name="Activity"
@@ -123,7 +183,7 @@ export default function BottomTabStack({navigation}) {
                 component={MyVisitStack}
               />
             </>
-          )}
+          )} 
           <Screen
             name="UserHierarchy"
             options={{
@@ -174,7 +234,7 @@ export default function BottomTabStack({navigation}) {
           )}
         </>
       )}
-
+*/}
       <Screen
         name="Settings"
         options={{

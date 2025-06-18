@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Image, View, StyleSheet, Text} from 'react-native';
+import {Image, View, StyleSheet} from 'react-native';
 import {Col, Grid} from 'react-native-easy-grid';
-import {Button, Caption, DataTable} from 'react-native-paper';
+import {Button, Caption, DataTable, Text} from 'react-native-paper';
 import {IMAGE} from '../../../../constants/images';
 import {SPACINGS} from '../../../../constants/theme';
 import {COLORS} from '../../../../constants/theme/colors';
@@ -39,10 +39,14 @@ const DsmDailyOrderScreen = ({id, date}) => {
             setDataDSM(data.customers);
           }
         } else {
+          console.log('err', errors);
+
           alert(JSON.stringify(errors));
         }
       })
       .catch(e => {
+        console.log('errss', e);
+
         alert(JSON.stringify(e));
       });
   };
@@ -52,19 +56,19 @@ const DsmDailyOrderScreen = ({id, date}) => {
         dataDSM.map(e => (
           <Grid key={e._id} style={styles.grid}>
             <Col style={styles.col} size={2}>
-              <Text style={styles.text}>{e.sap_code}</Text>
+              <Text>{e.sap_code}</Text>
             </Col>
             <Col style={styles.col} size={2}>
-              <Text style={styles.text}>{e.name}</Text>
+              <Text>{e.name}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text style={styles.text}>{e.total_quantity}</Text>
+              <Text>{e.total_quantity}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text style={styles.text}>{e.total_amount}</Text>
+              <Text>{e.total_amount}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text style={styles.text}>{e.lpc}</Text>
+              <Text>{e.lpc}</Text>
             </Col>
           </Grid>
         ))
@@ -105,8 +109,4 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 2,
   },
-
-  text: {
-    color: 'black',
-  }
 });

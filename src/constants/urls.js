@@ -29,6 +29,7 @@ export const URLS = {
   verticals: 'verticals/',
   brands: '/brands/',
   products: '/products',
+  allProduct:'/all-products',
   predefineFeedback: 'customer-visits/predefined-feedbacks',
   saveFeedback: 'customer-visits/save-feedbacks',
   orders: 'orders/',
@@ -43,7 +44,9 @@ export const URLS = {
   topCustomersPerformance: 'user-performance/top-customers',
   topDistributors: 'user-performance/top-distributors',
   todayCustomerOrder: 'user-performance/today-customer-orders',
-  topDsms: 'user-performance/top-kams',
+  topScs: 'user-performance/top-scs',
+  topZms:'user-performance/top-zms',
+  topAsms:'user-performance/top-asms',
   topSalesOfficer: 'user-performance/top-sales-officers',
   dailyOrderPerformance: 'user-performance/daily-orders',
   dailyCustomerOrder: 'user-performance/daily-customer-orders',
@@ -108,7 +111,11 @@ export const URLS = {
   
   //ta_das
   ta_das:'/ta-das',
-  
+
+  //sample
+  sample:'samples',
+
+  categories:'/categories',
 };
 
 export const clientId =

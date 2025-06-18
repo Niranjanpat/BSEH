@@ -11,19 +11,12 @@ import DateMonthModal from '../../../components/DateMonthModal';
 
 const TopDistributorScreen = ({route}) => {
   const [data, setData] = useState([]);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [date, setDate] = useState(new Date());
+
   const [month, setMonth] = useState(dayjs().format('M'));
   const [year, setYear] = useState(dayjs().format('YYYY'));
-
-  const [endDate, setEndDate] = useState(
-    new Date(
-      dayjs().format('YYYY-MM') +
-        '-' +
-        new Date(dayjs().format('YYYY'), dayjs().format('MM'), 0).getDate(),
-    ),
-  );
-  const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM') + '-01');
 
   useEffect(() => {
     getTopDistributor();
@@ -32,14 +25,14 @@ const TopDistributorScreen = ({route}) => {
   const getTopDistributor = () => {
     const temp = {
       id: route.params?.id,
-      start_date: dayjs(startDate).format('YYYY-MM-DD'),
-      end_date: dayjs(endDate).format('YYYY-MM-DD'),
+      year: year,
+      month: month,
     };
 
     topDistributorsList(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log(res);
+        console.log(data);
         if (success) {
           setData(data.distributors);
         } else {
@@ -52,12 +45,8 @@ const TopDistributorScreen = ({route}) => {
   };
 
   const changeDates = d => {
-    setStartDate(dayjs(d).format('YYYY-MM') + '-01');
-    setEndDate(
-      dayjs(d).format('YYYY-MM') +
-        '-' +
-        new Date(dayjs(d).format('YYYY'), dayjs(d).format('MM'), 0).getDate(),
-    );
+    setMonth(dayjs(d).format('M'));
+    setYear(dayjs(d).format('YYYY'));
 
     setDate(d);
   };

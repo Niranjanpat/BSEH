@@ -15,9 +15,8 @@ import {
   getComplaintsType,
 } from '../../../services/complaint_service';
 
-const AddComplaintScreen = ({route, navigation}) => {
+const UpdateComplaintScreen = ({route, navigation}) => {
   const {complaint, id} = route.params;
-  console.log("data in apit ",complaint,id);
   const [subject, setSubject] = useState('');
   const [remark, setRemark] = useState('');
   const [complaintTypeSelected, setComplaintTypeSelected] = useState(null);
@@ -169,7 +168,7 @@ const AddComplaintScreen = ({route, navigation}) => {
   );
 };
 
-export default AddComplaintScreen;
+export default UpdateComplaintScreen;
 
 const styles = StyleSheet.create({
   containerWrap: {

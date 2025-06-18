@@ -18,14 +18,8 @@ const TopCustomersScreen = ({route}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [date, setDate] = useState(new Date());
 
-  const [endDate, setEndDate] = useState(
-    new Date(
-      dayjs().format('YYYY-MM') +
-        '-' +
-        new Date(dayjs().format('YYYY'), dayjs().format('MM'), 0).getDate(),
-    ),
-  );
-  const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM') + '-01');
+  const [month, setMonth] = useState(dayjs().format('M'));
+  const [year, setYear] = useState(dayjs().format('YYYY'));
 
   useEffect(() => {
     getTopCustomerDSM();
@@ -35,8 +29,8 @@ const TopCustomersScreen = ({route}) => {
   const getTopCustomerDSM = () => {
     const temp = {
       id: route.params?.id,
-      start_date: dayjs(startDate).format('YYYY-MM-DD'),
-      end_date: dayjs(endDate).format('YYYY-MM-DD'),
+      month: month,
+      year: year,
       sort_by: 'amount',
       self: 1,
     };
@@ -57,8 +51,8 @@ const TopCustomersScreen = ({route}) => {
   const getTopCustomer = () => {
     const temp = {
       id: route.params?.id,
-      start_date: dayjs(startDate).format('YYYY-MM-DD'),
-      end_date: dayjs(endDate).format('YYYY-MM-DD'),
+      month: month,
+      year: year,
       sort_by: 'amount',
       self: 0,
     };
@@ -79,12 +73,8 @@ const TopCustomersScreen = ({route}) => {
   };
 
   const changeDates = d => {
-    setStartDate(dayjs(d).format('YYYY-MM') + '-01');
-    setEndDate(
-      dayjs(d).format('YYYY-MM') +
-        '-' +
-        new Date(dayjs(d).format('YYYY'), dayjs(d).format('MM'), 0).getDate(),
-    );
+    setYear(dayjs(d).format('YYYY'));
+    setMonth(dayjs(d).format('M'));
     setDate(d);
   };
 
@@ -97,7 +87,7 @@ const TopCustomersScreen = ({route}) => {
         onDismiss={() => setModalOpen(false)}
         onDateChange={date => changeDates(date)}
       />
-      {role === 'dsm' && (
+      {role === 'sales-officer' && (
         <ToggleButton.Row
           style={{alignSelf: 'center', marginHorizontal: 10}}
           onValueChange={value => setValue(value)}
@@ -164,7 +154,7 @@ const TopCustomersScreen = ({route}) => {
           {dataDSM && dataDSM.length > 0 ? (
             dataDSM.map(e => (
               <View key={e._id}>
-                <Grid  style={[styles.grid,{color:'black'}]}>
+                <Grid style={styles.grid}>
                   <Col style={styles.col} size={1.5}>
                     <Text>{e.sap_code}</Text>
                   </Col>

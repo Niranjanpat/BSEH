@@ -5,7 +5,7 @@ import {ROUTES} from '../../constants/routes';
 import PerformanceScreen from '../../screens/Settings/performance/PerformanceScreen';
 import TopDistributorsScreen from '../../screens/Settings/performance/TopDistributorsScreen';
 import TopCustomersScreen from '../../screens/Settings/performance/TopCustomersScreen';
-import TopDsmScreen from '../../screens/Settings/performance/TopDsmScreen';
+import TopScsScreen from '../../screens/Settings/performance/TopScsScreen';
 import CustomerOrderScreen from '../../screens/Settings/performance/CustomerOrderScreen';
 import TopSalesOfficerScreen from '../../screens/Settings/performance/TopSalesOfficerScreen';
 import UserHierarchyList from '../../screens/Settings/userHierarchy/UserHierarchyList';
@@ -15,8 +15,15 @@ import UserTargets from '../../screens/Settings/performance/UserTargets';
 import BeatListScreen from '../../screens/Settings/performance/BeatListScreen';
 import BeatCustomerList from '../../screens/Settings/performance/BeatCustomerList';
 import OrderLogScreen from '../../screens/Settings/performance/OrderLogScreen';
-import TodayReportScreen from '../../screens/Settings/TodayReportScreen';
-import DayWiseReportScreen from '../../screens/Settings/DayWiseReportScreen';
+import IndividualPerformanceScreen from '../../screens/Settings/performance/IndividualPerformanceScreen';
+import MTDPerformanceScreen from '../../screens/Settings/performance/MTDPerformanceScreen';
+import SalesPerformanceScreen from '../../screens/Settings/performance/SalesPerformanceScreen';
+import TeamPerformanceScreen from '../../screens/Settings/performance/TeamPerformanceScreen';
+//import UserCustomersScreen from '../../screens/Settings/performance/UserCustomersScreen';
+import RetailerMasterDetailsScreen from '../../screens/RetailerMaster/RetailerMasterDetailsScreen';
+import TopAsmsScreen from '../../screens/Settings/performance/TopAsmsScreen';
+import TopZmsScreen from '../../screens/Settings/performance/TopZmsScreen';
+
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -53,10 +60,32 @@ export const UserHierarchyStack = () => {
         component={TopCustomersScreen}
         options={{title: 'Top Customers'}}
       />
+      {/* <Screen
+        name={ROUTES.user_customers}
+        component={UserCustomersScreen}
+        options={{title: 'Customers'}}
+      /> */}
       <Screen
-        name={ROUTES.top_dsm}
-        component={TopDsmScreen}
-        options={{title: 'Top DSM'}}
+        options={{
+          headerShown: false,
+        }}
+        name={ROUTES.retailer_detail}
+        component={RetailerMasterDetailsScreen}
+      />
+      <Screen
+        name={ROUTES.top_sc}
+        component={TopScsScreen}
+        options={{title: 'Top SCs'}}
+      />
+         <Screen
+        name={ROUTES.top_asm}
+        component={TopAsmsScreen}
+        options={{title: 'Top ASMs'}}
+      />
+         <Screen
+        name={ROUTES.top_zm}
+        component={TopZmsScreen}
+        options={{title: 'Top ZMs'}}
       />
       <Screen
         name={ROUTES.customer_order}
@@ -89,14 +118,19 @@ export const UserHierarchyStack = () => {
         options={{title: 'Order log'}}
       />
       <Screen
-        name={ROUTES.today_report}
-        options={{title: "Today's Report", headerShown: true}}
-        component={TodayReportScreen}
+        name={ROUTES.individual_performance}
+        component={IndividualPerformanceScreen}
+        options={{title: 'Individual performance'}}
       />
       <Screen
-        name={ROUTES.day_wise_report}
-        options={{title: 'Daywise Compliance Report', headerShown: true}}
-        component={DayWiseReportScreen}
+        name={ROUTES.sales_performance}
+        component={SalesPerformanceScreen}
+        options={{title: 'Sales performance'}}
+      />
+      <Screen
+        name={ROUTES.team_performance}
+        component={TeamPerformanceScreen}
+        options={{title: 'Team performance'}}
       />
     </Navigator>
   );

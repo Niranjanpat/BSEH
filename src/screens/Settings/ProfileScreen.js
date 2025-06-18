@@ -41,13 +41,6 @@ const ProfileScreen = ({navigation}) => {
       </Appbar.Header>
 
       <View style={styles.profileCard}>
-        <Button
-          style={styles.editButton}
-          mode="contained"
-          icon="account-edit"
-          onPress={handleEditPressed}>
-          Edit Profile
-        </Button>
         <Avatar.Text
           style={styles.avatar}
           size={100}
@@ -59,7 +52,19 @@ const ProfileScreen = ({navigation}) => {
       </View>
 
       <View style={styles.detailsContainer}>
-        <Subheading style={styles.sectionTitle}>Profile Info</Subheading>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Subheading style={styles.sectionTitle}>Profile Info</Subheading>
+          <Button
+            style={styles.editButton}
+            mode="contained"
+            icon="account-edit"
+            onPress={handleEditPressed}></Button>
+        </View>
 
         <View style={styles.dictionaryContainer}>
           {Object.entries(profileFields).map(([key, value]) => (
@@ -157,9 +162,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   editButton: {
-    alignSelf: 'flex-end',
-    marginBottom: SPACINGS.md,
+    marginBottom: SPACINGS.sm,
     backgroundColor: COLORS.primary,
-    marginRight:SPACINGS.sm,
   },
 });

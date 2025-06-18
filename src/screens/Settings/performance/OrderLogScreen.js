@@ -7,7 +7,7 @@ import {SPACINGS} from '../../../constants/theme';
 import {weeklyOrderLog} from '../../../services/performance_service';
 import {Col, Grid} from 'react-native-easy-grid';
 import {COLORS} from '../../../constants/theme/colors';
-import DateMonthModal from '../../../components/DateMonthModal';
+
 import DatePicker from 'react-native-date-picker';
 
 const OrderLogScreen = ({route}) => {
@@ -19,34 +19,37 @@ const OrderLogScreen = ({route}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [date, setDate] = useState(new Date());
 
-  const [endDate, setEndDate] = useState(
-    dayjs(new Date()).add(6, 'days').format('YYYY-MM-DD'),
-  );
-  const [startDate, setStartDate] = useState(
-    dayjs(new Date()).format('YYYY-MM-DD'),
-  );
-
   const [month, setMonth] = useState(dayjs().format('M'));
   const [year, setYear] = useState(dayjs().format('YYYY'));
 
+  const d = new Date();
+
+  const [startDate, setStartDate] = useState(
+    dayjs(d).subtract(6).format('YYYY-MM-DD'),
+  );
+  const [endDate, setEndDate] = useState(dayjs(d).format('YYYY-MM-DD'));
+
   useEffect(() => {
     getTopCustomerDSM();
-    //getTopCustomer();
+    getTopCustomer();
   }, [date]);
   console.log(data);
   const getTopCustomerDSM = () => {
     const temp = {
       id: route.params?.id,
-      start_date: startDate,
-      end_date: endDate,
+      // year: year,
+      // month: month,
       sort_by: 'amount',
       page: 1,
       self: 1,
+      start_date: startDate,
+      end_date: endDate,
     };
+
+    console.log('temp', temp);
+
     weeklyOrderLog(temp)
       .then(res => {
-        console.log('order log', res);
-
         const {data, errors, success} = res.data;
         console.log(data);
         if (success) {
@@ -62,20 +65,20 @@ const OrderLogScreen = ({route}) => {
   const getTopCustomer = () => {
     const temp = {
       id: route.params?.id,
-      start_date: dayjs(startDate).format('YYYY-MM-DD'),
-      end_date: dayjs(endDate).format('YYYY-MM-DD'),
+
       sort_by: 'amount',
       page: 1,
       self: 0,
+      start_date: startDate,
+      end_date: endDate,
     };
     weeklyOrderLog(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log('orders', res);
+        console.log(data);
         if (success) {
           setData(data.days);
         } else {
-          console.log('order', res);
           alert(JSON.stringify(errors));
         }
       })
@@ -85,46 +88,14 @@ const OrderLogScreen = ({route}) => {
   };
 
   const changeDates = d => {
-    setStartDate(dayjs(d).format('YYYY-MM') + '-01');
-    setEndDate(
-      dayjs(d).format('YYYY-MM') +
-        '-' +
-        new Date(dayjs(d).format('YYYY'), dayjs(d).format('MM'), 0).getDate(),
-    );
+    setYear(dayjs(d).format('YYYY'));
+    setMonth(dayjs(d).format('M'));
 
     setDate(d);
   };
 
   return (
     <ScrollView>
-      <TextInput
-        label="Start Date"
-        value={dayjs(startDate).format('YYYY-MM-DD')}
-        right={
-          <TextInput.Icon
-            onPress={() => {
-              setModalOpen(true);
-            }}
-            icon="calendar-outline"
-          />
-        }
-        style={{flex:1,margin:10}}
-        editable={false}
-        mode="outlined"
-      />
-      <DatePicker
-        modal
-        mode="date"
-        open={modalOpen}
-        date={new Date()}
-        onConfirm={date => {
-          setModalOpen(false);
-          setStartDate(dayjs(date).format('YYYY-MM-DD'));
-          setEndDate(dayjs(date).add(6, 'days').format('YYYY-MM-DD'));
-          setDate(date);
-        }}
-        onCancel={() => setModalOpen(false)}
-      />
       {/* <DateMonthModal
         dates={date}
         open={modalOpen}
@@ -132,7 +103,39 @@ const OrderLogScreen = ({route}) => {
         onDismiss={() => setModalOpen(false)}
         onDateChange={date => changeDates(date)}
       /> */}
-      {role === 'dsm' && (
+
+      <View style={{flexDirection: 'row'}}>
+        <TextInput
+          style={styles.inputText}
+          editable={false}
+          value={endDate}
+          label="Select date"
+          mode="outlined"
+          right={
+            <TextInput.Icon
+              onPress={() => setModalOpen(true)}
+              icon="calendar-outline"
+            />
+          }
+        />
+      </View>
+
+      <DatePicker
+        modal
+        mode="date"
+        open={modalOpen}
+        date={new Date()}
+        onConfirm={date => {
+          setModalOpen(false);
+          setEndDate(dayjs(date).format('YYYY-MM-DD'));
+          setStartDate(dayjs(date).subtract(6).format('YYYY-MM-DD'));
+        }}
+        onCancel={() => {
+          setModalOpen(false);
+        }}
+      />
+
+      {role === 'sales-officer' && (
         <ToggleButton.Row
           style={{alignSelf: 'center', marginHorizontal: 10}}
           onValueChange={value => setValue(value)}
@@ -172,7 +175,7 @@ const OrderLogScreen = ({route}) => {
         <>
           {data && data.length > 0 ? (
             data.map(e => (
-              <Grid style={[styles.grid,{color:'black'}]} key={e._id}>
+              <Grid style={styles.grid} key={e._id}>
                 <Col style={styles.col} size={2}>
                   <Text>{e.date}</Text>
                 </Col>
@@ -195,7 +198,7 @@ const OrderLogScreen = ({route}) => {
         <>
           {dataDSM && dataDSM.length > 0 ? (
             dataDSM.map(e => (
-              <Grid style={[styles.grid,{color:'black'}]} key={e._id}>
+              <Grid style={styles.grid} key={e._id}>
                 <Col style={styles.col} size={2}>
                   <Text>{e.date}</Text>
                 </Col>
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.lightGrey,
     flex: 1,
   },
-  inputText: {width: '45%', margin: 5},
+  inputText: {width: '45%', margin: 5, flex: 1,},
 
   emptyContainer: {
     marginTop: SPACINGS.lg,

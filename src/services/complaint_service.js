@@ -17,7 +17,6 @@ export const updateComplaints = async (data,id) =>{
 };
 
 export const getComplaintDetail = async (id) =>{
-    console.log(id);
     return await client.get(URLS.complaints+'/'+id);
 }
 

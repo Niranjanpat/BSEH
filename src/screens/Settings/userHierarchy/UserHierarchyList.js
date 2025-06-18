@@ -1,23 +1,35 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {List} from 'react-native-paper';
+import {Button, List} from 'react-native-paper';
 import {ROUTES} from '../../../constants/routes';
 import {COLORS} from '../../../constants/theme/colors';
 import {getUserHierarchyList} from '../../../services/userHierarchy_service';
-
 const UserHierarchyList = ({navigation, route}) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     getUserHierarchyList(route.params?.id ? route.params.id : ' ').then(res => {
       const {data, errors, success} = res.data;
       if (success) {
-        console.log('kams',data.users);
+        console.log(data.users);
         setData(data.users);
       } else {
         console.log(errors);
       }
     });
   }, []);
+
+  const handlePerformanceClick = () => {
+    navigation.navigate(ROUTES.team_performance, {userData: data});
+  };
+
+  const handleSalesClick = () => {
+    const id = [];
+    data.forEach((item, index) => {
+      id.push(item._id);
+    });
+    console.log(id);
+    navigation.navigate(ROUTES.sales_performance, {id});
+  };
 
   return (
     <View style={styles.container}>
@@ -32,6 +44,7 @@ const UserHierarchyList = ({navigation, route}) => {
         }}
         keyExtractor={(item, _) => item._id}
         renderItem={({item}) => {
+          console.log(item);
           return (
             <List.Item
               style={styles.list}
@@ -45,7 +58,9 @@ const UserHierarchyList = ({navigation, route}) => {
               }}
               right={props => (
                 <>
-                  {item.role === 'kam' ? null : (
+                  {item.role === 'cr' ||
+                  item.role === 'yp' ||
+                  item.role === 'sr' ? null : (
                     <TouchableOpacity
                       onPress={() => {
                         navigation.push(ROUTES.user_hierarchy_list, {
@@ -53,7 +68,7 @@ const UserHierarchyList = ({navigation, route}) => {
                         });
                       }}
                       style={styles.listRight}>
-                      <List.Icon {...props} icon="chevron-right" />
+                      <Text style={{color: COLORS.accentSecondary}}>View Team</Text>
                     </TouchableOpacity>
                   )}
                 </>
@@ -62,10 +77,24 @@ const UserHierarchyList = ({navigation, route}) => {
           );
         }}
       />
+
+      <View style={styles.buttonContainer}>
+        <Button
+          style={styles.button}
+          mode="contained"
+          onPress={() => handlePerformanceClick()}>
+          Team Performance
+        </Button>
+        <Button
+          style={styles.button}
+          mode="contained"
+          onPress={() => handleSalesClick()}>
+          Product Sales
+        </Button>
+      </View>
     </View>
   );
 };
-
 export default UserHierarchyList;
 const styles = StyleSheet.create({
   container: {
@@ -90,5 +119,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 10,
     borderRadius: 10,
+  },
+  button: {
+    marginHorizontal: 5,
+    color: '#fff',
+    flex: 1,
+  },
+  buttonContainer: {
+    paddingHorizontal:10,
+    flexDirection: 'row',
+    marginVertical: 10,
   },
 });

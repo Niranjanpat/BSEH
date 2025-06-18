@@ -38,11 +38,14 @@ const ExpenseDetailScreen = ({route, navigation}) => {
   }, [navigation, expenseDetail]);
 
   const handleEdit = () => {
-    navigation.navigate(ROUTES.update_expenses, {
+    navigation.navigate(ROUTES.expense_stack,{
+     screen:ROUTES.update_complaint,
+     params:{
       channel: 'update',
       expenseDetail: expenseDetail,
       id: expense._id,
-    });
+    }
+    } );
   };
 
   useEffect(() => {

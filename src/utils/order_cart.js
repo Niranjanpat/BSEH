@@ -74,7 +74,7 @@ export const storePromotionalInCart = async product => {
 
   if (productInCart) {
     newCart = cart.map(item => {
-      if (item.id === product.id) {
+      if (item._id === product._id) {
         return product;
       }
 
@@ -109,9 +109,8 @@ export const getProductIfExists = async key => {
 
 export const getPromotionalItemsIfExists = async key => {
   const cart = await getCartPromotionalItems();
-
   if (cart) {
-    return cart.find(item => item.id === key);
+    return cart.find(item => item._id === key);
   }
 
   return null;
@@ -147,7 +146,7 @@ export const removePromotionalFromCart = async key => {
   if (product) {
     const cart = await getCartPromotionalItems();
 
-    const newCart = cart.filter(item => item.id !== key);
+    const newCart = cart.filter(item => item._id !== key);
 
     mmkv.setArrayAsync(CART_PROMOTIONAL_KEY, newCart);
     return newCart;

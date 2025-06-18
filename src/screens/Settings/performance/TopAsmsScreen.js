@@ -1,64 +1,59 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View, StyleSheet, Image} from 'react-native';
+import {ScrollView, View, StyleSheet, Image, Alert} from 'react-native';
 import {Caption, DataTable, TextInput} from 'react-native-paper';
 import {IMAGE} from '../../../constants/images';
 import {SPACINGS} from '../../../constants/theme';
-import {topDSMList} from '../../../services/performance_service';
+import {
+  topScsList,
+  topAsmsList,
+  topZmsList,
+} from '../../../services/performance_service';
 import DateMonthModal from '../../../components/DateMonthModal';
 
-const TopDsmScreen = ({route}) => {
+const TopAsmsScreen = ({route}) => {
   const [data, setData] = useState([]);
-
   const [modalOpen, setModalOpen] = useState(false);
   const [date, setDate] = useState(new Date());
+
+  console.log('params', route.params);
 
   const [month, setMonth] = useState(dayjs().format('M'));
   const [year, setYear] = useState(dayjs().format('YYYY'));
 
-  const [endDate, setEndDate] = useState(
-    new Date(
-      dayjs().format('YYYY-MM') +
-        '-' +
-        new Date(dayjs().format('YYYY'), dayjs().format('MM'), 0).getDate(),
-    ),
-  );
-  const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM') + '-01');
-
   useEffect(() => {
-    getTopDsm();
+    getTopAsms();
   }, [date]);
 
-  const getTopDsm = () => {
+  const getTopAsms = () => {
     const temp = {
       id: route.params?.id,
-      start_date: dayjs(startDate).format('YYYY-MM-DD'),
-      end_date: dayjs(endDate).format('YYYY-MM-DD'),
+      year: year,
+      month: month,
     };
-    topDSMList(temp)
+    topAsmsList(temp)
       .then(res => {
+        console.log('dsm res', res);
+
         const {data, errors, success} = res.data;
-        console.log('dsm', res);
+        console.log(data);
         if (success) {
           setData(data.users);
         } else {
-          alert(JSON.stringify(errors));
+          Alert.alert('Error', JSON.stringify(errors));
         }
       })
       .catch(e => {
-        console.log('dsm error', e);
+        console.log('errr', e);
 
-        alert(JSON.stringify(e));
+        Alert.alert('Errors', JSON.stringify(e));
       });
   };
 
   const changeDates = d => {
-    setStartDate(dayjs(d).format('YYYY-MM') + '-01');
-    setEndDate(
-      dayjs(d).format('YYYY-MM') +
-        '-' +
-        new Date(dayjs(d).format('YYYY'), dayjs(d).format('MM'), 0).getDate(),
-    );
+    setYear(dayjs(d).format('YYYY'));
+    setMonth(dayjs(d).format('M'));
+
     setDate(d);
   };
 
@@ -99,7 +94,7 @@ const TopDsmScreen = ({route}) => {
   );
 };
 
-export default TopDsmScreen;
+export default TopAsmsScreen;
 
 const styles = StyleSheet.create({
   dateContainer: {

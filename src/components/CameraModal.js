@@ -78,7 +78,6 @@ const CameraModal = ({buttonText = 'Odometer', onImageSelect}) => {
 
 const styles = StyleSheet.create({
   container: {
-    // paddingVertical: 20,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',

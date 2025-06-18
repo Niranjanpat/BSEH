@@ -44,6 +44,9 @@ import AddExpensesScreen from '../../screens/Settings/expenses/AddExpensesScreen
 import ExpenseDetailScreen from '../../screens/Settings/expenses/ExpenseDetailScreen';
 import TaDasListScreen from '../../screens/Settings/tadas/TaDasListScreen';
 import TaDasDetailScreen from '../../screens/Settings/tadas/TaDasDetailScreen';
+import UserComplaintListScreen from '../../screens/Settings/user_complaint/UserComplaintListScreen';
+import UserComplaintDetailScreen from '../../screens/Settings/user_complaint/UserComplaintDetailScreen';
+import {updateUserComplaint} from '../../services/complaint_service';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -178,6 +181,13 @@ export const MyVisitStack = () => {
         })}
       />
       <Screen
+        name={ROUTES.complaint}
+        component={AddComplaintScreen}
+        options={() => ({
+          title: 'Add Complaint',
+        })}
+      />
+      <Screen
         name={ROUTES.customer_promotional_items}
         component={CustomerPromotionalItems}
         options={() => ({
@@ -270,81 +280,113 @@ const ReturnOrderStack = () => {
 };
 
 export const ComplaintStack = () => {
-  <Navigator>
-    <Screen
-      name={ROUTES.complaint}
-      component={ComplaintListScreen}
-      options={{
-        title: 'Complaints',
-      }}
-    />
-    <Screen
-      name={ROUTES.add_complaint}
-      component={AddComplaintScreen}
-      options={{
-        title: 'Add Complaints',
-      }}
-    />
-    <Screen
-      name={ROUTES.update_complaint}
-      component={AddComplaintScreen}
-      options={{
-        title: 'Update Compliants',
-      }}
-    />
-  </Navigator>;
+  return (
+    <Navigator initialRouteName={ROUTES.complaint} screenOptions={{animation: 'slide_from_right'}}>
+      <Screen
+        name={ROUTES.complaint}
+        component={ComplaintListScreen}
+        options={{
+          title: 'Complaints',
+        }}
+      />
+      <Screen
+        name={ROUTES.add_complaint}
+        component={AddComplaintScreen}
+        options={{
+          title: 'Add Complaints',
+        }}
+      />
+      <Screen
+        name={ROUTES.update_complaint}
+        component={AddComplaintScreen}
+        options={{
+          title: 'Update Compliants',
+        }}
+      />
+    </Navigator>
+  );
 };
 
-// export const ExpenseStack = () => {
-//   <Navigator>
-//     <Screen
-//       name={ROUTES.expenses}
-//       component={ExpensesListScreen}
-//       options={{
-//         title: 'Expenses',
-//       }}
-//     />
-//     <Screen
-//       name={ROUTES.add_expenses}
-//       component={AddExpensesScreen}
-//       options={{
-//         title: 'Add Expenses',
-//       }}
-//     />
-//     <Screen
-//       name={ROUTES.update_complaint}
-//       component={AddExpensesScreen}
-//       options={{
-//         title: 'Update Expenses',
-//       }}
-//     />
-//     <Screen
-//       name={ROUTES.expenses_detail}
-//       component={ExpenseDetailScreen}
-//       options={{
-//         title: 'Expense Detail',
-//       }}
-//     />
-//   </Navigator>
-// };
+export const ExpenseStack = () => {
+  return (
+    <Navigator initialRouteName={ROUTES.expenses} screenOptions={{animation: 'slide_from_right'}}>
+      <Screen
+        name={ROUTES.expenses}
+        component={ExpensesListScreen}
+        options={{
+          title: 'Expenses',
+        }}
+      />
+      <Screen
+        name={ROUTES.add_expenses}
+        component={AddExpensesScreen}
+        options={{
+          title: 'Add Expenses',
+        }}
+      />
+      <Screen
+        name={ROUTES.update_complaint}
+        component={AddExpensesScreen}
+        options={{
+          title: 'Update Expenses',
+        }}
+      />
+      <Screen
+        name={ROUTES.expenses_detail}
+        component={ExpenseDetailScreen}
+        options={{
+          title: 'Expense Detail',
+        }}
+      />
+    </Navigator>
+  );
+};
 
 export const TaDasStack = () => {
   return (
-     <Navigator>
-    <Screen
-      name={ROUTES.ta_das}
-      component={TaDasListScreen}
-      options={{
-        title: 'TaDas',
-      }}
-    />
-    <Screen
-      name={ROUTES.ta_das_detail}
-      component={TaDasDetailScreen}
-      options={{
-        title: 'TaDas Detail',
-      }}
-    />
-  </Navigator>
+     <Navigator initialRouteName={ROUTES.ta_das} screenOptions={{animation: 'slide_from_right'}}>
+      <Screen
+        name={ROUTES.ta_das}
+        component={TaDasListScreen}
+        options={{
+          title: 'TaDas',
+        }}
+      />
+      <Screen
+        name={ROUTES.ta_das_detail}
+        component={TaDasDetailScreen}
+        options={{
+          title: 'TaDas Detail',
+        }}
+      />
+    </Navigator>
+  );
+};
+
+export const UserComplaintStack = () => {
+  return (
+    <Navigator initialRouteName={ROUTES.user_complaint } screenOptions={{animation: 'slide_from_right'}}>
+      <Screen
+        name={ROUTES.user_complaint}
+        component={UserComplaintListScreen}
+        options={{
+          title: 'User Complaint',
+        }}
+      />
+      <Screen
+        name={ROUTES.update_user_complaint}
+        component={updateUserComplaint}
+        options={{
+          title: 'Update UserComplaint',
+        }}
+      />
+      <Screen
+        name={ROUTES.detail_user_complaint}
+        component={UserComplaintDetailScreen}
+        options={{
+          title: 'User Complaint Detail',
+        }}
+      />
+    </Navigator>
   );
 };

@@ -147,25 +147,38 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           <Title>{data.name}</Title>
           <Caption>{data.owner_contact_number}</Caption>
         </View>
-
-        <View style={styles.buttonContainer}>
-          <Button
-            mode="contained"
-            icon="comment-alert"
-            style={styles.primaryButton}
-            labelStyle={{color: '#fff'}}
-            onPress={() =>
-              navigation.navigate(ROUTES.add_complaint, {
-                complaint: null,
-                id: data._id,
-                channel: 'add',
-              })
-            }>
-            Complaint
-          </Button>
+        <View style={styles.btnContainer}>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="contained"
+              icon="comment-alert"
+              style={styles.primaryButton}
+              labelStyle={{color: '#fff'}}
+              onPress={() =>
+                navigation.navigate(ROUTES.add_complaint, {
+                  complaint: null,
+                  id: data._id,
+                  channel: 'add',
+                })
+              }>
+              Complaint
+            </Button>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="contained"
+              icon="comment-alert"
+              style={styles.primaryButton}
+              labelStyle={{color: '#fff'}}
+              onPress={() => navigation.navigate(ROUTES.product, {data: data,channel:'product'})}>
+              Product
+            </Button>
+          </View>
         </View>
 
-        {customerTarget.length > 0 && <CustomerTarget target={customerTarget} />}
+        {customerTarget.length > 0 && (
+          <CustomerTarget target={customerTarget} />
+        )}
 
         <View style={styles.detailsSection}>
           <Subheading>Shop Info</Subheading>
@@ -214,6 +227,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  btnContainer:{
+    flexDirection:'row',
+    justifyContent:'space-around',
+    alignContent:'center'
   },
   content: {
     paddingBottom: SPACINGS.lg,

@@ -48,8 +48,8 @@ const PunchInModalUI = forwardRef((props, ref) => {
               channel="Vehicle Type"
               item={vehicleType}
             />
-
-            <Text style={styles.label}>
+            <View style={styles.container}>
+              <Text style={styles.label}>
               {isRemarkField ? 'Enter Remarks' : 'Enter Start Vehicle KM'}
             </Text>
             {isRemarkField ? (
@@ -67,6 +67,8 @@ const PunchInModalUI = forwardRef((props, ref) => {
             {!isRemarkField && (
               <CameraModal onImageSelect={onImageSelected} />
             )}
+            </View>
+            
           </ScrollView>
           <Button
             mode="contained"
@@ -97,13 +99,13 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 10,
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
     color: '#333',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   dialogTitle: {alignSelf: 'center', marginBottom: 10,},
 });

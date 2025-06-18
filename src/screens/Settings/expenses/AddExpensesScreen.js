@@ -251,6 +251,7 @@ const AddExpensesScreen = ({route, navigation}) => {
             style={styles.input}
             placeholder="Extra"
             placeholderTextColor="#888"
+            keyboardType='numeric'
             value={extra}
             onChangeText={setExtra}
           />

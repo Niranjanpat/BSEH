@@ -5,7 +5,6 @@ import MMKVStorage from 'react-native-mmkv-storage';
 import {
   Avatar,
   Button,
-  Divider,
   List,
   Subheading,
   Title,
@@ -66,8 +65,19 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Profile', 'account', () =>
           navigation.navigate(ROUTES.profile),
         )}
-
-        {(role === 'sc' ||
+        {renderItem('Attendance', 'calendar-account-outline', () =>
+          navigation.navigate(ROUTES.attendance),
+        )}
+        {renderItem('Monthly attendance', 'calendar-month-outline', () =>
+          navigation.navigate(ROUTES.monthly_attendance),
+        )}
+        {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
+          navigation.navigate(ROUTES.monthly_attendance_travel),
+        )}
+          {renderItem('My Route schedules', 'map-marker-distance', () =>
+          navigation.navigate(ROUTES.route_schedule_stack),
+        )}
+        {/* {(role === 'sc' ||
           role === 'kam' ||
           role === 'asm' ||
           role === 'promoter') && (
@@ -80,14 +90,25 @@ const SettingScreen = ({navigation}) => {
                 navigation.navigate(ROUTES.performance),
               )}
           </>
+        )} */}
+
+        {renderItem('Retailer Masters', 'bookmark-outline', () =>
+          navigation.navigate(ROUTES.retailer_master),
+        )}
+         {renderItem('Sample','flask-outline', () =>
+          navigation.navigate(ROUTES.sample_stack,{screen:ROUTES.sample}),
         )}
 
-        {role !== 'sc' &&
+        {
           renderItem('Cumulative report', 'account-details', () =>
             navigation.navigate(ROUTES.cumulative_report),
           )}
+          {
+              renderItem('Performance', 'star-outline', () =>
+                navigation.navigate(ROUTES.performance),
+              )}
 
-        {!['sales-officer', 'sc', 'promoter'].includes(role) && (
+        {/* {!['sales-officer', 'sc', 'promoter'].includes(role) && (
           <>
             {renderItem('User Hierarchy', 'file-tree-outline', () =>
               navigation.navigate(ROUTES.user_hierarchy_stack),
@@ -97,55 +118,63 @@ const SettingScreen = ({navigation}) => {
                 navigation.navigate(ROUTES.retailer_master),
               )}
           </>
-        )}
+        )} */}
 
-        {(role === 'sc' || role === 'kam') &&
+        {/* {role != 'sc' && (
+          <>
+            {renderItem('User Hierarchy', 'file-tree-outline', () =>
+              navigation.navigate(ROUTES.user_hierarchy_stack),
+            )}
+          </>
+        )} */}
+
+        {role !== 'sc' &&
+          renderItem('User Hierarchy', 'file-tree-outline', () =>
+            navigation.navigate(ROUTES.user_hierarchy_stack),
+          )}
+
+        {/* {(role === 'sc' || role === 'kam') &&
           renderItem('Route schedules', 'map-marker-distance', () =>
             navigation.navigate(ROUTES.route_schedule_stack),
-          )}
+          )} */}
 
-        {!['sc', 'kam'].includes(role) &&
+      
+
+        {/* {!['sc', 'kam'].includes(role) &&
           renderItem('User route schedules', 'map-marker', () =>
             navigation.navigate(ROUTES.user_route_schedule_list),
-          )}
+          )} */}
 
-        {renderItem('Attendance', 'calendar-account-outline', () =>
-          navigation.navigate(ROUTES.attendance),
+        {role !== 'sc' && renderItem('Sub-Ordinate schedules', 'map-marker', () =>
+          navigation.navigate(ROUTES.user_route_schedule_list),
+        )}
+         { renderItem('User Daily Attendance', 'map-marker', () =>
+          navigation.navigate(ROUTES.daily_attendance),
         )}
 
-        {renderItem('Monthly attendance', 'calendar-month-outline', () =>
-          navigation.navigate(ROUTES.monthly_attendance),
-        )}
+        
 
-        {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
-          navigation.navigate(ROUTES.monthly_attendance_travel),
-        )}
-        {renderItem('Add Expenses', 'wallet-plus-outline', () =>
-          navigation.navigate(ROUTES.add_expenses, {
-            channel: 'add',
-            expenseDetail: null,
-            id: null,
-          }),
-        )}
+        
+
+        
         {renderItem('Expenses', 'cash-multiple', () =>
-          navigation.navigate(ROUTES.expenses),
+          navigation.navigate(ROUTES.expense_stack),
         )}
 
         {renderItem('Complaint', 'message-alert-outline', () =>
-          navigation.navigate(ROUTES.complaint),
-        )}
-        {renderItem('Subordinate Complaint', 'account-alert', () =>
-          navigation.navigate(ROUTES.user_complaint),
-        )}
-        {renderItem('TaDas', 'message-alert-outline', () =>
-          navigation.navigate(ROUTES.ta_das_stack, {
-            screen: ROUTES.ta_das,
-          }),
+          navigation.navigate(ROUTES.complaint_stack),
         )}
 
-        {renderItem('About Patanjali', 'office-building', () =>
-          navigation.navigate(ROUTES.about),
+        {role !== 'sc' && renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
+          navigation.navigate(ROUTES.user_complaint_stack),
         )}
+
+        {renderItem('TADA', 'briefcase-outline', () =>
+          navigation.navigate(ROUTES.ta_das_stack),
+        )}
+        {/* {renderItem('About Patanjali', 'office-building', () =>
+          navigation.navigate(ROUTES.about),
+        )} */}
 
         {renderItem('About Us', 'information-outline', () =>
           navigation.navigate(ROUTES.aboutus),
@@ -190,9 +219,11 @@ const styles = StyleSheet.create({
   },
   list: {
     backgroundColor: '#ffffff',
+    paddingVertical: 0,
+    paddingLeft:6,
     borderRadius: 10,
     marginVertical: 3,
-    paddingLeft: 8,
+    marginHorizontal: 0,
     elevation: 0.5,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 1},
@@ -200,7 +231,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   listTitle: {
-    fontWeight: 'bold',
+    fontWeight: 700,
     color: '#212121',
   },
   iconWrapper: {

@@ -7,15 +7,11 @@ import DatePicker from 'react-native-date-picker';
 import {IMAGE} from '../../../constants/images';
 import {SPACINGS} from '../../../constants/theme';
 import {topSalesOfficerList} from '../../../services/performance_service';
+
 import DateMonthModal from '../../../components/DateMonthModal';
 
 const TopSOListScreen = ({route}) => {
   const [data, setData] = useState([]);
-  const [endDate, setEndDate] = useState(new Date());
-  const [startDate, setStartDate] = useState(new Date());
-  const [showEndDate, setShowEndDate] = useState(false);
-  const [showStartDate, setShowStartDate] = useState(false);
-
   const [date, setDate] = useState(new Date());
   const [month, setMonth] = useState(dayjs().format('M'));
   const [year, setYear] = useState(dayjs().format('YYYY'));
@@ -28,8 +24,8 @@ const TopSOListScreen = ({route}) => {
   const getTopSOList = () => {
     const temp = {
       id: route.params?.id,
-      month: month,
       year: year,
+      month: month,
     };
 
     topSalesOfficerList(temp)

@@ -40,7 +40,7 @@ const ComplaintListScreen = () => {
       const {data, success, errors} = res?.data;
       if (success) {
         const newComplaints = data?.complaints || [];
-    
+
         setComplaints(prev => [...prev, ...newComplaints]);
 
         setHasMore(data?.has_more);
@@ -64,9 +64,10 @@ const ComplaintListScreen = () => {
       style={[styles.card, {borderLeftColor: getStatusColor(item.status)}]}
       onPress={() => {
         if (item.status === 'open') {
-          navigation.navigate(ROUTES.complaint_detail, {
-            id: item._id,
-          });
+          navigation.navigate(ROUTES.complaint_update,  {
+              id: item._id,
+            },
+          );
         } else {
           Alert.alert('Error', 'Edit not allowed');
         }

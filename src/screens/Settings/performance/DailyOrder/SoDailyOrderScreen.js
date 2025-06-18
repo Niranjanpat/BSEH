@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Image, View, StyleSheet, Text} from 'react-native';
+import {Image, View, StyleSheet} from 'react-native';
 import {Col, Grid} from 'react-native-easy-grid';
-import {Button, Caption} from 'react-native-paper';
+import {Button, Caption, Text} from 'react-native-paper';
 import {IMAGE} from '../../../../constants/images';
 import {SPACINGS} from '../../../../constants/theme';
 import {COLORS} from '../../../../constants/theme/colors';
@@ -47,26 +47,26 @@ const SoDailyOrderScreen = ({id, date}) => {
       });
   };
 
-  console.log('kam', dataDSM);
+  console.log('dsm', dataDSM);
   return (
     <>
       {dataDSM && dataDSM.length > 0 ? (
         dataDSM.map(e => (
           <Grid key={e._id} style={styles.grid}>
             <Col style={styles.col} size={2}>
-              <Text style={styles.text}>{e.sap_code}</Text>
+              <Text>{e.sap_code}</Text>
             </Col>
             <Col style={styles.col} size={2}>
-              <Text style={styles.text}>{e.name}</Text>
+              <Text>{e.name}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text style={styles.text}>{e.total_quantity}</Text>
+              <Text>{e.total_quantity}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text style={styles.text}>{e.total_amount}</Text>
+              <Text>{e.total_amount}</Text>
             </Col>
             <Col style={styles.col}>
-              <Text style={styles.text}>{e.lpc}</Text>
+              <Text>{e.lpc}</Text>
             </Col>
           </Grid>
         ))
@@ -101,15 +101,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey,
     flex: 1,
-    color:'black'
   },
 
   col: {
     flex: 1,
     padding: 2,
   },
-
-  text: {
-    color: 'black',
-  }
 });

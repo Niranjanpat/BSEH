@@ -13,9 +13,18 @@ export const currentOverAllTargetsAmount = async () => {
   return await client.get(URLS.currentOverAllTargetsAmount);
 };
 
-export const topDSMList = async data => {
-  return await client.post(URLS.topDsms, data);
+export const topScsList = async data => {
+  return await client.post(URLS.topScs, data);
 };
+
+export const topZmsList = async data => {
+  return await client.post(URLS.topZms, data);
+};
+
+export const topAsmsList = async data => {
+  return await client.post(URLS.topAsms, data);
+};
+
 
 export const topCustomerList = async data => {
   return await client.post(URLS.topCustomersPerformance, data);
@@ -82,4 +91,25 @@ export const getCumulativeReport = async date => {
 
 export const getComplianceReport = async (id, date) => {
   return await client.get(`${URLS.kams}/${id}/daily-compliance-report/${date}`);
+};
+
+
+export const getDailyPerformance = async (id, date) => {
+  return await client.post(URLS.dailyPerformance, {id, date});
+};
+
+export const getCumulativePerformance = async (ids, startDate, endDate) => {
+  return await client.post(URLS.cumulativePerformance, {
+    ids: ids.length === 0 ? null : JSON.stringify(ids),
+    start_date: startDate,
+    end_date: endDate,
+  });
+};
+
+export const getSalesPerformanceProducts = async (ids, startDate, endDate) => {
+  return await client.post(URLS.salesPerformance, {
+    ids: ids.length === 0 ? null : JSON.stringify(ids),
+    start_date: startDate,
+    end_date: endDate,
+  });
 };

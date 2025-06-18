@@ -31,7 +31,7 @@ import {UserHierarchyStack} from './user_hierarchy_stack';
 import VerticalListScreen from '../screens/Settings/myvisits/VerticalListScreen';
 import BrandListScreen from '../screens/Settings/myvisits/BrandListScreen';
 import ProductListScreen from '../screens/Settings/myvisits/ProductListScreen';
-
+import ProductDetailScreen from '../screens/Settings/myvisits/ProductDetailScreen';
 import {ROUTES} from '../constants/routes';
 import UpdateProfileScreen from '../screens/Settings/UpdateProfileScreen';
 import AboutUs from '../screens/Settings/AboutUs';
@@ -40,7 +40,11 @@ import JWMyVisitDetailScreen from '../screens/Settings/joint_work_myvisits/JWMyV
 import JWMyVisitsScreen from '../screens/Settings/joint_work_myvisits/JWMyVisitsScreen';
 import JWRoutescreen from '../screens/Settings/joint_work_myvisits/JWRoutesScreen';
 import JWFeedbackScreen from '../screens/Settings/joint_work_myvisits/JWFeedBackScreen';
-import {JointTrackingStack} from './settings_stack';
+import {
+  ExpenseStack,
+  JointTrackingStack,
+  UserComplaintStack,
+} from './settings_stack';
 import EditCustomerScreen from '../screens/Settings/myvisits/EditCustomerScreen';
 import TodayReportScreen from '../screens/Settings/TodayReportScreen';
 import DayCumulativeReportScreen from '../screens/Settings/DayCumulativeReportScreen';
@@ -55,19 +59,12 @@ import CheckOutScreen from '../screens/Settings/myvisits/CheckOutScreen';
 import OrderCartScreen from '../screens/Settings/myvisits/OrderCartScreen';
 import OrderCartIcon from '../components/OrderCartIcon';
 import MonthlyTravelDistance from '../screens/Settings/MonthlyTravelDistance';
-import MonthlyAttendanceList from '../components/attendance/MonthlyAttendanceList';
 import MonthAttendanceScreen from '../screens/Settings/MonthlyAttendanceScreen';
-import AddExpensesScreen from '../screens/Settings/expenses/AddExpensesScreen';
-import ExpensesScreen from '../screens/Settings/expenses/ExpensesScreen';
-import ExpenseDetailScreen from '../screens/Settings/expenses/ExpenseDetailScreen';
 import {ComplaintStack} from './settings_stack/index';
 import AddComplaintScreen from '../screens/Settings/complaints/AddComplaintScreen';
-import ComplaintListScreen from '../screens/Settings/complaints/ComplaintListScreen';
-import ComplaintDetailScreen from '../screens/Settings/complaints/ComplaintDetailScreen';
-import UserComplaintScreen from  '../screens/Settings/user_complaint/UserComplaintListScreen';
-import UserComplaintDetailScreen from '../screens/Settings/user_complaint/UserComplaintDetailScreen';
-import AddUserComplaintScreen from '../screens/Settings/user_complaint/UpdateComplaintScreen';
-import { TaDasStack } from './settings_stack';
+import {TaDasStack} from './settings_stack';
+import DailyAttendacesListScreen from '../screens/Settings/daily_attendance';
+import { SampleStack } from './sample_stack';
 
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
@@ -171,68 +168,26 @@ export const SettingsStackNavigation = () => {
         component={UserRouteScheduleListScreen}
         options={{title: 'User Route Schedules', headerShown: true}}
       />
+
       <SettingsStack.Screen
-        name={ROUTES.add_expenses}
-        component={AddExpensesScreen}
-        options={{title: 'AddExpenses', headerShown: true}}
-      />
-      <SettingsStack.Screen
-        name={ROUTES.update_expenses}
-        component={AddExpensesScreen}
-        options={{title: 'UpdateExpenses', headerShown: true}}
-      />
-      <SettingsStack.Screen
-        name={ROUTES.expenses}
-        component={ExpensesScreen}
-        options={{title: 'Expenses', headerShown: true}}
-      />
-      <SettingsStack.Screen
-        name={ROUTES.expenses_detail}
-        component={ExpenseDetailScreen}
-        options={{title: 'Expenses Detail', headerShown: true}}
-      />
-       <SettingsStack.Screen
-        name={ROUTES.complaint}
-        component={ComplaintListScreen}
-        options={{title: 'Complaint', headerShown: true}}
-      />
-        <SettingsStack.Screen
-        name={ROUTES.update_complaint}
-        component={AddComplaintScreen}
-        options={{title: 'Update Complaint', headerShown: true}}
-      />
-       
-       <SettingsStack.Screen
-        name={ROUTES.complaint_detail}
-        component={ComplaintDetailScreen}
-        options={{title: 'Complaint Detail', headerShown: true}}
-      /> 
-       <SettingsStack.Screen
-        name={ROUTES.update_user_complaint}
-        component={AddUserComplaintScreen}
-        options={{title: 'Update User Complaint', headerShown: true}}
-      />
-      <SettingsStack.Screen
-        name={ROUTES.user_complaint}
-        component={UserComplaintScreen}
-        options={{title: 'User Complaint', headerShown: true}}
-      />
-       <SettingsStack.Screen
-        name={ROUTES.detail_user_complaint}
-        component={UserComplaintDetailScreen}
-        options={{title: 'User Complaint', headerShown: true}}
-      />
-       <SettingsStack.Screen
-        name={ROUTES.add_user_complaint}
-        component={AddUserComplaintScreen}
-        options={{title: 'Add User Complaint', headerShown: true}}
+        name={ROUTES.expense_stack}
+        component={ExpenseStack}
       />
 
-       <SettingsStack.Screen
-        name={ROUTES.ta_das_stack}
-        component={TaDasStack}
+      <SettingsStack.Screen
+        name={ROUTES.complaint_stack}
+        component={ComplaintStack}
       />
 
+      <SettingsStack.Screen
+        name={ROUTES.user_complaint_stack}
+        component={UserComplaintStack}
+      />
+
+      <SettingsStack.Screen name={ROUTES.ta_das_stack} component={TaDasStack} />
+       <SettingsStack.Screen name={ROUTES.sample_stack} component={SampleStack} />
+
+      <SettingsStack.Screen name={ROUTES.daily_attendance} component={DailyAttendacesListScreen} />
 
     </SettingsStack.Navigator>
   );
@@ -313,7 +268,13 @@ export const RetailerStackNavigation = () => {
         component={ProductListScreen}
         options={({route}) => ({
           title: route.params?.data?.name || 'Product List',
-          headerRight: () => <OrderCartIcon />,
+        })}
+      />
+      <RetailerStack.Screen
+        name={ROUTES.product_detail}
+        component={ProductDetailScreen}
+        options={({route}) => ({
+          title: route.params?.data?.name || 'Product Detail',
         })}
       />
       <RetailerStack.Screen
@@ -330,7 +291,7 @@ export const RetailerStackNavigation = () => {
           title: 'Confirm items & proceed',
         }}
       />
-        <RetailerStack.Screen
+      <RetailerStack.Screen
         name={ROUTES.add_complaint}
         component={AddComplaintScreen}
         options={{title: 'Add Complaint', headerShown: true}}

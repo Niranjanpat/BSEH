@@ -20,6 +20,8 @@ export default function BeatListScreen({route, navigation}) {
 
   const getBeatList = () => {
     userBeatList(id).then(res => {
+      console.log('beats', res);
+
       const {data, success, error} = res.data;
       if (success) {
         setData(data.route_users);

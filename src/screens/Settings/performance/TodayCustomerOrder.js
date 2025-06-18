@@ -62,7 +62,7 @@ const TodayCustomerOrder = ({route}) => {
   };
   return (
     <ScrollView style={{padding: 10}}>
-      {role === 'dsm' && (
+      {role === 'sales-officer' && (
         <View style={styles.toggleButtonsRow}>
           <Pressable
             style={[
@@ -70,7 +70,7 @@ const TodayCustomerOrder = ({route}) => {
               soChecked && {backgroundColor: COLORS.lightGrey},
             ]}
             onPress={() => setValue('0')}>
-            <Text>KAM</Text>
+            <Text>DSM</Text>
           </Pressable>
           <Pressable
             style={[
@@ -78,7 +78,7 @@ const TodayCustomerOrder = ({route}) => {
               !soChecked && {backgroundColor: COLORS.lightGrey},
             ]}
             onPress={() => setValue('1')}>
-            <Text>DSM</Text>
+            <Text>SO</Text>
           </Pressable>
         </View>
       )}
@@ -100,9 +100,9 @@ const TodayCustomerOrder = ({route}) => {
             <Subheading>₹ {data.amount}</Subheading>
           </View>
         </View>
-        {role === 'dsm' && (
+        {role === 'sales-officer' && (
           <>
-            <Text>KAM Sales</Text>
+            <Text>DSM Sales</Text>
             <View style={styles.mainBox}>
               <View style={styles.contain}>
                 <Text>

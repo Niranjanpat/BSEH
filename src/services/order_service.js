@@ -23,9 +23,39 @@ export const BrandList = async id => {
   return await client.get(URLS.verticals + id + URLS.brands);
 };
 
+// export const ProductList = async id => {
+//   return await client.get(URLS.brands + id + URLS.products);
+// };
+
+
 export const ProductList = async id => {
-  return await client.get(URLS.brands + id + URLS.products);
+  return await client.get(URLS.products+'/'+id);
 };
+
+
+
+export const getAllProduct = async (page,query,brandId,categoryId) => {
+  return await client.get(URLS.allProduct,{params:{
+    page:page,
+    category_id:categoryId,
+    brand_id:brandId,
+    search:query,
+  }});
+};
+
+export const getProductDetail = async (id) =>{
+  return await client.get(URLS.products+'/'+id)
+}
+
+export const getBrands = async () =>{
+  return await client.get(URLS.brands);
+}
+
+export const getCategories = async () =>{
+  console.log("called");
+  return await client.get(URLS.categories);
+}
+
 export const SchemeList = async id => {
   return await client.get(URLS.brands + id + URLS.schemes);
 };
@@ -72,9 +102,9 @@ export const sendMail = async response => {
   return await client.get(url);
 };
 
-export const getAllProducts = async (page, term) => {
-  return await client.get(URLS.allProducts, {params: {page, term}});
-};
+// export const getAllProducts = async (page, term) => {
+//   return await client.get(URLS.allProducts, {params: {page, term}});
+// };
 
 export const addPromoterSales = async data => {
   return await client.post(URLS.promoterSales, data);

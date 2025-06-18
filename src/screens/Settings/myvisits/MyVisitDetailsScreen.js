@@ -62,7 +62,6 @@ const mmkv = new MMKVStorage.Loader().initialize();
 const MyVisitDetailsScreen = ({route, navigation}) => {
   const data = route.params.data;
   const dispatch = useDispatch();
-
   const [customer, setCustomer] = useState(null);
   const [customerTarget, setCustomerTarget] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,6 +69,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     state => state.order,
   );
   const {role, token} = useSelector(state => state.auth);
+
 
   const [visitLogVisible, setVisitLogVisible] = useState(false);
   const [topSellingVisible, setTopSellingVisible] = useState(false);
@@ -80,7 +80,6 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [customerPhotoVisible, setCustomerPhotoVisible] = useState(false);
   const checkImage = useRef('');
-
   useFocusEffect(
     React.useCallback(() => {
       fetchCustomerDetails();
@@ -382,7 +381,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         <Button
           mode="contained"
           icon="comment-account-outline"
-          onPress={() => {}}>
+          onPress={() => {navigation.navigate(ROUTES.complaint,{channel:'add',complaint:null , id:data._id})}}>
           Complaint
         </Button>
 

@@ -42,11 +42,12 @@ export const ROUTES = {
   complaint:'complaint',
   complaint_detail:'complaint_detail',
 
+  //daily Attendance
+  daily_attendance:'daily_attendance',
 
   //user_complaint
   user_complaint_stack:'user_compliant_stack',
   user_complaint:'user_complaint',
-  add_user_complaint:'add_user_complaint',
   update_user_complaint:'update_user_complaint',
   detail_user_complaint:'detail_user_complaint',
 
@@ -78,6 +79,7 @@ export const ROUTES = {
   vertical: 'vertical_list',
   brand: 'brand_list',
   product: 'product_list',
+  product_detail:'product_detail',
   order_cart: 'order_cart',
   order_checkout: 'order_checkout',
   order_screeen: 'order_screeen',
@@ -125,7 +127,9 @@ export const ROUTES = {
   daily_order: 'daily_order',
   top_Distributors: 'top_Distributors',
   top_customers: 'top_customers',
-  top_dsm: 'top_dsm',
+  top_sc: 'top_sc',
+  top_zm:'top_zm',
+  top_asm:'top_asm',
   customer_order: 'customer_order',
   top_so: 'top_so',
   today_customer_order: 'today_customer_order',
@@ -133,6 +137,12 @@ export const ROUTES = {
   user_beat: 'user_beat',
   beat_customer_list: 'beat_customer_list',
   order_log_performance: 'order_log_performance',
+  order_performance:'order_performance',
+  individual_performance:'individual_performance',
+  sales_performance:'sales_performance',
+  team_performance:'team_performance',
+  mtd_performance: 'mtd_performance',
+
 
   //user Trackings
   user_list: 'user_list',
@@ -153,4 +163,10 @@ export const ROUTES = {
 
   //user_route_schedules
   user_route_schedule_list: 'user_route_schedule_list',
+
+
+  //sample
+  sample_stack:'sample_stack',
+  sample_detail:'sample_detail',
+  sample:'sample',
 };

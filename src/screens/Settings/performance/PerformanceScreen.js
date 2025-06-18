@@ -1,184 +1,102 @@
 import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {Divider, List, Text} from 'react-native-paper';
+import {List, Text} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import {ROUTES} from '../../../constants/routes';
+import {COLORS} from '../../../constants/theme/colors';
 
 const PerformanceScreen = ({navigation, route}) => {
   const {role, id} = route.params;
-  console.log(role);
+  const {role: userRole} = useSelector(state => state.auth);
+
+  const renderItem = (title, icon, routeName, params = {}) => (
+    <List.Item
+      style={styles.list}
+      title={title}
+      titleStyle={styles.listTitle}
+      onPress={() => navigation.navigate(routeName, params)}
+      left={() => (
+        <View style={styles.iconWrapper}>
+          <List.Icon icon={icon} color={COLORS.primary} />
+        </View>
+      )}
+      right={props => <List.Icon {...props} icon="chevron-right" />}
+    />
+  );
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.textStyle}>Performance</Text>
-      <List.Item
-        style={styles.list}
-        title="Daily Order"
-        onPress={() => {
-          navigation.navigate(ROUTES.daily_order, {id, role});
-        }}
-        left={props => <List.Icon {...props} icon="cart-outline" />}
-        right={props => <List.Icon {...props} icon="chevron-right" />}
-      />
-      <Divider />
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <Text style={styles.sectionTitle}>Performance</Text>
 
-      <Divider />
-      <List.Item
-        style={styles.list}
-        title="Today Order"
-        onPress={() => {
-          navigation.navigate(ROUTES.today_customer_order, {id, role});
-        }}
-        left={props => <List.Icon {...props} icon="cart-outline" />}
-        right={props => <List.Icon {...props} icon="chevron-right" />}
-      />
-      <Divider />
+      {renderItem('Daily Order', 'cart-outline', ROUTES.daily_order, {id, role})}
+      {renderItem('Today Order', 'cart-outline', ROUTES.today_customer_order, {id, role})}
+      {renderItem('Top Customers', 'map-marker-check-outline', ROUTES.top_customers, {id, role})}
+      {/* {renderItem('Customers', 'account-multiple', ROUTES.user_customers, {id, role})} */}
+      {renderItem('Customer Order', 'cart-remove', ROUTES.customer_order, {id, role})}
 
-      <Divider />
-      <List.Item
-        style={styles.list}
-        title="Top Customers"
-        onPress={() => {
-          navigation.navigate(ROUTES.top_customers, {id, role});
-        }}
-        left={props => <List.Icon {...props} icon="map-marker-check-outline" />}
-        right={props => <List.Icon {...props} icon="chevron-right" />}
-      />
-      <Divider />
-
-      <Divider />
-      <List.Item
-        style={styles.list}
-        title="Customer Order"
-        onPress={() => {
-          navigation.navigate(ROUTES.customer_order, {id, role});
-        }}
-        left={props => <List.Icon {...props} icon="cart-remove" />}
-        right={props => <List.Icon {...props} icon="chevron-right" />}
-      />
-      <Divider />
-
-      {(role === 'dsm' || role === 'kam') && (
+      {(role === 'sales-officer' || role === 'cr') && (
         <>
-          <Divider />
-          <List.Item
-            style={styles.list}
-            title="User Targets"
-            onPress={() => {
-              navigation.navigate(ROUTES.user_target, {id, role});
-            }}
-            left={props => <List.Icon {...props} icon="cart-arrow-up" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
-
-          <List.Item
-            style={styles.list}
-            title="Order Log"
-            onPress={() => {
-              navigation.navigate(ROUTES.order_log_performance, {role, id});
-            }}
-            left={props => <List.Icon {...props} icon="cart-outline" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
+          {renderItem('User Targets', 'cart-arrow-up', ROUTES.user_target, {id, role})}
+          {renderItem('Order Log', 'cart-outline', ROUTES.order_log_performance, {role, id})}
         </>
       )}
 
-      {role !== 'kam' && (
+      {role !== 'cr' && role !== 'so' && role !== 'yp' && role !== 'sr' && (
         <>
-          <Divider />
-          <List.Item
-            style={styles.list}
-            title="Top KAMs"
-            onPress={() => {
-              navigation.navigate(ROUTES.top_dsm, {id});
-            }}
-            left={props => <List.Icon {...props} icon="cart-arrow-up" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
-
-          <Divider />
-          <List.Item
-            style={styles.list}
-            title="Top Distributors"
-            onPress={() => {
-              navigation.navigate(ROUTES.top_Distributors, {id});
-            }}
-            left={props => <List.Icon {...props} icon="map-legend" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
-        </>
-      )}
-      {/* 
-      {role !== 'kam' && role !== 'sales-officer' && (
-        <>
-          <Divider />
-          <List.Item
-            style={styles.list}
-            title="Top Sales Officer"
-            onPress={() => {
-              navigation.navigate(ROUTES.top_so, {id});
-            }}
-            left={props => <List.Icon {...props} icon="cart-remove" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
-        </>
-      )} */}
-      {(role == 'kam' || role == 'dsm') && (
-        <>
-          <Divider />
-          <List.Item
-            style={styles.list}
-            title="Beats"
-            onPress={() => {
-              navigation.navigate(ROUTES.user_beat, {id});
-            }}
-            left={props => <List.Icon {...props} icon="cart-remove" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
+          {renderItem('Top SCs', 'cart-arrow-up', ROUTES.top_sc, {id})}
+          {renderItem('Top ASMs', 'cart-arrow-up', ROUTES.top_asm, {id})}
+          {renderItem('Top ZMs', 'cart-arrow-up', ROUTES.top_zm, {id})}
+          {renderItem('Top Distributors', 'map-legend', ROUTES.top_Distributors, {id})}
         </>
       )}
 
-      {role === 'kam' && (
-        <>
-          <List.Item
-            style={styles.list}
-            title="Today's Report"
-            onPress={() => {
-              navigation.navigate(ROUTES.today_report, {role, id});
-            }}
-            left={props => <List.Icon {...props} icon="chart-line" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
-          <List.Item
-            style={styles.list}
-            title="Daywise Compliance Report"
-            onPress={() => {
-              navigation.navigate(ROUTES.day_wise_report, {role, id});
-            }}
-            left={props => <List.Icon {...props} icon="chart-multiple" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-          />
-          <Divider />
-        </>
+      {role !== 'cr' && role !== 'so' && userRole !== 'so' && (
+        renderItem('Top Sales Officer', 'cart-remove', ROUTES.top_so, {id})
       )}
+
+      {role !== 'asm' && role !== 'zm' && (
+        renderItem('Performance overview', 'chart-bar', ROUTES.individual_performance, {id})
+      )}
+
+      {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {id})}
     </ScrollView>
   );
 };
 
 export default PerformanceScreen;
+
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    backgroundColor: '#f9f9f9',
   },
-  textStyle: {
+  sectionTitle: {
     marginVertical: 10,
+    color: '#212121',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   list: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
+    paddingVertical: 0,
+    paddingLeft: 6,
+    borderRadius: 10,
+    marginVertical: 4,
+    elevation: 0.5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+  },
+  listTitle: {
+    fontWeight: '700',
+    color: '#212121',
+  },
+  iconWrapper: {
+    backgroundColor: '#f1f9fe',
+    borderRadius: 10,
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

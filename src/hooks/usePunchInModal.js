@@ -78,9 +78,11 @@ const usePunchInModal = () => {
   };
 
   const onSubmit = async isRemark => {
+  try {
+    // Validate input
     if (isRemark) {
       if (
-        remark.current === '' ||
+        !remark.current?.trim() ||
         !workTypeSelected.current ||
         !vehicleTypeSelected.current
       ) {
@@ -90,7 +92,7 @@ const usePunchInModal = () => {
     } else {
       if (
         !image.current ||
-        startKm.current === '' ||
+        !startKm.current?.trim() ||
         !workTypeSelected.current ||
         !vehicleTypeSelected.current
       ) {
@@ -98,47 +100,61 @@ const usePunchInModal = () => {
         return;
       }
     }
+
     dispatch(storeAttendanceLoading(true));
+
+    // Ensure location permissions are handled outside this function in app setup
+
     Geolocation.getCurrentPosition(
-      position => {
-        latitude.current = position.coords.latitude;
-        longitude.current = position.coords.longitude;
+      async position => {
+        try {
+          latitude.current = position.coords.latitude;
+          longitude.current = position.coords.longitude;
 
-        const formData = new FormData();
+          const formData = new FormData();
 
-        if (image.current && startKm.current) {
-          formData.append('punch_in_photo', {
-            uri: image.current,
-            type: 'image/jpeg',
-            name: 'punchin.jpeg',
-          });
+          if (image.current && startKm.current) {
+            formData.append('punch_in_photo', {
+              uri: image.current,
+              type: 'image/jpeg',
+              name: 'punchin.jpeg',
+            });
+          }
+
+          formData.append('longitude', String(longitude.current || ''));
+          formData.append('latitude', String(latitude.current || ''));
+          formData.append('work_type', String(workTypeSelected.current || ''));
+          formData.append('vehicle_type', String(vehicleTypeSelected.current || ''));
+
+          if (isRemark) {
+            formData.append('remarks', String(remark.current || ''));
+          } else {
+            formData.append('start_vehicle_km', String(startKm.current || ''));
+          }
+
+          await dispatch(attendancePunchIn(formData));
+          resetForm();
+        } catch (err) {
+          console.error('Form submission error:', err);
+          Alert.alert('Error', 'Something went wrong while submitting the form.');
+        } finally {
+          dispatch(storeAttendanceLoading(false));
         }
-
-        formData.append('longitude', String(longitude.current || ''));
-        formData.append('latitude', String(latitude.current || ''));
-        formData.append('work_type', String(workTypeSelected.current || ''));
-        formData.append(
-          'vehicle_type',
-          String(vehicleTypeSelected.current || ''),
-        );
-
-        if (isRemark) {
-          formData.append('remarks', String(remark.current || ''));
-        } else {
-          formData.append('start_vehicle_km', String(startKm.current || ''));
-        }
-
-        dispatch(attendancePunchIn(formData));
-        resetForm();
       },
       error => {
         console.error('Geolocation error:', error);
         dispatch(storeAttendanceLoading(false));
-        Alert.alert('Location', 'Check your location service is enabled.');
+        Alert.alert('Location', 'Please enable location services.');
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
-  };
+  } catch (err) {
+    console.error('Unhandled error:', err);
+    dispatch(storeAttendanceLoading(false));
+    Alert.alert('Unexpected Error', 'Something went wrong. Please try again.');
+  }
+};
+
 
   const resetForm = () => {
     startKm.current = '';

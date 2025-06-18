@@ -579,6 +579,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingTop: 10,
+    backgroundColor: '#f1f9fe'
   },
   input: {
     marginTop: 10,

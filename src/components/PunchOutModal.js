@@ -48,8 +48,9 @@ const PunchOutModalUI = forwardRef((props, ref) => {
         <Text variant="titleLarge" style={styles.dialogTitle}>
           Punch Out
         </Text>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.label}>Work feedback</Text>
+        <ScrollView showsVerticalScrollIndicator={false} >
+        <View style={styles.container}>
+           <Text style={styles.label}>Work feedback</Text>
           <InputText
             placeholder="Work feedback"
             onChangeText={setWorkFeedback}
@@ -78,7 +79,7 @@ const PunchOutModalUI = forwardRef((props, ref) => {
               </Text>
             </>
           )}
-          <View style={styles.container} />
+        </View>
           <MyDropdown
             channel="Daily Allowance"
             item={dailyAllowance}
@@ -115,13 +116,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   container: {
+    paddingHorizontal:10,
     marginBottom: 10,
   },
-  label: {
+   label: {
     fontSize: 16,
-    marginBottom: 2,
+    marginBottom: 8,
     color: '#333',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   input: {
     height: 50,

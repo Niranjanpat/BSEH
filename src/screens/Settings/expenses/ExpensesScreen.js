@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
 import {getExpense} from '../../../services/expense_sevice';
@@ -38,14 +39,14 @@ const ExpensesListScreen = () => {
 
     setIsLoading(true);
     try {
-      const res = await getExpense(currentPage); // Adjust this as per your API
+      const res = await getExpense(currentPage);
       const {data, success, errors} = res?.data;
       if (success) {
         const newExpenses = data.expense || [];
         setExpense(prev => [...prev, ...newExpenses]);
 
         if (newExpenses.length === 0) {
-          setHasMore(false); // No more data
+          setHasMore(false);
         } else {
           setPage(prev => prev + 1);
         }
@@ -63,7 +64,10 @@ const ExpensesListScreen = () => {
     <TouchableOpacity
       style={[styles.card, {borderLeftColor: getStatusColor(item.status)}]}
       onPress={() =>
-        navigation.navigate(ROUTES.expenses_detail, {expense: item , editable: item.status === 'pending',})
+        navigation.navigate(ROUTES.expenses_detail, {
+          expense: item,
+          editable: item.status === 'pending',
+        })
       }>
       <Text style={styles.title}>₹ {item.amount}</Text>
       <Text style={styles.text}>Date: {item.date}</Text>
@@ -82,18 +86,37 @@ const ExpensesListScreen = () => {
     ) : null;
 
   return (
-    <>
-        {expense.length ? (<FlatList
-      data={expense}
-      keyExtractor={item => item._id}
-      renderItem={renderItem}
-      contentContainerStyle={{padding: 16}}
-      onEndReached={() => fetchExpenses(page)}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={renderFooter}
-    />) :(<View style={styles.empty}><Text>No Expense available</Text></View>) }
-    </>
-    
+    <View style={{flex: 1}}>
+      {expense.length ? (
+        <FlatList
+          data={expense}
+          keyExtractor={item => item._id}
+          renderItem={renderItem}
+          contentContainerStyle={{padding: 16}}
+          onEndReached={() => fetchExpenses(page)}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+        />
+      ) : (
+        <View style={styles.empty}>
+          <Text>No Expense available</Text>
+        </View>
+      )}
+
+      {/* Floating Add Button */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate(ROUTES.expense_stack, {
+                    screen: ROUTES.add_expenses,
+                    params: {
+                      channel: 'add',
+                      expenseDetail: null,
+                      id: null,
+                    },
+                  })}>
+        <Icon name="plus" size={28} color="#fff" />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -111,10 +134,10 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     borderLeftWidth: 5,
   },
-  empty:{
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center'
+  empty: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 18,
@@ -133,5 +156,17 @@ const styles = StyleSheet.create({
   loader: {
     paddingVertical: 20,
     alignItems: 'center',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    backgroundColor: COLORS.primary,
+    borderRadius: 28,
+    width: 56,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
   },
 });
