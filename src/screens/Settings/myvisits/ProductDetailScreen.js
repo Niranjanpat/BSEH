@@ -39,7 +39,7 @@ const ProductDetailScreen = ({ route }) => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
       <Image
         source={{ uri: detail.photo_url }}
         style={styles.productImage}
@@ -62,6 +62,7 @@ const ProductDetailScreen = ({ route }) => {
         <Text style={styles.description}>{detail.description}</Text>
       </View>
     </ScrollView>
+    
   );
 };
 
@@ -75,8 +76,6 @@ const DetailRow = ({ label, value }) => (
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#fff',
-    flex:1,
   },
   loaderContainer: {
     flex: 1,

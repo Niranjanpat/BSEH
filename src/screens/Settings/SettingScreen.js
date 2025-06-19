@@ -2,13 +2,7 @@ import MapplsIntouch from 'mappls-intouch-react-native';
 import React from 'react';
 import {View, StyleSheet, SafeAreaView, ScrollView, Alert} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
-import {
-  Avatar,
-  Button,
-  List,
-  Subheading,
-  Title,
-} from 'react-native-paper';
+import {Avatar, Button, List, Subheading, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../constants/routes';
 import {COLORS} from '../../constants/theme/colors'; // Add this import
@@ -74,89 +68,36 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
           navigation.navigate(ROUTES.monthly_attendance_travel),
         )}
-          {renderItem('My Route schedules', 'map-marker-distance', () =>
+        {renderItem('My Route schedules', 'map-marker-distance', () =>
           navigation.navigate(ROUTES.route_schedule_stack),
         )}
-        {/* {(role === 'sc' ||
-          role === 'kam' ||
-          role === 'asm' ||
-          role === 'promoter') && (
-          <>
-            {renderItem('Retailer Masters', 'bookmark-outline', () =>
-              navigation.navigate(ROUTES.retailer_master),
-            )}
-            {role !== 'promoter' &&
-              renderItem('Performance', 'star-outline', () =>
-                navigation.navigate(ROUTES.performance),
-              )}
-          </>
-        )} */}
-
         {renderItem('Retailer Masters', 'bookmark-outline', () =>
           navigation.navigate(ROUTES.retailer_master),
         )}
-         {renderItem('Sample','flask-outline', () =>
-          navigation.navigate(ROUTES.sample_stack,{screen:ROUTES.sample}),
+        {renderItem('Sample', 'flask-outline', () =>
+          navigation.navigate(ROUTES.sample_stack, {screen: ROUTES.sample}),
         )}
 
-        {
-          renderItem('Cumulative report', 'account-details', () =>
-            navigation.navigate(ROUTES.cumulative_report),
-          )}
-          {
-              renderItem('Performance', 'star-outline', () =>
-                navigation.navigate(ROUTES.performance),
-              )}
-
-        {/* {!['sales-officer', 'sc', 'promoter'].includes(role) && (
-          <>
-            {renderItem('User Hierarchy', 'file-tree-outline', () =>
-              navigation.navigate(ROUTES.user_hierarchy_stack),
-            )}
-            {role === 'asm' &&
-              renderItem('Retailer Masters', 'bookmark-outline', () =>
-                navigation.navigate(ROUTES.retailer_master),
-              )}
-          </>
-        )} */}
-
-        {/* {role != 'sc' && (
-          <>
-            {renderItem('User Hierarchy', 'file-tree-outline', () =>
-              navigation.navigate(ROUTES.user_hierarchy_stack),
-            )}
-          </>
-        )} */}
+        {renderItem('Cumulative report', 'account-details', () =>
+          navigation.navigate(ROUTES.cumulative_report),
+        )}
+        {renderItem('Performance', 'star-outline', () =>
+          navigation.navigate(ROUTES.performance),
+        )}
 
         {role !== 'sc' &&
           renderItem('User Hierarchy', 'file-tree-outline', () =>
             navigation.navigate(ROUTES.user_hierarchy_stack),
           )}
 
-        {/* {(role === 'sc' || role === 'kam') &&
-          renderItem('Route schedules', 'map-marker-distance', () =>
-            navigation.navigate(ROUTES.route_schedule_stack),
-          )} */}
-
-      
-
-        {/* {!['sc', 'kam'].includes(role) &&
-          renderItem('User route schedules', 'map-marker', () =>
+        {role !== 'sc' &&
+          renderItem('Sub-Ordinate schedules', 'map-marker', () =>
             navigation.navigate(ROUTES.user_route_schedule_list),
-          )} */}
-
-        {role !== 'sc' && renderItem('Sub-Ordinate schedules', 'map-marker', () =>
-          navigation.navigate(ROUTES.user_route_schedule_list),
-        )}
-         { renderItem('User Daily Attendance', 'map-marker', () =>
+          )}
+        {renderItem('User Daily Attendance', 'map-marker', () =>
           navigation.navigate(ROUTES.daily_attendance),
         )}
 
-        
-
-        
-
-        
         {renderItem('Expenses', 'cash-multiple', () =>
           navigation.navigate(ROUTES.expense_stack),
         )}
@@ -165,9 +106,10 @@ const SettingScreen = ({navigation}) => {
           navigation.navigate(ROUTES.complaint_stack),
         )}
 
-        {role !== 'sc' && renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
-          navigation.navigate(ROUTES.user_complaint_stack),
-        )}
+        {role !== 'sc' &&
+          renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
+            navigation.navigate(ROUTES.user_complaint_stack),
+          )}
 
         {renderItem('TADA', 'briefcase-outline', () =>
           navigation.navigate(ROUTES.ta_das_stack),
@@ -197,7 +139,7 @@ export default SettingScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#f9f9f9',
+    //  backgroundColor: '#f9f9f9',
   },
   logout: {
     marginVertical: 20,
@@ -220,7 +162,7 @@ const styles = StyleSheet.create({
   list: {
     backgroundColor: '#ffffff',
     paddingVertical: 0,
-    paddingLeft:6,
+    paddingLeft: 6,
     borderRadius: 10,
     marginVertical: 3,
     marginHorizontal: 0,

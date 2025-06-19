@@ -25,7 +25,6 @@ const ComplaintListScreen = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -40,14 +39,9 @@ const ComplaintListScreen = () => {
       const {data, success, errors} = res?.data;
       if (success) {
         const newComplaints = data?.complaints || [];
-
         setComplaints(prev => [...prev, ...newComplaints]);
-
         setHasMore(data?.has_more);
-
-        if (data?.has_more) {
-          setPage(prev => prev + 1);
-        }
+        if (data?.has_more) setPage(prev => prev + 1);
       } else {
         Alert.alert('Error', JSON.stringify(errors));
       }
@@ -59,15 +53,16 @@ const ComplaintListScreen = () => {
     }
   };
 
+  const handleRefresh = async () => {
+    fetchComplaintList(1);
+  };
+
   const renderItem = ({item}) => (
     <TouchableOpacity
       style={[styles.card, {borderLeftColor: getStatusColor(item.status)}]}
       onPress={() => {
         if (item.status === 'open') {
-          navigation.navigate(ROUTES.complaint_update,  {
-              id: item._id,
-            },
-          );
+          navigation.navigate(ROUTES.complaint_detail, {id: item._id});
         } else {
           Alert.alert('Error', 'Edit not allowed');
         }
@@ -103,11 +98,13 @@ const ComplaintListScreen = () => {
       data={complaints}
       keyExtractor={item => item._id}
       renderItem={renderItem}
-      contentContainerStyle={{padding: 16, flexGrow: 1}}
+      contentContainerStyle={styles.listContent}
       onEndReached={() => fetchComplaintList(page)}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
       ListEmptyComponent={renderEmpty}
+      refreshing={isLoading}
+      onRefresh={handleRefresh}
     />
   );
 };
@@ -115,6 +112,10 @@ const ComplaintListScreen = () => {
 export default ComplaintListScreen;
 
 const styles = StyleSheet.create({
+  listContent: {
+    padding: 16,
+    flexGrow: 1,
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 10,

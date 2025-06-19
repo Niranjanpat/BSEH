@@ -37,9 +37,7 @@ import {useNavigation} from '@react-navigation/native';
 import PromotionalQuantity from '../../../components/promotional_item/PromotionalQuantity';
 
 const ProductListScreen = ({route, navigation}) => {
-// const {channel} = route.params;
-  channel='sample';
- 
+  const {channel} = route.params;
   const [data, setData] = useState([]);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -60,7 +58,7 @@ const ProductListScreen = ({route, navigation}) => {
             icon="filter-variant"
             onPress={() => setFilterVisible(true)}
           />
-          <OrderCartIcon />
+          <OrderCartIcon channel={channel} />
         </View>
       ),
     });
@@ -210,7 +208,7 @@ const ProductListScreen = ({route, navigation}) => {
   );
 };
 
-const FeaturedProduct = ({item}) => (
+const FeaturedProduct = ({item,channel}) => (
   <LinearGradient
     style={styles.featuredProductContainer}
     colors={[COLORS.primary, COLORS.primaryDark, COLORS.accentPrimary]}>

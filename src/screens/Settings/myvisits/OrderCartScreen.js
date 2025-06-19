@@ -1,40 +1,45 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Alert, FlatList, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Image,
+} from 'react-native';
 import {Button, Caption, List, Subheading, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ProductQuantity from '../../../components/ProductQuantity';
-import VerticalSpacer from '../../../components/VerticalSpacer';
-import {clearCartItems, clearCartPromotionalItems, removeItemFromCart} from '../../../store/actions/cart';
+import {
+  clearCartItems,
+  removeItemFromCart,
+} from '../../../store/actions/cart';
 
 import {SPACINGS, TYPOGRAPHY} from '../../../constants/theme';
 import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
-import PromotionalItemWithRemove from '../../../components/promotional_item/PromotionalItemWithRemove';
-import { useNavigation } from '@react-navigation/native';
-import { getSchemes } from '../../../services/order_service';
+import {useNavigation} from '@react-navigation/native';
+import {getSchemes} from '../../../services/order_service';
 
 const OrderCartScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart);
   const customer = useSelector(state => state.order.customerVisitStatus);
-  const customerForOnCall = useSelector(state => state.order.customerForOrderOnCall);
-  const cartPromoItems = useSelector(state => state.cartPromotional);
+  const customerForOnCall = useSelector(
+    state => state.order.customerForOrderOnCall,
+  );
+ 
 
   const [isProductCollapsed, setIsProductCollapsed] = useState(false);
-  const [isPromotionalCollapsed, setIsPromotionalCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const cartProductItems = useMemo(
     () => (isProductCollapsed ? [] : cartItems),
     [isProductCollapsed, cartItems],
   );
 
-  const cartPromotionalItems = useMemo(
-    () => (isPromotionalCollapsed ? [] : cartPromoItems),
-    [isPromotionalCollapsed, cartPromoItems],
-  );
 
   const handleNext = () => {
     setLoading(true);
@@ -43,7 +48,7 @@ const OrderCartScreen = ({navigation}) => {
         setLoading(false);
         const {success, data, errors} = res?.data;
         console.log(data);
-        
+
         if (success) {
           navigation.navigate(ROUTES.order_checkout, {data: data});
         } else if (errors) {
@@ -60,10 +65,6 @@ const OrderCartScreen = ({navigation}) => {
   return (
     <>
       <View style={styles.heading}>
-        <View style={styles.navigate}>
-          <Button onPress={() => navigation.pop(3)}>Go To Vertical</Button>
-          <Button onPress={() => navigation.pop(2)}>Go To Brand</Button>
-        </View>
         <View style={styles.customer}>
           <Subheading style={{...TYPOGRAPHY.body1}}>Shop</Subheading>
           <Text>{customer.customer_name ?? customerForOnCall.name}</Text>
@@ -77,54 +78,53 @@ const OrderCartScreen = ({navigation}) => {
           contentContainerStyle={styles.contentContainerStyle}
           keyboardShouldPersistTaps="handled"
           removeClippedSubviews={false}
-          ListHeaderComponent={() => <Header isCollapsed={isProductCollapsed} onCollapsePressed={() => setIsProductCollapsed(pre => !pre)}/>}
-          ListEmptyComponent={() => isProductCollapsed ? null : <EmptyView />}
+          ListHeaderComponent={() => (
+            <Header
+              isCollapsed={isProductCollapsed}
+              onCollapsePressed={() => setIsProductCollapsed(pre => !pre)}
+            />
+          )}
+          ListEmptyComponent={() => (isProductCollapsed ? null : <EmptyView />)}
           renderItem={({item}) => {
-            console.log(item);
             return (
               <List.Item
                 style={styles.list}
-                titleStyle={{fontWeight: 'bold'}}
-                titleNumberOfLines={10}
+                titleStyle={styles.title}
+                titleNumberOfLines={2}
                 title={item.name}
-                descriptionStyle={{flex: 1}}
-                description={_ => (
-                  <>
-                    <Caption>{item.unit ? item.unit : 'N/A'}</Caption>
-                    <Text>AVI: {item.stock ? item.stock : 'N/A'}</Text>
-                    {item.retail_price && (
-                      <Text>Per unit: {item.retail_price}</Text>
-                    )}
-                    <VerticalSpacer />
+                description={() => (
+                  <View>
+                    <Caption style={styles.caption}>
+                      Unit: {item.unit || 'N/A'}
+                    </Caption>
+                    <Caption style={styles.caption}>
+                      SAP Code: {item.sap_code || 'N/A'}
+                    </Caption>
+                    <Text style={styles.text}>
+                      Dealer Price: ₹{item.dealer_price}
+                    </Text>
+                    <Text style={styles.text}>MRP: ₹{item.mrp}</Text>
+                   
                     <Button
-                      icon="close"
-                      style={{alignSelf: 'flex-end', marginHorizontal: 5}}
-                      theme={{colors: {primary: COLORS.error}}}
-                      onPress={() => dispatch(removeItemFromCart(item._id))}>
-                      REMOVE
+                      icon="delete-outline"
+                      compact
+                      mode="text"
+                      labelStyle={{color: COLORS.error, fontWeight: '600'}}
+                      onPress={() => dispatch(removeItemFromCart(item._id))}
+                      style={styles.removeButton}>
+                      Remove
                     </Button>
-                  </>
+                  </View>
                 )}
-                right={_ => <ProductQuantity data={item} />}
+                left={() => (
+                  <Image
+                    source={{uri: item.photo_url}}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                )}
+                right={() => <ProductQuantity data={item} />}
               />
-            );
-          }}
-        />
-        <FlatList
-          nestedScrollEnabled={true}
-          data={cartPromotionalItems}
-          keyExtractor={(item, _) => item.id}
-          contentContainerStyle={styles.promotionalContentContainerStyle}
-          keyboardShouldPersistTaps="handled"
-          removeClippedSubviews={false}
-          ListHeaderComponent={() => <HeaderPromotional isCollapsed={isPromotionalCollapsed} onCollapsePressed={() => setIsPromotionalCollapsed(pre => !pre)}/>}
-          ListEmptyComponent={() => isPromotionalCollapsed ? null : <EmptyViewPromotional />}
-          renderItem={({item}) => {
-            console.log(item);
-            return (
-              <View style={{marginBottom: 10}}>
-                <PromotionalItemWithRemove item={item} />
-              </View>
             );
           }}
         />
@@ -132,7 +132,9 @@ const OrderCartScreen = ({navigation}) => {
       <Button
         mode="contained"
         style={{margin: 15}}
-        disabled={(cartItems.length < 1 && cartPromoItems.length < 1) || loading}
+        disabled={
+          (cartItems.length < 1 ) || loading
+        }
         loading={loading}
         onPress={handleNext}>
         Next
@@ -172,57 +174,12 @@ const Header = ({isCollapsed, onCollapsePressed}) => {
   );
 };
 
-const HeaderPromotional = ({isCollapsed, onCollapsePressed}) => {
-  const dispatch = useDispatch();
-
-  return (
-    <View style={styles.headerContainer}>
-      <Text style={{...TYPOGRAPHY.body1, flex: 1}}>Added Promotionals</Text>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={styles.clearButton}
-        onPress={() => dispatch(clearCartPromotionalItems())}>
-        <Icon name="cart-remove" color={COLORS.light} size={20} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={[styles.clearButton, {backgroundColor: COLORS.accentPrimary}]}
-        onPress={onCollapsePressed}>
-        {isCollapsed ? (
-          <Icon name="chevron-down" color={COLORS.light} size={20} />
-        ) : (
-          <Icon name="chevron-up" color={COLORS.light} size={20} />
-        )}
-      </TouchableOpacity>
-    </View>
-  );
-};
-
 const EmptyView = () => {
   return (
     <View style={{alignItems: 'center', marginTop: SPACINGS.lg}}>
       <Caption>:(</Caption>
       <Caption>No product added!</Caption>
       <Caption>Try adding items and return here for checking out.</Caption>
-    </View>
-  );
-};
-
-const EmptyViewPromotional = () => {
-
-  const navigation = useNavigation();
-
-  return (
-    <View style={{alignItems: 'center', marginTop: SPACINGS.lg}}>
-      <Caption>:(</Caption>
-      <Caption>No promotionals added!</Caption>
-      <Caption>Try adding items and return here for checking out.</Caption>
-      <Button
-        icon="plus"
-        theme={{colors: {primary: COLORS.primary}}}
-        onPress={() => navigation.navigate(ROUTES.user_promotional_items)}>
-        Add
-      </Button>
     </View>
   );
 };
@@ -268,7 +225,34 @@ const styles = StyleSheet.create({
 
   list: {
     backgroundColor: '#fff',
-    marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 12,
+    marginHorizontal: 12,
+    marginVertical: 6,
+    padding: 8,
+    elevation: 1,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  caption: {
+    fontSize: 12,
+    color: '#555',
+  },
+  text: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 2,
+  },
+  removeButton: {
+    alignSelf: 'flex-end',
+    marginTop: 8,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 8,
   },
 });

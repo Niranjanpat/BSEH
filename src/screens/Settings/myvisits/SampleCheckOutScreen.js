@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   Alert,
@@ -7,11 +7,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {Button, Caption, List, Subheading, Text} from 'react-native-paper';
+import {
+  Button,
+  Caption,
+  List,
+  Subheading,
+  Text,
+  Modal,
+  Portal,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import CameraModal from '../../../components/CameraModal';
 import VerticalSpacer from '../../../components/VerticalSpacer';
 
 import {SPACINGS, TYPOGRAPHY} from '../../../constants/theme';
@@ -20,15 +29,23 @@ import {saveOrder, sendMail} from '../../../services/order_service';
 import {clearCartItems} from '../../../store/actions/cart';
 import {postCustomerCheckOut} from '../../../store/actions/order';
 import usePromotionalItems from '../../../hooks/usePromotionalItems';
+import {saveSample} from '../../../services/sample_service';
 
-const CheckOutScreen = ({navigation, route}) => {
+const SampleCheckOutScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
 
-  const {schemes, total_order_amount, total_order_quantity} = route.params?.data ?? {schemes: [], total_order_amount: 0, total_order_quantity: 0};
+  const {schemes, total_order_amount, total_order_quantity} = route.params
+    ?.data ?? {schemes: [], total_order_amount: 0, total_order_quantity: 0};
 
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderAndMailLoading, setOrderAndMailLoading] = useState(false);
-  const [isProductCollapsed, setIsProductCollapsed] = useState(false);
+  const [isPromotionalCollapsed, setIsPromotionalCollapsed] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  const hideModal = () => setVisible(false);
+  const showModal = () => setVisible(true);
+  const image = useRef(null);
+
   const cartItems = useSelector(state => state.cart);
   const customer = useSelector(state => state.order.customerVisitStatus);
   const hideCheckoutAfterOrder = useSelector(
@@ -41,16 +58,16 @@ const CheckOutScreen = ({navigation, route}) => {
   const {loading, isAssignedPromotionalItems, assignCustomerPromotionalItems} =
     usePromotionalItems();
 
-  const cartProductItems = useMemo(
-    () => (isProductCollapsed ? [] : schemes),
-    [isProductCollapsed, schemes],
+
+  const cartPromotionalItems = useMemo(
+    () => (isPromotionalCollapsed ? [] : cartPromoItems),
+    [isPromotionalCollapsed, cartPromoItems],
   );
 
   const total = useMemo(
     () =>
       schemes.reduce(
-        (price, item) =>
-          price + parseFloat(item?.net_amount ?? 0),
+        (price, item) => price + parseFloat(item?.net_amount ?? 0),
         0.0,
       ),
     [schemes],
@@ -64,14 +81,29 @@ const CheckOutScreen = ({navigation, route}) => {
     setOrderAndMailLoading(false);
   }, [isAssignedPromotionalItems, loading]);
 
+  const submit = () => {
+    showModal(true);
+  };
+
   const submitOrder = () => {
+         
+    if (!image.current) {
+      Alert.alert('Error', 'Please Take Sample Image');
+      return;
+    }
+
+    const formData = new FormData();
+    if (image.current) {
+      formData.append('sample_photo', {
+        uri: image.current,
+        type: 'image/jpeg',
+        name: 'sample.jpeg',
+      });
+    }
+
     if (cartItems.length > 0) {
       setOrderLoading(true);
-      saveOrder(
-        cartItems,
-        hideCheckoutAfterOrder ? customerForOnCall : customer,
-        hideCheckoutAfterOrder,
-      )
+      saveSample(formData)
         .then(res => {
           const {success, errors, data} = res.data;
 
@@ -155,7 +187,7 @@ const CheckOutScreen = ({navigation, route}) => {
   };
 
   const showSuccessDialog = () => {
-    Alert.alert('Success', 'Your order has been successfully saved.', [
+    Alert.alert('Success', 'Your Sample has been successfully saved.', [
       !hideCheckoutAfterOrder && {
         text: 'Check out',
         onPress: () => {
@@ -203,48 +235,50 @@ const CheckOutScreen = ({navigation, route}) => {
         <VerticalSpacer size={20} />
       </View>
       <ScrollView nestedScrollEnabled={true}>
-        {schemes.length > 0 && (
+        {cartPromoItems.length > 0 && (
           <>
             <Header
-              isForPromotional={false}
-              isCollapsed={isProductCollapsed}
-              onCollapsePressed={() => setIsProductCollapsed(pre => !pre)}
+              isForPromotional={true}
+              isCollapsed={isPromotionalCollapsed}
+              onCollapsePressed={() => setIsPromotionalCollapsed(pre => !pre)}
             />
             <FlatList
               nestedScrollEnabled={true}
-              data={cartProductItems}
-              keyExtractor={(item, _) => item.product_id}
-              contentContainerStyle={styles.contentContainerStyle}
+              data={cartPromotionalItems}
+              keyExtractor={(item, _) => item.id}
+              contentContainerStyle={styles.promotionalContentContainerStyle}
               renderItem={({item}) => {
-                const schemeAmount =
-                  item.liquidation_scheme_amount +
-                  item.secondary_scheme_amount +
-                  item.promotion;
-
                 return (
                   <List.Item
                     style={styles.list}
                     titleStyle={{fontWeight: 'bold'}}
-                    titleNumberOfLines={10}
-                    title={item.product_name}
-                    descriptionStyle={{flex: 1}}
-                    description={_ => (
+                    titleNumberOfLines={2}
+                    title={item.name}
+                    description={() => (
                       <>
-                        <Text>MRP: ₹ {item.mrp.toFixed(2)}</Text>
-                        <Text>
-                          Selling price: ₹ {item.selling_price.toFixed(2)}
-                        </Text>
-                        <Text>Scheme amount: ₹ {schemeAmount.toFixed(2)}</Text>
-                        <Text>GST amount: ₹ {item.gst_amount.toFixed(2)}</Text>
-                        <Text>Net amount: ₹ {item.net_amount.toFixed(2)}</Text>
-                        {
-                          item.distributorsellingprice ? <Text>Distributor Selling Price: ₹ {item.distributorsellingprice.toFixed(2)}</Text> : null
-                        }
+                        <Caption>SAP Code: {item.sap_code || 'N/A'}</Caption>
+                        <Caption>MRP: ₹{item.mrp || 'N/A'}</Caption>
+                        <Caption>
+                          Dealer Price: ₹{item.dealer_price || 'N/A'}
+                        </Caption>
                       </>
                     )}
-                    right={_ => (
+                    left={() => (
+                      <Image
+                        source={{uri: item.photo_url}}
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 8,
+                          marginRight: 10,
+                        }}
+                      />
+                    )}
+                    right={() => (
                       <View style={styles.itemsCount}>
-                        <Text>{item.order_quantity}</Text>
+                        <Text style={styles.quantityText}>
+                          {item.cartQuantity}
+                        </Text>
                       </View>
                     )}
                   />
@@ -273,18 +307,23 @@ const CheckOutScreen = ({navigation, route}) => {
           </Button>
         )}
         <Button
-          onPress={submitOrder}
+          onPress={submit}
           loading={orderLoading}
           disabled={orderLoading}
           mode="contained">
           Save Order
         </Button>
       </View>
+      <SampleImageModal
+        image={image}
+        visible={visible}
+        hideModal={hideModal}
+        submitOrder={submitOrder}></SampleImageModal>
     </>
   );
 };
 
-export default CheckOutScreen;
+export default SampleCheckOutScreen;
 
 const Header = ({isForPromotional, isCollapsed, onCollapsePressed}) => {
   return (
@@ -303,6 +342,37 @@ const Header = ({isForPromotional, isCollapsed, onCollapsePressed}) => {
         )}
       </TouchableOpacity>
     </View>
+  );
+};
+
+const SampleImageModal = ({image, visible, hideModal, submitOrder}) => {
+  const onImageSelected = img => {
+    image.current = img;
+  };
+  return (
+    <Portal>
+      <Modal
+        visible={visible}
+        onDismiss={hideModal}
+        contentContainerStyle={styles.modalContainer}>
+        <Text variant="titleLarge" style={styles.dialogTitle}>
+          Sample Image
+        </Text>
+        <CameraModal
+          buttonText="Take Sample Photo"
+          onImageSelect={onImageSelected}></CameraModal>
+
+        <Button
+          mode="contained"
+          onPress={() => {
+            hideModal();
+            submitOrder();
+          }}
+          style={styles.closeButton}>
+          Submit
+        </Button>
+      </Modal>
+    </Portal>
   );
 };
 
@@ -331,13 +401,8 @@ const styles = StyleSheet.create({
   list: {
     marginBottom: 10,
     borderRadius: 10,
+    padding: 10,
     backgroundColor: '#fff',
-  },
-
-  itemsCount: {
-    alignSelf: 'center',
-    padding: SPACINGS.sm,
-    backgroundColor: COLORS.secondary,
   },
 
   grandTotalContainer: {
@@ -372,5 +437,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     marginHorizontal: SPACINGS.xxs,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    maxHeight: '90%',
+    gap: 10,
+  },
+  closeButton: {
+    color: COLORS.primary,
+    marginTop: 20,
+  },
+  dialogTitle: {alignSelf: 'center', marginBottom: 10},
+  itemsCount: {
+    minWidth: 40,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor:  '#f1f9fe',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityText: {
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    fontSize: 16,
   },
 });

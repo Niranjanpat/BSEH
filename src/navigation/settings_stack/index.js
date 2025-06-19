@@ -47,6 +47,8 @@ import TaDasDetailScreen from '../../screens/Settings/tadas/TaDasDetailScreen';
 import UserComplaintListScreen from '../../screens/Settings/user_complaint/UserComplaintListScreen';
 import UserComplaintDetailScreen from '../../screens/Settings/user_complaint/UserComplaintDetailScreen';
 import {updateUserComplaint} from '../../services/complaint_service';
+import ComplaintDetailScreen from '../../screens/Settings/complaints/ComplaintDetailScreen';
+import SampleCheckOutScreen from '../../screens/Settings/myvisits/SampleCheckOutScreen';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -104,6 +106,13 @@ export const MyVisitStack = () => {
           title: route.params?.data?.name || 'Product List',
           headerRight: () => <OrderCartIcon />,
         })}
+      />
+       <Screen
+        name={ROUTES.sample_checkout}
+        component={SampleCheckOutScreen}
+        options={{
+          title: 'Confirm items & proceed',
+        }}
       />
       <Screen
         name={ROUTES.order_cart}
@@ -294,6 +303,13 @@ export const ComplaintStack = () => {
         component={AddComplaintScreen}
         options={{
           title: 'Add Complaints',
+        }}
+      />
+       <Screen       
+        name={ROUTES.complaint_detail}
+        component={ComplaintDetailScreen}
+        options={{
+          title: 'Complaint Detail',
         }}
       />
       <Screen

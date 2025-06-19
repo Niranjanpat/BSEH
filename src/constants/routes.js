@@ -81,6 +81,7 @@ export const ROUTES = {
   product: 'product_list',
   product_detail:'product_detail',
   order_cart: 'order_cart',
+  sample_checkout:'sample_checkout',
   order_checkout: 'order_checkout',
   order_screeen: 'order_screeen',
   promoter_products: 'promoter_products',

@@ -14,21 +14,21 @@ const PromotionalQuantity = ({data}) => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    getPromotionalItemsIfExists(data.id)
+    getPromotionalItemsIfExists(data._id)
       .then(item => {
-        if (item) setValue(item.cartQuantity);
+        if (item) setValue(item.cartQuantity)
       })
       .catch(error => console.log('getPromotionalIfExists', error));
   }, []);
 
   const add = () => {
     const quantity = parseInt(value) + 1;
-    if (quantity <= data.quantity) {
+    //if (quantity <= data.quantity) {
       const item = {...data, cartQuantity: quantity};
 
       setValue(quantity);
       dispatch(updateItemToCartPromotional(item));
-    }
+   // }
   };
 
   const remove = () => {
@@ -51,12 +51,12 @@ const PromotionalQuantity = ({data}) => {
   const onValueChange = value => {
     if (value !== null && value > 0) {
       const quantity = parseInt(value);
-      if (quantity <= data.quantity) {
+     // if (quantity <= data.quantity) {
         const item = {...data, cartQuantity: quantity};
 
         setValue(quantity);
         dispatch(updateItemToCartPromotional(item));
-      }
+    //  }
       return;
     }
 

@@ -69,8 +69,7 @@ export const storeProductInCart = async product => {
 export const storePromotionalInCart = async product => {
   let newCart = [];
   const cart = await getCartPromotionalItems();
-
-  const productInCart = await getPromotionalItemsIfExists(product.id);
+  const productInCart = await getPromotionalItemsIfExists(product._id);
 
   if (productInCart) {
     newCart = cart.map(item => {

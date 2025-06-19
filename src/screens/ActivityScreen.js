@@ -67,7 +67,7 @@ export default ActivityScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#f9f9f9',
+   // backgroundColor: '#f9f9f9',
     flex: 1,
   },
   sectionTitle: {

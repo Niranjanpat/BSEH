@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react'; 
 import {
   StyleSheet,
   View,
@@ -64,7 +64,7 @@ const AddExpensesScreen = ({route, navigation}) => {
       setDetails(expenseDetail.details || '');
       setExtra(expenseDetail.extra || '');
       setAmount(expenseDetail.amount?.toString() || '');
-      expenseTypeSelected.current=expenseDetail.expense_type || null;
+      expenseTypeSelected.current = expenseDetail.expense_type || null;
       setImage(expenseDetail.photo_path || null);
     }
   }, [channel, expenseDetail]);
@@ -94,7 +94,7 @@ const AddExpensesScreen = ({route, navigation}) => {
     setDate(new Date());
     setAmount('');
     setExtra('');
-    expenseTypeSelected.current=null;
+    expenseTypeSelected.current = null;
     setDetails('');
     setImage(null);
   };
@@ -122,7 +122,7 @@ const AddExpensesScreen = ({route, navigation}) => {
         longitude.current = position.coords.longitude;
 
         const formData = new FormData();
-        if(channel === 'update'){
+        if (channel === 'update') {
           formData.append('_method', 'PUT');
         }
         if (image) {
@@ -214,12 +214,13 @@ const AddExpensesScreen = ({route, navigation}) => {
             }}
           />
         </View>
-
-        <MyDropdown
-          channel="Expense Type"
-          item={expenseType}
-          onOptionChanged={onExpenseTypeSelected}
-        />
+        <View style={{paddingHorizontal: 8}}>
+          <MyDropdown
+            channel="Expense Type"
+            item={expenseType}
+            onOptionChanged={onExpenseTypeSelected}
+          />
+        </View>
 
         <View style={styles.container}>
           <Text style={styles.label}>Amount</Text>
@@ -251,7 +252,7 @@ const AddExpensesScreen = ({route, navigation}) => {
             style={styles.input}
             placeholder="Extra"
             placeholderTextColor="#888"
-            keyboardType='numeric'
+            keyboardType="numeric"
             value={extra}
             onChangeText={setExtra}
           />

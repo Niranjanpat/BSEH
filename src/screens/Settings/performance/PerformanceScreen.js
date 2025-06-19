@@ -25,40 +25,64 @@ const PerformanceScreen = ({navigation, route}) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}>
       <Text style={styles.sectionTitle}>Performance</Text>
 
-      {renderItem('Daily Order', 'cart-outline', ROUTES.daily_order, {id, role})}
-      {renderItem('Today Order', 'cart-outline', ROUTES.today_customer_order, {id, role})}
-      {renderItem('Top Customers', 'map-marker-check-outline', ROUTES.top_customers, {id, role})}
+      {renderItem('Daily Order', 'cart-outline', ROUTES.daily_order, {
+        id,
+        role,
+      })}
+      {renderItem('Today Order', 'cart-outline', ROUTES.today_customer_order, {
+        id,
+        role,
+      })}
+      {renderItem(
+        'Top Customers',
+        'map-marker-check-outline',
+        ROUTES.top_customers,
+        {id, role},
+      )}
       {/* {renderItem('Customers', 'account-multiple', ROUTES.user_customers, {id, role})} */}
-      {renderItem('Customer Order', 'cart-remove', ROUTES.customer_order, {id, role})}
+      {renderItem('Customer Order', 'cart-remove', ROUTES.customer_order, {
+        id,
+        role,
+      })}
+      {renderItem('User Targets', 'cart-arrow-up', ROUTES.user_target, {
+        id,
+        role,
+      })}
+      {renderItem('Order Log', 'cart-outline', ROUTES.order_log_performance, {
+        role,
+        id,
+      })}
 
-      {(role === 'sales-officer' || role === 'cr') && (
+      
+       {role !== 'sc' && role !== 'asm'  && (
         <>
-          {renderItem('User Targets', 'cart-arrow-up', ROUTES.user_target, {id, role})}
-          {renderItem('Order Log', 'cart-outline', ROUTES.order_log_performance, {role, id})}
+           {renderItem('Top ASMs', 'cart-arrow-up', ROUTES.top_asm, {id})}
         </>
       )}
 
-      {role !== 'cr' && role !== 'so' && role !== 'yp' && role !== 'sr' && (
+       {role !== 'sc' && role !== 'asm' && role!== 'zm'  && (
         <>
-          {renderItem('Top SCs', 'cart-arrow-up', ROUTES.top_sc, {id})}
-          {renderItem('Top ASMs', 'cart-arrow-up', ROUTES.top_asm, {id})}
-          {renderItem('Top ZMs', 'cart-arrow-up', ROUTES.top_zm, {id})}
-          {renderItem('Top Distributors', 'map-legend', ROUTES.top_Distributors, {id})}
+            {renderItem('Top ZMs', 'cart-arrow-up', ROUTES.top_zm, {id})}
         </>
       )}
 
-      {role !== 'cr' && role !== 'so' && userRole !== 'so' && (
-        renderItem('Top Sales Officer', 'cart-remove', ROUTES.top_so, {id})
-      )}
+      {role !== 'asm' &&
+        role !== 'zm' &&
+        renderItem(
+          'Performance overview',
+          'chart-bar',
+          ROUTES.individual_performance,
+          {id},
+        )}
 
-      {role !== 'asm' && role !== 'zm' && (
-        renderItem('Performance overview', 'chart-bar', ROUTES.individual_performance, {id})
-      )}
-
-      {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {id})}
+      {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {
+        id,
+      })}
     </ScrollView>
   );
 };

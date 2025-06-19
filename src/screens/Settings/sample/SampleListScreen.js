@@ -14,6 +14,7 @@ import {useTheme} from 'react-native-paper';
 import {getSample} from '../../../services/sample_service';
 import {useNavigation} from '@react-navigation/native';
 import {ROUTES} from '../../../constants/routes';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SampleListScreen = () => {
   const theme = useTheme();
@@ -35,9 +36,11 @@ const SampleListScreen = () => {
         <TouchableOpacity
           onPress={() => setOpenDate(true)}
           style={styles.navButton}>
-          <Text style={{color: theme.colors.primary, fontWeight: '600'}}>
-            {dayjs(date).format('YYYY-MM-DD')}
-          </Text>
+          <MaterialCommunityIcons
+            name="calendar-month"
+            size={24}
+            color={theme.colors.primary}
+          />
         </TouchableOpacity>
       ),
     });

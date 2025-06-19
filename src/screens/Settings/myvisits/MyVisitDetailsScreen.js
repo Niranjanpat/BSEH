@@ -373,7 +373,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         <Button
           icon="tag-outline"
           mode="contained"
-          onPress={() => {}}>
+           onPress={() => navigation.navigate(ROUTES.product, {data: data,channel:'sample'})}>
           Samples
         </Button>
 

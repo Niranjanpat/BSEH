@@ -34,6 +34,7 @@ export default theme = {
   fonts: configureFonts(fontConfig),
   roundness: 10,
   colors: {
+    background:'#fbf5e9',
     dark: false,
     ...DefaultTheme.colors,
     ...COLORS,

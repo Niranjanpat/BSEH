@@ -6,7 +6,7 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ROUTES} from '../constants/routes';
 
-const OrderCartIcon = () => {
+const OrderCartIcon = ({channel}) => {
   const navigation = useNavigation();
   const cartItems = useSelector(state => state.cart);
   const cartPromotionalItems = useSelector(state => state.cartPromotional);
@@ -17,7 +17,13 @@ const OrderCartIcon = () => {
   );
 
   const navigateTo = useCallback(() => {
-    const screen = cartItems?.length > 0 ? ROUTES.order_cart : ROUTES.order_checkout;
+    let screen;
+    if(channel === 'sample'){
+      screen=ROUTES.sample_checkout;
+    }
+    else{
+       screen = cartItems?.length > 0 ? ROUTES.order_cart : ROUTES.order_checkout;
+    }
     navigation.navigate(screen);
   }, [cartItems])
 

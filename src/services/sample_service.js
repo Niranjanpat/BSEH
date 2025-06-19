@@ -14,5 +14,6 @@ export const getSampleDetail = async (id) => {
 
 
 export const saveSample = async (data) => {
+  console.log("data",data);
   return await clientMultipart.post(URLS.sample,data);
 };

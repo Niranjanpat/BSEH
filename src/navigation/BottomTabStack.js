@@ -53,7 +53,7 @@ export default function BottomTabStack({navigation}) {
         component={HomeStackNavigation}
       />
 
-      <Screen
+      {/* <Screen
         name="Activity"
         options={{
           tabBarLabel: 'Activity',
@@ -66,7 +66,7 @@ export default function BottomTabStack({navigation}) {
           ),
         }}
         component={ActivityStackNavigation}
-      />
+      /> */}
 
       <Screen
         name="AddShop"
@@ -94,7 +94,7 @@ export default function BottomTabStack({navigation}) {
         component={MyVisitStack}
       />
 
-      {role !== 'sc' || 'asm' && (
+      {role !== 'sc' && role !== 'asm' && (
         <>
           <Screen
             name="UserHierarchy"

@@ -57,7 +57,6 @@ import RouteScheduleStack from './RouteScheduleStack';
 import UserRouteScheduleListScreen from '../screens/Settings/UserRouteScheduleListScreen';
 import CheckOutScreen from '../screens/Settings/myvisits/CheckOutScreen';
 import OrderCartScreen from '../screens/Settings/myvisits/OrderCartScreen';
-import OrderCartIcon from '../components/OrderCartIcon';
 import MonthlyTravelDistance from '../screens/Settings/MonthlyTravelDistance';
 import MonthAttendanceScreen from '../screens/Settings/MonthlyAttendanceScreen';
 import {ComplaintStack} from './settings_stack/index';
@@ -65,7 +64,7 @@ import AddComplaintScreen from '../screens/Settings/complaints/AddComplaintScree
 import {TaDasStack} from './settings_stack';
 import DailyAttendacesListScreen from '../screens/Settings/daily_attendance';
 import { SampleStack } from './sample_stack';
-
+import SampleCheckOutScreen from '../screens/Settings/myvisits/SampleCheckOutScreen';
 const SettingsStack = createNativeStackNavigator();
 export const SettingsStackNavigation = () => {
   return (
@@ -282,6 +281,13 @@ export const RetailerStackNavigation = () => {
         component={OrderCartScreen}
         options={{
           title: 'Cart Details',
+        }}
+      />
+         <RetailerStack.Screen
+        name={ROUTES.sample_checkout}
+        component={SampleCheckOutScreen}
+        options={{
+          title: 'Confirm items & proceed',
         }}
       />
       <RetailerStack.Screen
