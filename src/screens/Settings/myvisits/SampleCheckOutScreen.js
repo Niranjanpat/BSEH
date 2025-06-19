@@ -26,7 +26,7 @@ import VerticalSpacer from '../../../components/VerticalSpacer';
 import {SPACINGS, TYPOGRAPHY} from '../../../constants/theme';
 import {COLORS} from '../../../constants/theme/colors';
 import {saveOrder, sendMail} from '../../../services/order_service';
-import {clearCartItems} from '../../../store/actions/cart';
+import {clearCartItems ,clearCartPromotionalItems} from '../../../store/actions/cart';
 import {postCustomerCheckOut} from '../../../store/actions/order';
 import usePromotionalItems from '../../../hooks/usePromotionalItems';
 import {saveSample} from '../../../services/sample_service';
@@ -39,6 +39,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
 
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderAndMailLoading, setOrderAndMailLoading] = useState(false);
+  const [isProductCollapsed, setIsProductCollapsed] = useState(false);
   const [isPromotionalCollapsed, setIsPromotionalCollapsed] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -58,6 +59,10 @@ const SampleCheckOutScreen = ({navigation, route}) => {
   const {loading, isAssignedPromotionalItems, assignCustomerPromotionalItems} =
     usePromotionalItems();
 
+  const cartProductItems = useMemo(
+    () => (isProductCollapsed ? [] : schemes),
+    [isProductCollapsed, schemes],
+  );
 
   const cartPromotionalItems = useMemo(
     () => (isPromotionalCollapsed ? [] : cartPromoItems),
@@ -86,7 +91,6 @@ const SampleCheckOutScreen = ({navigation, route}) => {
   };
 
   const submitOrder = () => {
-         
     if (!image.current) {
       Alert.alert('Error', 'Please Take Sample Image');
       return;
@@ -101,8 +105,12 @@ const SampleCheckOutScreen = ({navigation, route}) => {
       });
     }
 
-    if (cartItems.length > 0) {
-      setOrderLoading(true);
+    const productArray = cartPromoItems.map(item => ({
+      _id: item._id,
+      quantity: item.cartQuantity,
+    }));
+
+    formData.append('product', JSON.stringify(productArray));
       saveSample(formData)
         .then(res => {
           const {success, errors, data} = res.data;
@@ -110,7 +118,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
           console.log('submitOrder', res.data);
           if (success) {
             dispatch(clearCartItems());
-            assignPromoItems(true);
+           // assignPromoItems(true);
           } else {
             setOrderLoading(false);
             if (errors.add_order) {
@@ -118,15 +126,12 @@ const SampleCheckOutScreen = ({navigation, route}) => {
             }
             Alert.alert('Failed', JSON.stringify(errors));
           }
-        })
+    })
         .catch(error => {
           console.log('submitOrder', error);
           setOrderLoading(false);
         });
-    } else {
-      setOrderLoading(true);
-      assignPromoItems(false);
-    }
+    
   };
 
   const submitAndMail = () => {
@@ -143,7 +148,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
 
           console.log('submitAndMail', res.data);
           if (success) {
-            dispatch(clearCartItems());
+            dispatch(clearCartPromotionalItems());
 
             sendMail(data)
               .then(res => {
@@ -297,7 +302,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
         <Subheading>₹{total.toFixed(2)}</Subheading>
       </View>
       <View style={styles.buttonRow}>
-        {cartItems.length > 0 && (
+        {/* {cartItems.length > 0 && (
           <Button
             onPress={submitAndMail}
             loading={orderAndMailLoading}
@@ -305,7 +310,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
             mode="contained">
             Save & Send Mail
           </Button>
-        )}
+        )} */}
         <Button
           onPress={submit}
           loading={orderLoading}
@@ -323,7 +328,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
   );
 };
 
-export default SampleCheckOutScreen;
+export default CheckOutScreen;
 
 const Header = ({isForPromotional, isCollapsed, onCollapsePressed}) => {
   return (
@@ -438,6 +443,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: SPACINGS.xxs,
   },
+  //here somthing
   modalContainer: {
     backgroundColor: 'white',
     padding: 20,
@@ -455,7 +461,7 @@ const styles = StyleSheet.create({
     minWidth: 40,
     paddingVertical: 4,
     paddingHorizontal: 10,
-    backgroundColor:  '#f1f9fe',
+    backgroundColor: '#f1f9fe',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',

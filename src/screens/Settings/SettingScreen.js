@@ -78,12 +78,12 @@ const SettingScreen = ({navigation}) => {
           navigation.navigate(ROUTES.sample_stack, {screen: ROUTES.sample}),
         )}
 
-        {renderItem('Cumulative report', 'account-details', () =>
+        {/* {renderItem('Cumulative report', 'account-details', () =>
           navigation.navigate(ROUTES.cumulative_report),
-        )}
-        {renderItem('Performance', 'star-outline', () =>
+        )} */}
+        {/* {renderItem('Performance', 'star-outline', () =>
           navigation.navigate(ROUTES.performance),
-        )}
+        )} */}
 
         {role !== 'sc' &&
           renderItem('User Hierarchy', 'file-tree-outline', () =>
@@ -94,7 +94,7 @@ const SettingScreen = ({navigation}) => {
           renderItem('Sub-Ordinate schedules', 'map-marker', () =>
             navigation.navigate(ROUTES.user_route_schedule_list),
           )}
-        {renderItem('User Daily Attendance', 'map-marker', () =>
+        {role !== 'sc' && renderItem('User Daily Attendance', 'map-marker', () =>
           navigation.navigate(ROUTES.daily_attendance),
         )}
 

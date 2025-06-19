@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState ,useLayoutEffect} from 'react';
 import {
   Alert,
   Dimensions,
@@ -124,7 +124,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title={title} />
-        {role === 'asm' && (
+        
           <IconButton
             icon="square-edit-outline"
             onPress={() =>
@@ -135,7 +135,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               })
             }
           />
-        )}
+        
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -147,6 +147,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           <Title>{data.name}</Title>
           <Caption>{data.owner_contact_number}</Caption>
         </View>
+        <View style={styles.btnContainer}>
           <View style={styles.buttonContainer}>
             <Button
               mode="contained"
@@ -163,6 +164,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               Complaint
             </Button>
           </View>
+        </View>
 
         {customerTarget.length > 0 && (
           <CustomerTarget target={customerTarget} />
@@ -215,6 +217,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  btnContainer:{
+    flexDirection:'row',
+    justifyContent:'space-around',
+    alignContent:'center'
   },
   content: {
     paddingBottom: SPACINGS.lg,

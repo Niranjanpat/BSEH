@@ -26,7 +26,7 @@ const HomeScreen = ({}) => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchTodayReport();
+  //   fetchTodayReport();
     }, []),
   );
 
@@ -40,7 +40,7 @@ const HomeScreen = ({}) => {
         {role === 'sc' || role === 'asm' ? (
           <>
             <Achievement />
-            {role === 'sc' &&
+      
               <>
                 <DsmCurrentTarget />
                 <AttendanceInformation data={data} />
@@ -48,7 +48,7 @@ const HomeScreen = ({}) => {
                 <OrderDetails data={data} />
                 {loading && <LoadingView />}
               </>
-            }
+          
             <RecentOrder />
           </>
         ) : (
