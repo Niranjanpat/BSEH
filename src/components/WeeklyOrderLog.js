@@ -5,6 +5,7 @@ import {Caption, DataTable, Title} from 'react-native-paper';
 import {IMAGE} from '../constants/images';
 import {SPACINGS} from '../constants/theme';
 import {weeklyOrderLog} from '../services/performance_service';
+import { COLORS } from '../constants/theme/colors';
 
 const WeekOrderLog = () => {
   const [data, setData] = useState([]);
@@ -34,7 +35,7 @@ const WeekOrderLog = () => {
   };
 
   return (
-    <View style={styles.dateContainer}>
+    <View style={styles.card}>
       <Title style={{fontSize: 15, marginLeft: 5}}>
         Order Log (Last 7 Days)
       </Title>
@@ -66,10 +67,13 @@ const WeekOrderLog = () => {
 export default WeekOrderLog;
 
 const styles = StyleSheet.create({
-  dateContainer: {
-    backgroundColor: '#fff',
-    marginVertical: 10,
-    paddingBottom: SPACINGS.md,
+  card: {
+    marginVertical: 5,
+    padding: 10,
+    elevation: 3,
+    backgroundColor: COLORS.light,
+    marginHorizontal: 2,
+    borderRadius: 10,
   },
 
   inputText: {width: '45%', margin: 5},

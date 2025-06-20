@@ -48,7 +48,7 @@ const TaDasDetailScreen = ({ route }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Approval Details</Text>
 
-        <DetailRow icon="done" label="Status" value={data.status} valueColor={statusColor} />
+        <DetailRow icon="done" label="Status" value={data.status?.toUpperCase() ?? ""} valueColor={statusColor} />
 
         <DetailRow icon="trending-up" label="Approved KM" value={`${data.approved_vehicle_km} km`} />
         <DetailRow icon="account-balance-wallet" label="Approved Amount" value={`₹${data.approved_amount}`} />

@@ -45,7 +45,7 @@ export const addShop = async data => {
 //update customer api :- working
 export const editShop = async (data, id) => {
   console.log("form data",data,id);
-  return await clientMultipart.post(URLS.customerToday + id, data);
+  return await clientMultipart.post(URLS.customer + id, data);
 };
 
 export const getCustomerTarget = async id => {

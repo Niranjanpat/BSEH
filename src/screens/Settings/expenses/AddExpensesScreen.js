@@ -149,7 +149,6 @@ const AddExpensesScreen = ({route, navigation}) => {
                 channel === 'update' ? 'updated' : 'added'
               } successfully`,
             );
-            if (channel === 'add') resetForm();
             navigation.goBack();
           } else {
             console.log(errors);

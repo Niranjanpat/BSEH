@@ -33,9 +33,9 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   fetchBeatList();
-  // }, []);
+  useEffect(() => {
+    getBeat();
+  }, []);
 
   const getBeat = () => {
     setLoading(true);

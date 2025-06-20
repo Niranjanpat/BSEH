@@ -6,6 +6,7 @@ import {Caption, DataTable, Divider, Text, Title} from 'react-native-paper';
 import {IMAGE} from '../constants/images';
 import {SPACINGS} from '../constants/theme';
 import {topCustomerList} from '../services/performance_service';
+import {COLORS} from '../constants/theme/colors';
 
 const TopCustomerTable = () => {
   const [data, setData] = useState([]);
@@ -35,7 +36,7 @@ const TopCustomerTable = () => {
   };
 
   return (
-    <View style={styles.dateContainer}>
+    <View style={styles.card}>
       <Title style={{fontSize: 15, marginLeft: 5}}>
         Top 5 Customer (Last 7 Days)
       </Title>
@@ -84,9 +85,13 @@ const TopCustomerTable = () => {
 export default TopCustomerTable;
 
 const styles = StyleSheet.create({
-  dateContainer: {
-    backgroundColor: '#ffffff',
-    marginBottom: 10,
+  card: {
+    marginVertical: 5,
+    padding: 10,
+    elevation: 3,
+    backgroundColor: COLORS.light,
+    marginHorizontal: 2,
+    borderRadius: 10,
   },
 
   inputText: {width: '45%', margin: 5},

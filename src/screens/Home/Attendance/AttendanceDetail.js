@@ -1,14 +1,16 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Image, StyleSheet, View} from 'react-native';
+import {Alert, FlatList, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {Appbar, Divider, Subheading, Text, TextInput} from 'react-native-paper';
 import {COLORS} from '../../../constants/theme/colors';
 import {attendanceList} from '../../../services/auth_service';
 import DateMonthSelector from '../../../components/attendance/DateMonthSelector';
+import AttendanceListItem from '../../../components/attendance/AttendanceListItem';
 
 const AttendanceDetail = ({navigation}) => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const date = useRef(new Date());
 
   useEffect(() => {
@@ -16,6 +18,7 @@ const AttendanceDetail = ({navigation}) => {
   }, []);
 
   const getAttendanceDetail = () => {
+    setLoading(true);
     attendanceList(dayjs(date.current).format('YYYY-MM-DD'))
       .then(res => {
         const {data, errors, success} = res.data;
@@ -28,7 +31,8 @@ const AttendanceDetail = ({navigation}) => {
           }
         }
       })
-      .catch(e => {});
+      .catch(e => {})
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -58,62 +62,15 @@ const AttendanceDetail = ({navigation}) => {
         </View>
         <View style={styles.attendanceListContainer}>
           <FlatList
+            refreshing={loading}
+            onRefresh={() => getAttendanceDetail()}
             ListEmptyComponent={() => {
               return <Text>no data</Text>;
             }}
+            showsVerticalScrollIndicator={false}
             data={data}
             keyExtractor={item => '' + item._id}
-            renderItem={({item}) => {
-              return (
-                <View style={{paddingBottom: 8}}>
-                  <View style={styles.listItemContainer}>
-                    <View style={styles.listItem}>
-                      <Image
-                        source={{uri: item.punch_in_photo_path}}
-                        style={styles.listItemImage}
-                      />
-                      <View style={{flex: 1}}>
-                        <Text>{item.punch_in_time}</Text>
-                        <Text
-                          style={{flexWrap: 'wrap'}}
-                          numberOfLines={2}
-                          ellipsizeMode="tail">
-                          Reading: {item.start_vehicle_km}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.listItem}>
-                      <Image
-                        source={{uri: item.punch_out_photo_path}}
-                        style={styles.listItemImage}
-                      />
-                      <View style={{flex: 1}}>
-                        <Text>{item.punch_out_time}</Text>
-                        <Text
-                          style={{flexWrap: 'wrap'}}
-                          numberOfLines={2}
-                          ellipsizeMode="tail">
-                          Reading: {item.end_vehicle_km}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <Text variant="labelMedium">
-                    Vehicle Type: {item.vehicle_type?.toUpperCase()}
-                  </Text>
-                  <Text variant="labelMedium">
-                    Total Distance: {item.total_vehicle_km} KMs
-                  </Text>
-                  <Divider
-                    style={{
-                      backgroundColor: COLORS.primary,
-                      height: 1,
-                      marginTop: 2,
-                    }}
-                  />
-                </View>
-              );
-            }}
+            renderItem={({item}) => <AttendanceListItem item={item} />}
           />
         </View>
       </View>
@@ -125,6 +82,7 @@ export default AttendanceDetail;
 
 const styles = StyleSheet.create({
   attendanceBox: {
+    flex: 1,
     width: '100%',
     marginBottom: 10,
     marginTop: 10,
@@ -136,6 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   attendanceListContainer: {
+    flex: 1,
     width: '95%',
     borderRadius: 5,
     marginTop: 10,
@@ -149,22 +108,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: 10,
-  },
-  listItemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 2,
-    flex: 1,
-  },
-  listItemImage: {
-    height: 60,
-    width: 60,
-    borderRadius: 10,
-    marginEnd: 8,
-    resizeMode: 'cover',
   },
 });

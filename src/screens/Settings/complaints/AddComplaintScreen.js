@@ -25,6 +25,7 @@ const AddComplaintScreen = ({route, navigation}) => {
   const [complaintType, setComplaintType] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+
   useEffect(() => {
     fetchComplaintTypes();
   }, []);
@@ -33,9 +34,11 @@ const AddComplaintScreen = ({route, navigation}) => {
     if (channel === 'update' && complaint) {
       setSubject(complaint.subject || '');
       setRemark(complaint.remark || '');
-      setComplaintTypeSelected(complaint.complaint_type_name || null);
+      setComplaintTypeSelected(complaint.complaint_type_id || null);
+      setStatus(complaint?.status || null);
+      setRemark(complaint?.remarks || '');
     }
-  }, [channel, complaint]);
+  }, [channel, complaint, complaintType]);
 
   const fetchComplaintTypes = async () => {
     try {
@@ -47,7 +50,7 @@ const AddComplaintScreen = ({route, navigation}) => {
         setComplaintType(data.complaint_types || []);
       } else {
         console.log('Complaint type error:', errors);
-        Alert.alert('Error', JSON.stringify(errors));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getComplaintTypes error:', error);
@@ -170,7 +173,7 @@ const AddComplaintScreen = ({route, navigation}) => {
           />
         </View>
 
-        <View style={[styles.container, {marginBottom: 20}]}>
+        <View style={[styles.container, {marginTop: 20}]}>
           <Button
             mode="contained"
             onPress={onSubmit}

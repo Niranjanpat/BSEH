@@ -66,11 +66,11 @@ export const customerListByBeatId = async id => {
 };
 
 export const getTodayReport = async () => {
-  return await client.get(URLS.kamDashboard);
+  return await client.get(URLS.userDashboard);
 };
 
 export const getTodayReportById = async id => {
-  return await client.get(`${URLS.kamDashboard}/${id}`);
+  return await client.get(`${URLS.userDashboard}/${id}`);
 };
 
 export const getMtdReport = async () => {

@@ -43,7 +43,7 @@ const DailyAttendacesListScreen = ({navigation}) => {
 
   useEffect(() => {
     fetchAllUsersDailyAttendances(date, page);
-    role !== 'sr' && setUserRolesFilter(role);
+    role !== 'sc' && setUserRolesFilter(role);
   }, []);
 
   useEffect(() => {
@@ -51,11 +51,11 @@ const DailyAttendacesListScreen = ({navigation}) => {
   }, [selectedRole]);
 
   const setUserRolesFilter = role => {
-    const roles = ['ALL'];
-    let isAdd = false;
+    const roles = [];
+    let isAdd = true;
     Object.keys(userRoles).map(key => {
-      if (role === userRoles[key] && !isAdd) {
-        isAdd = true;
+      if (role === userRoles[key]) {
+        isAdd = false;
         return;
       }
       if (isAdd) {
@@ -165,6 +165,7 @@ const DailyAttendacesListScreen = ({navigation}) => {
           <FlatList
             data={filteredData}
             showsVerticalScrollIndicator={false}
+            keyExtractor={item => item?._id}
             renderItem={({item}) => (
               <AllUsersList
                 item={item}

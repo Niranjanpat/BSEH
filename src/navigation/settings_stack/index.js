@@ -46,9 +46,9 @@ import TaDasListScreen from '../../screens/Settings/tadas/TaDasListScreen';
 import TaDasDetailScreen from '../../screens/Settings/tadas/TaDasDetailScreen';
 import UserComplaintListScreen from '../../screens/Settings/user_complaint/UserComplaintListScreen';
 import UserComplaintDetailScreen from '../../screens/Settings/user_complaint/UserComplaintDetailScreen';
-import {updateUserComplaint} from '../../services/complaint_service';
 import ComplaintDetailScreen from '../../screens/Settings/complaints/ComplaintDetailScreen';
 import SampleCheckOutScreen from '../../screens/Settings/myvisits/SampleCheckOutScreen';
+import UpdateComplaintScreen from '../../screens/Settings/user_complaint/UpdateComplaintScreen';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -391,7 +391,7 @@ export const UserComplaintStack = () => {
       />
       <Screen
         name={ROUTES.update_user_complaint}
-        component={updateUserComplaint}
+        component={UpdateComplaintScreen}
         options={{
           title: 'Update UserComplaint',
         }}

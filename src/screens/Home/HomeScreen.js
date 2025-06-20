@@ -16,8 +16,8 @@ import useReport from '../../hooks/useReport';
 import AttendanceInformation from '../../components/settings/AttendanceInformation';
 import CallDetails from '../../components/settings/CallDetails';
 import OrderDetails from '../../components/settings/OrderDetails';
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {useCallback} from 'react';
 import LoadingView from '../../components/LoadingView';
 
 const HomeScreen = ({}) => {
@@ -26,7 +26,7 @@ const HomeScreen = ({}) => {
 
   useFocusEffect(
     useCallback(() => {
-  //   fetchTodayReport();
+      fetchTodayReport();
     }, []),
   );
 
@@ -36,29 +36,28 @@ const HomeScreen = ({}) => {
         <WelcomeMessage />
         <JointWorkingView />
         {role === 'promoter' && <PromoterVisits />}
-        {role !== 'promoter' && <TodayOrder self={1} />}
+        {/* {role !== 'promoter' && <TodayOrder self={1} />} */}
         {role === 'sc' || role === 'asm' ? (
           <>
-            <Achievement />
-      
-              <>
-                <DsmCurrentTarget />
-                <AttendanceInformation data={data} />
-                <CallDetails data={data} />
-                <OrderDetails data={data} />
-                {loading && <LoadingView />}
-              </>
-          
-            <RecentOrder />
+            {/* <Achievement /> */}
+            <>
+              {/* <DsmCurrentTarget /> */}
+              <AttendanceInformation data={data} />
+              <CallDetails data={data} />
+              {/* <OrderDetails data={data} /> */}
+              {loading && <LoadingView />}
+            </>
+
+            {/* <RecentOrder /> */}
           </>
         ) : (
           <>{role !== 'promoter' && <AttendanceSummary />}</>
         )}
-        {role === 'asm' && <RecentOrder />} 
+        {/* {role === 'asm' && <RecentOrder />}  */}
         {role !== 'promoter' && (
           <>
-            <TopCustomerTable />
-            <WeeklyOrderLog />
+            {/* <TopCustomerTable /> */}
+            {/* <WeeklyOrderLog /> */}
           </>
         )}
         <View style={styles.margin_bottom}></View>

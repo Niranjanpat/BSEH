@@ -30,11 +30,11 @@ client.interceptors.response.use(
   response => {
     const {errors} = response.data;
 
-    if (errors.token) {
+    if (errors && errors.token) {
       mmkv.clearStore();
       store.dispatch(storeIsInvalid(true));
     }
-    if (errors.version) {
+    if (errors && errors.version) {
       outdatedVersion();
     }
     return response;

@@ -18,7 +18,7 @@ import { COLORS } from '../../constants/theme/colors';
 
 const maximumDate = dayjs().subtract(13, 'year').toDate();
 
-const UpdateProfileScreen = () => {
+const UpdateProfileScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const { profile } = useSelector(state => state.auth);
 
@@ -77,8 +77,9 @@ const UpdateProfileScreen = () => {
         if (success) {
           dispatch(storeAccount({ ...profile, ...body }));
           Alert.alert('Success', 'Your profile has been successfully updated.');
-        } else {
-          Alert.alert(null, JSON.stringify(errors));
+          navigation.goBack();
+        } else if (errors) {
+          Alert.alert(null, Object.values(errors).join(', '));
         }
       })
       .catch(err => {

@@ -47,7 +47,9 @@ const UpdateCustomerLocationScreen = ({route}) => {
           if (errors?.id) {
             return alert(errors.id);
           }
-          alert(JSON.stringify(errors));
+          if (errors) {
+            alert(Object.values(errors).join(', '));
+          }
         }
       })
       .catch(e => {

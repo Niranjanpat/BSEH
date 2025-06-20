@@ -23,7 +23,7 @@ const UpdateComplaintScreen = ({route, navigation}) => {
   const [status, setStatus] = useState(null);
   const [complaintType, setComplaintType] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
     fetchComplaintTypes();
   }, []);
@@ -32,7 +32,8 @@ const UpdateComplaintScreen = ({route, navigation}) => {
     setSubject(complaint.subject || '');
     setRemark(complaint.remark || '');
     setComplaintTypeSelected(complaint.complaint_type_name || null);
-  }, [ complaint]);
+    setStatus(complaint?.status);
+  }, [complaint, complaintType]);
 
   const fetchComplaintTypes = async () => {
     try {
@@ -43,7 +44,9 @@ const UpdateComplaintScreen = ({route, navigation}) => {
         setComplaintType(data.complaint_types || []);
       } else {
         console.log('Complaint type error:', errors);
-        Alert.alert('Error', JSON.stringify(errors));
+        if (errors) {
+          Alert.alert('Error', Object.values(errors).join(', '));
+        }
       }
     } catch (error) {
       console.log('getComplaintTypes error:', error);

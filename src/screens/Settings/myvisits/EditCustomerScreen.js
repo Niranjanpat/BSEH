@@ -181,7 +181,7 @@ const EditCustomerScreen = ({navigation, route}) => {
     } else if (!/^[0-9]{10}$/.test(values.owner_contact_number)) {
       errors.owner_contact_number = 'Enter a valid 10-digit number';
     }
-    
+
     if (!values.longitude || !values.latitude) {
       errors.longitude = 'Location is required';
     }
@@ -222,20 +222,22 @@ const EditCustomerScreen = ({navigation, route}) => {
           }
           setIsLoading(true);
 
-          const formData=new formData();
+          const formData = new FormData();
           formData.append('_method', 'PUT');
-          formData.append('address',values.address);
-          formData.append('customer_class_id',values.customer_class_id);
-          formData.append('customer_type_id',values.customer_type_id)
-          formData.append('owner_email',values.owner_email)
-          formData.append('gst_number',values.gst_number)
-          formData.append('latitude',values.latitude)
-          formData.append('longitude',values.longitude)
-          formData.append('owner_contact_number',values.owner_contact_number)
-          formData.append('pin_code_id',values.pin_code_id)
-          formData.append('town',values.town)
+          formData.append('name', values.name);
+          formData.append('owner_name', values.owner_name);
+          formData.append('address', values.address);
+          formData.append('customer_class_id', values.customer_class_id);
+          formData.append('customer_type_id', values.customer_type_id);
+          formData.append('owner_email', values.owner_email);
+          formData.append('gst_number', values.gst_number);
+          formData.append('latitude', values.latitude);
+          formData.append('longitude', values.longitude);
+          formData.append('owner_contact_number', values.owner_contact_number);
+          formData.append('pin_code_id', values.pin_code_id);
+          formData.append('town', values.town);
           console.log('image ', values.image);
-          
+
           if (values.image) {
             formData.append('photo', {
               uri: values.image,
@@ -246,11 +248,10 @@ const EditCustomerScreen = ({navigation, route}) => {
 
           editShop(formData, route.params.id)
             .then(res => {
-              console.log('Add shop response:', res);
               const {data, success, errors} = res.data;
               if (success) {
                 Alert.alert('Success', 'Customer updated successfully');
-                resetForm();
+                navigation.goBack();
               } else {
                 console.log(errors);
                 setErrors(res.data.errors || {});

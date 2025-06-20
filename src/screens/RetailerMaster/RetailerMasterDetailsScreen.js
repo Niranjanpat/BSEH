@@ -41,6 +41,7 @@ import {
   setHideCheckoutAfterOrderPlaces,
 } from '../../store/actions/order';
 import {getCustomerTarget} from '../../services/retailer_services';
+import { useFocusEffect } from '@react-navigation/native';
 
 const size = Dimensions.get('window');
 const imgSize = size.width * 0.25;
@@ -58,10 +59,15 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const {role} = useSelector(state => state.auth);
   const {customerVisitStatus} = useSelector(state => state.order);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchCustomerDetails();
+    }, []),
+  );
+
   useEffect(() => {
-    fetchCustomerDetails();
     requestLocationPermission();
-    fetchCustomerTarget();
+    // fetchCustomerTarget();
 
     if (!customerVisitStatus.status) {
       dispatch(setHideCheckoutAfterOrderPlaces(true));
@@ -74,6 +80,8 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     try {
       const res = await client.get(URLS.customer + data._id);
       if (res.data.success) {
+        console.log(res.data);
+        
         setCustomer(res.data.data);
       } else {
         console.log('Error:', res.data.errors);
@@ -179,6 +187,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           {renderDetailRow('Town', customer?.town)}
           {renderDetailRow('Beat', customer?.route_name)}
           {renderDetailRow('Shop Type', customer?.customer_type_name)}
+          {renderDetailRow('Customer Class', customer?.customer_class_name)}
           {renderDetailRow('Division', customer?.division_names)}
           {renderDetailRow("Owner's Name", customer?.owner_name)}
           {renderDetailRow('Email', customer?.owner_email)}

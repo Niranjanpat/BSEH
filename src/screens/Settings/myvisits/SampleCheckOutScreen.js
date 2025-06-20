@@ -98,7 +98,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
 
     const formData = new FormData();
     if (image.current) {
-      formData.append('sample_photo', {
+      formData.append('photo', {
         uri: image.current,
         type: 'image/jpeg',
         name: 'sample.jpeg',
@@ -110,7 +110,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
       quantity: item.cartQuantity,
     }));
 
-    formData.append('product', JSON.stringify(productArray));
+    formData.append('products', JSON.stringify(productArray));
       saveSample(formData)
         .then(res => {
           const {success, errors, data} = res.data;
@@ -328,7 +328,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
   );
 };
 
-export default CheckOutScreen;
+export default SampleCheckOutScreen;
 
 const Header = ({isForPromotional, isCollapsed, onCollapsePressed}) => {
   return (

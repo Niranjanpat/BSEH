@@ -159,7 +159,7 @@ const SignInScreen = ({navigation}) => {
               icon="arrow-right"
               disabled={isLoading}
               size={37}
-              color={COLORS.light}
+              iconColor={COLORS.light}
               onPress={validateAndLogin}
               style={{
                 width: 60,

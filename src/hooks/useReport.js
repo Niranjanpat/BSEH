@@ -23,7 +23,7 @@ const useReport = () => {
       .then(res => {
         setLoading(false);
 
-        console.log(res.data);
+        console.log('today report', res);
 
         const {data, success} = res.data;
 
@@ -33,7 +33,7 @@ const useReport = () => {
       })
       .catch(err => {
         setLoading(false);
-        //console.log('today report err', err?.response?.data);
+        console.log('today report err', err);
       });
   };
 

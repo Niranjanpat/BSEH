@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,12 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
 import {getComplaints} from '../../../services/complaint_service';
+import dayjs from 'dayjs';
+import DatePicker from 'react-native-date-picker';
 
 const STATUS_COLORS = {
   open: COLORS.primary,
@@ -21,25 +23,45 @@ const STATUS_COLORS = {
 const getStatusColor = status => STATUS_COLORS[status] || COLORS.primary;
 
 const ComplaintListScreen = () => {
+  const today = new Date();
   const [complaints, setComplaints] = useState([]);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
+  const [openStart, setOpenStart] = useState(false);
+  const [openEnd, setOpenEnd] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchComplaintList(1);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setPage(1);
+      fetchComplaintList(1);
+    }, [startDate, endDate]),
+  );
 
   const fetchComplaintList = async currentPage => {
-    if (isLoading || !hasMore) return;
     setIsLoading(true);
+    console.log(
+      dayjs(startDate).format('YYYY-MM-DD'),
+      dayjs(endDate).format('YYYY-MM-DD'),
+    );
+
     try {
-      const res = await getComplaints(currentPage);
+      const res = await getComplaints({
+        start_date: dayjs(startDate).format('YYYY-MM-DD'),
+        end_date: dayjs(endDate).format('YYYY-MM-DD'),
+        page: currentPage,
+      });
       const {data, success, errors} = res?.data;
       if (success) {
         const newComplaints = data?.complaints || [];
-        setComplaints(prev => [...prev, ...newComplaints]);
+        if (currentPage == 1) {
+          setComplaints(newComplaints);
+        } else {
+          setComplaints(prev => [...prev, ...newComplaints]);
+        }
         setHasMore(data?.has_more);
         if (data?.has_more) setPage(prev => prev + 1);
       } else {
@@ -54,6 +76,8 @@ const ComplaintListScreen = () => {
   };
 
   const handleRefresh = async () => {
+    setComplaints([]);
+    setPage(1);
     fetchComplaintList(1);
   };
 
@@ -61,11 +85,7 @@ const ComplaintListScreen = () => {
     <TouchableOpacity
       style={[styles.card, {borderLeftColor: getStatusColor(item.status)}]}
       onPress={() => {
-        if (item.status === 'open') {
-          navigation.navigate(ROUTES.complaint_detail, {id: item._id});
-        } else {
-          Alert.alert('Error', 'Edit not allowed');
-        }
+        navigation.navigate(ROUTES.complaint_detail, {id: item._id});
       }}>
       <Text style={styles.title}>{item.subject}</Text>
       <Text style={styles.text}>Type: {item.complaint_type_name}</Text>
@@ -73,8 +93,11 @@ const ComplaintListScreen = () => {
       <Text style={styles.text}>Route: {item.customer_route}</Text>
       <Text style={styles.text}>SAP Code: {item.customer_sap_code}</Text>
       <Text style={styles.text}>Date: {item.created_at}</Text>
-      <Text style={[styles.status, {color: getStatusColor(item.status)}]}>
-        Status: {item.status}
+      <Text style={styles.status}>
+        Status:{' '}
+        <Text style={{color: getStatusColor(item.status)}}>
+          {item.status?.toUpperCase() ?? ''}
+        </Text>
       </Text>
     </TouchableOpacity>
   );
@@ -93,19 +116,65 @@ const ComplaintListScreen = () => {
       </View>
     );
 
+  const renderDatePickers = () => (
+    <View style={styles.dateFilter}>
+      <TouchableOpacity
+        onPress={() => setOpenStart(true)}
+        style={styles.dateBtn}>
+        <Text style={styles.dateText}>
+          Start: {dayjs(startDate).format('YYYY-MM-DD')}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setOpenEnd(true)} style={styles.dateBtn}>
+        <Text style={styles.dateText}>
+          End: {dayjs(endDate).format('YYYY-MM-DD')}
+        </Text>
+      </TouchableOpacity>
+      <DatePicker
+        modal
+        mode="date"
+        open={openStart}
+        date={startDate}
+        onConfirm={date => {
+          setOpenStart(false);
+          setStartDate(date);
+        }}
+        onCancel={() => setOpenStart(false)}
+      />
+      <DatePicker
+        modal
+        mode="date"
+        open={openEnd}
+        date={endDate}
+        onConfirm={date => {
+          setOpenEnd(false);
+          setEndDate(date);
+        }}
+        onCancel={() => setOpenEnd(false)}
+      />
+    </View>
+  );
+
   return (
-    <FlatList
-      data={complaints}
-      keyExtractor={item => item._id}
-      renderItem={renderItem}
-      contentContainerStyle={styles.listContent}
-      onEndReached={() => fetchComplaintList(page)}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={renderFooter}
-      ListEmptyComponent={renderEmpty}
-      refreshing={isLoading}
-      onRefresh={handleRefresh}
-    />
+    <>
+      {renderDatePickers()}
+      <FlatList
+        data={complaints}
+        keyExtractor={item => item._id}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
+        onEndReached={() => {
+          if (!isLoading && hasMore) {
+            fetchComplaintList(page);
+          }
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmpty}
+        refreshing={isLoading}
+        onRefresh={handleRefresh}
+      />
+    </>
   );
 };
 
@@ -154,5 +223,21 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#888',
     fontSize: 16,
+  },
+  dateFilter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    marginHorizontal: 16,
+  },
+  dateBtn: {
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  dateText: {
+    color: '#333',
   },
 });

@@ -29,7 +29,8 @@ const CallDetails = ({data}) => {
         <GridItem label="Last call" value={data.last_call} />
         <GridItem label="Scheduled calls" value={data.scheduled_call} />
         <GridItem label="Visited calls" value={data.visited_call} />
-        <GridItem label="Productive calls" value={data.productive_call} />
+        <GridItem label="Customer Count" value={data.customer_count} />
+        {/* <GridItem label="Productive calls" value={data?.productive_call ?? 0} /> */}
       </View>
     </View>
   );

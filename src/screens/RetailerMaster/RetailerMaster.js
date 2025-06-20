@@ -14,6 +14,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {
   Text,
@@ -31,9 +32,10 @@ import {COLORS} from '../../constants/theme/colors';
 import {getRetailerList, storeRetailerList} from '../../store/actions/retailer';
 import {getBeatList, getRetailer} from '../../services/retailer_services';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import BeatAssigneeFilter from '../../components/retailer_master/BeatAssigneeFilter';
 
-const Filter = lazy(
-  () => import('../../components/retailer_master/RetailerMasterFilter'),
+const Filter = lazy(() =>
+  import('../../components/retailer_master/RetailerMasterFilter'),
 );
 
 const RetailerMaster = ({navigation, route}) => {
@@ -51,6 +53,8 @@ const RetailerMaster = ({navigation, route}) => {
   const page = useRef(0);
   const searchbarRef = useRef(null);
   const hasMore = useRef(false);
+  const searchbarAnim = useRef(new Animated.Value(1)).current;
+  const scrollOffset = useRef(0);
 
   const dispatch = useDispatch();
 
@@ -164,40 +168,115 @@ const RetailerMaster = ({navigation, route}) => {
   }, [query]);
 
   const handleKeyboardType = () => {
+    searchbarRef.current?.focus();
     setKeyboardType(prevType =>
       prevType === 'numeric' ? 'default' : 'numeric',
     );
-    searchbarRef.current.value = '';
-    searchbarRef.current.focus();
+  };
+
+  const clearSearch = () => { 
+    searchbarRef.current?.blur();
+    handleChange('');
+  }
+
+  const hideSearchbar = () => {
+    Animated.timing(searchbarAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const showSearchbar = () => {
+    Animated.timing(searchbarAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleScroll = event => {
+    const currentOffset = event.nativeEvent.contentOffset.y;
+    const direction = currentOffset > scrollOffset.current ? 'down' : 'up';
+
+    if (direction === 'down' && currentOffset > 80) {
+      hideSearchbar();
+    } else if (direction === 'up') {
+      showSearchbar();
+    }
+
+    scrollOffset.current = currentOffset;
   };
 
   return (
     <>
-      <Searchbar
-        style={styles.searchbar}
-        onChangeText={handleChange}
-        placeholder={`Search retailer by ${keyboardType === 'numeric' ? 'mobile number' : 'name'}`}
-        right={() => (
-          <TouchableOpacity onPress={handleKeyboardType}>
-            <Icon
-              name="card-account-phone-outline"
-              size={24}
-              color={keyboardType === 'numeric' ? COLORS.primary : 'gray'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        )}
-        keyboardType={keyboardType}
-        ref={searchbarRef}
-      />
-     
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateY: searchbarAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-70, 0],
+              }),
+            },
+          ],
+          zIndex: 1,
+          position: 'absolute',
+          width: '100%',
+          backgroundColor: COLORS.background,
+        }}>
+        <Searchbar
+          style={styles.searchbar}
+          value={query}
+          onChangeText={handleChange}
+          placeholder={`Search retailer by ${
+            keyboardType === 'numeric' ? 'mobile number' : 'name'
+          }`}
+          right={() =>
+            query === '' ? (
+              <TouchableOpacity onPress={handleKeyboardType}>
+                <Icon
+                  name="card-account-phone-outline"
+                  size={24}
+                  color={keyboardType === 'numeric' ? COLORS.primary : 'gray'}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={clearSearch}>
+                <Icon
+                  name="close-circle"
+                  size={24}
+                  color={COLORS.primary}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            )
+          }
+          keyboardType={keyboardType}
+          ref={searchbarRef}
+        />
+
+        <BeatAssigneeFilter
+          onAssigneeChange={v => {
+            page.current = 0;
+            selectedAssignee.current = v;
+            fetchRetailers();
+          }}
+        />
+      </Animated.View>
+
       <View style={styles.container}>
         <FlatList
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{paddingTop: 120}}
           onRefresh={() => {
             page.current = 0;
             fetchRetailers();
             setQuery('');
           }}
+          progressViewOffset={120}
           data={retailerList}
           refreshing={loading}
           showsVerticalScrollIndicator={false}
@@ -278,7 +357,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   searchbar: {
-    margin: SPACINGS.sm,
+    margin: SPACINGS.xs,
     marginBottom: 0,
     elevation: 0,
   },

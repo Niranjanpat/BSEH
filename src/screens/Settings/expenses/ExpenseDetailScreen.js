@@ -12,6 +12,7 @@ import {COLORS} from '../../../constants/theme/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {getExpenseDetail} from '../../../services/expense_sevice';
 import {ROUTES} from '../../../constants/routes';
+import {useFocusEffect} from '@react-navigation/native';
 
 const getStatusColor = {
   approved: 'green',
@@ -38,19 +39,21 @@ const ExpenseDetailScreen = ({route, navigation}) => {
   }, [navigation, expenseDetail]);
 
   const handleEdit = () => {
-    navigation.navigate(ROUTES.expense_stack,{
-     screen:ROUTES.update_complaint,
-     params:{
-      channel: 'update',
-      expenseDetail: expenseDetail,
-      id: expense._id,
-    }
-    } );
+    navigation.navigate(ROUTES.expense_stack, {
+      screen: ROUTES.update_complaint,
+      params: {
+        channel: 'update',
+        expenseDetail: expenseDetail,
+        id: expense._id,
+      },
+    });
   };
 
-  useEffect(() => {
-    fetchExpensesDetail();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchExpensesDetail();
+    }, []),
+  );
 
   const fetchExpensesDetail = async () => {
     try {

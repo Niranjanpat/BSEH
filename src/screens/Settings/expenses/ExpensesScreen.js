@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,13 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../constants/theme/colors';
 import {ROUTES} from '../../../constants/routes';
 import {getExpense} from '../../../services/expense_sevice';
+import DatePicker from 'react-native-date-picker';
+import dayjs from 'dayjs';
 
 const STATUS_COLORS = {
   approved: 'green',
@@ -23,32 +25,46 @@ const STATUS_COLORS = {
 const getStatusColor = status => STATUS_COLORS[status] || COLORS.primary;
 
 const ExpensesListScreen = () => {
+  const today = new Date();
   const [expense, setExpense] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const page = useRef(1);
+  const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
+  const [openStart, setOpenStart] = useState(false);
+  const [openEnd, setOpenEnd] = useState(false);
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchExpenses(page);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      page.current = 1;
+      fetchExpenses(1);
+    }, [endDate, startDate]),
+  );
 
   const fetchExpenses = async currentPage => {
-    if (isLoading || !hasMore) return;
-
     setIsLoading(true);
     try {
-      const res = await getExpense(currentPage);
+      const res = await getExpense({
+        start_date: dayjs(startDate).format('YYYY-MM-DD'),
+        end_date: dayjs(endDate).format('YYYY-MM-DD'),
+        page: currentPage,
+      });
       const {data, success, errors} = res?.data;
       if (success) {
         const newExpenses = data.expense || [];
-        setExpense(prev => [...prev, ...newExpenses]);
 
-        if (newExpenses.length === 0) {
-          setHasMore(false);
+        if (currentPage === 1) {
+          setExpense(newExpenses);
         } else {
-          setPage(prev => prev + 1);
+          setExpense(prev => [...prev, ...newExpenses]);
+        }
+
+        setHasMore(data.has_more);
+        if (data.has_more) {
+          page.current = page.current + 1;
         }
       } else {
         Alert.alert('Error', JSON.stringify(errors));
@@ -72,8 +88,11 @@ const ExpensesListScreen = () => {
       <Text style={styles.title}>₹ {item.amount}</Text>
       <Text style={styles.text}>Date: {item.date}</Text>
       <Text style={styles.text}>Type: {item.expense_type}</Text>
-      <Text style={[styles.status, {color: getStatusColor(item.status)}]}>
-        Status: {item.status}
+      <Text style={styles.status}>
+        Status:{' '}
+        <Text style={{color: getStatusColor(item.status)}}>
+          {item.status?.toUpperCase() ?? ''}
+        </Text>
       </Text>
     </TouchableOpacity>
   );
@@ -85,17 +104,73 @@ const ExpensesListScreen = () => {
       </View>
     ) : null;
 
+  const renderDatePickers = () => (
+    <View style={styles.dateFilter}>
+      <TouchableOpacity
+        onPress={() => setOpenStart(true)}
+        style={styles.dateBtn}>
+        <Text style={styles.dateText}>
+          Start: {dayjs(startDate).format('YYYY-MM-DD')}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setOpenEnd(true)} style={styles.dateBtn}>
+        <Text style={styles.dateText}>
+          End: {dayjs(endDate).format('YYYY-MM-DD')}
+        </Text>
+      </TouchableOpacity>
+      <DatePicker
+        modal
+        mode="date"
+        open={openStart}
+        date={startDate}
+        onConfirm={date => {
+          setOpenStart(false);
+          setStartDate(date);
+          setExpense([]);
+          page.current = 1;
+          setHasMore(false);
+        }}
+        onCancel={() => setOpenStart(false)}
+      />
+      <DatePicker
+        modal
+        mode="date"
+        open={openEnd}
+        date={endDate}
+        onConfirm={date => {
+          setOpenEnd(false);
+          setEndDate(date);
+          setExpense([]);
+          page.current = 1;
+          setHasMore(false);
+        }}
+        onCancel={() => setOpenEnd(false)}
+      />
+    </View>
+  );
+
   return (
     <View style={{flex: 1}}>
+      {renderDatePickers()}
       {expense.length ? (
         <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            page.current = 1;
+            fetchExpenses(1);
+          }}
           data={expense}
           keyExtractor={item => item._id}
           renderItem={renderItem}
           contentContainerStyle={{padding: 16}}
-          onEndReached={() => fetchExpenses(page)}
+          onEndReached={() => {
+            if (isLoading || !hasMore) {
+              return;
+            }
+            fetchExpenses(page.current);
+          }}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
+          // ListFooterComponent={renderFooter}
         />
       ) : (
         <View style={styles.empty}>
@@ -106,14 +181,16 @@ const ExpensesListScreen = () => {
       {/* Floating Add Button */}
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => navigation.navigate(ROUTES.expense_stack, {
-                    screen: ROUTES.add_expenses,
-                    params: {
-                      channel: 'add',
-                      expenseDetail: null,
-                      id: null,
-                    },
-                  })}>
+        onPress={() =>
+          navigation.navigate(ROUTES.expense_stack, {
+            screen: ROUTES.add_expenses,
+            params: {
+              channel: 'add',
+              expenseDetail: null,
+              id: null,
+            },
+          })
+        }>
         <Icon name="plus" size={28} color="#fff" />
       </TouchableOpacity>
     </View>
@@ -168,5 +245,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+  },
+  dateFilter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    marginHorizontal: 16,
+  },
+  dateBtn: {
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  dateText: {
+    color: '#333',
   },
 });

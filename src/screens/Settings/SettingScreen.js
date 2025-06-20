@@ -39,7 +39,9 @@ const SettingScreen = ({navigation}) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}>
       <SafeAreaView />
       <View style={styles.profileDetail}>
         <Avatar.Text
@@ -49,10 +51,10 @@ const SettingScreen = ({navigation}) => {
         />
         <Title style={styles.title}>{profile.name}</Title>
         <Subheading style={styles.subheading}>{role}</Subheading>
-        <Subheading style={styles.subheading}>
+        {profile.contact_number && <Subheading style={styles.subheading}>
           {profile.contact_number}
-        </Subheading>
-        <Subheading style={styles.subheading}>{profile.email}</Subheading>
+        </Subheading>}
+        {profile.email && <Subheading style={styles.subheading}>{profile.email}</Subheading>}
       </View>
 
       <View>
@@ -65,12 +67,20 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Monthly attendance', 'calendar-month-outline', () =>
           navigation.navigate(ROUTES.monthly_attendance),
         )}
+        {role !== 'sc' &&
+          renderItem('User Daily Attendance', 'map-marker', () =>
+            navigation.navigate(ROUTES.daily_attendance),
+          )}
         {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
           navigation.navigate(ROUTES.monthly_attendance_travel),
         )}
         {renderItem('My Route schedules', 'map-marker-distance', () =>
           navigation.navigate(ROUTES.route_schedule_stack),
         )}
+        {role !== 'sc' &&
+          renderItem('Sub-Ordinate schedules', 'map-marker', () =>
+            navigation.navigate(ROUTES.user_route_schedule_list),
+          )}
         {renderItem('Retailer Masters', 'bookmark-outline', () =>
           navigation.navigate(ROUTES.retailer_master),
         )}
@@ -85,22 +95,10 @@ const SettingScreen = ({navigation}) => {
           navigation.navigate(ROUTES.performance),
         )} */}
 
-        {role !== 'sc' &&
+        {/* {role !== 'sc' &&
           renderItem('User Hierarchy', 'file-tree-outline', () =>
             navigation.navigate(ROUTES.user_hierarchy_stack),
-          )}
-
-        {role !== 'sc' &&
-          renderItem('Sub-Ordinate schedules', 'map-marker', () =>
-            navigation.navigate(ROUTES.user_route_schedule_list),
-          )}
-        {role !== 'sc' && renderItem('User Daily Attendance', 'map-marker', () =>
-          navigation.navigate(ROUTES.daily_attendance),
-        )}
-
-        {renderItem('Expenses', 'cash-multiple', () =>
-          navigation.navigate(ROUTES.expense_stack),
-        )}
+          )} */}
 
         {renderItem('Complaint', 'message-alert-outline', () =>
           navigation.navigate(ROUTES.complaint_stack),
@@ -110,6 +108,10 @@ const SettingScreen = ({navigation}) => {
           renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
             navigation.navigate(ROUTES.user_complaint_stack),
           )}
+
+        {renderItem('Expenses', 'cash-multiple', () =>
+          navigation.navigate(ROUTES.expense_stack),
+        )}
 
         {renderItem('TADA', 'briefcase-outline', () =>
           navigation.navigate(ROUTES.ta_das_stack),
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 20,
     backgroundColor: '#ffffff',
     marginBottom: 20,
     borderRadius: 10,
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     backgroundColor: '#f1f9fe', // Optional: Replace with a derived light primary color if needed
-    borderRadius: 10,
+    borderRadius: 6,
     padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
