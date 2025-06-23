@@ -25,6 +25,7 @@ const getStatusColor = status => STATUS_COLORS[status] || COLORS.primary;
 const ComplaintListScreen = () => {
   const today = new Date();
   const [complaints, setComplaints] = useState([]);
+  const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +34,7 @@ const ComplaintListScreen = () => {
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
   const navigation = useNavigation();
+  const [status, setStatus] = useState('');
 
   useFocusEffect(
     useCallback(() => {
@@ -40,6 +42,10 @@ const ComplaintListScreen = () => {
       fetchComplaintList(1);
     }, [startDate, endDate]),
   );
+
+  useEffect(() => {
+    filterComplaintsByStatus('');
+  }, [complaints]);
 
   const fetchComplaintList = async currentPage => {
     setIsLoading(true);
@@ -116,6 +122,41 @@ const ComplaintListScreen = () => {
       </View>
     );
 
+  const filterComplaintsByStatus = selectedStatus => {
+    setStatus(selectedStatus);
+
+    if (selectedStatus === '') {
+      setFilteredComplaints(complaints);
+    } else {
+      const filtered = complaints.filter(
+        item => item.status.toLowerCase() === selectedStatus.toLowerCase(),
+      );
+      setFilteredComplaints(filtered);
+    }
+  };
+
+  const renderStatusTabs = () => (
+    <View style={styles.statusTabs}>
+      {['', 'open', 'closed'].map(s => (
+        <TouchableOpacity
+          key={s}
+          style={[
+            styles.statusTab,
+            status === s && {backgroundColor: theme.colors.primary},
+          ]}
+          onPress={() => filterComplaintsByStatus(s)}>
+          <Text
+            style={[
+              styles.statusText,
+              status === s && {color: '#fff', fontWeight: 'bold'},
+            ]}>
+            {s === '' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+
   const renderDatePickers = () => (
     <View style={styles.dateFilter}>
       <TouchableOpacity
@@ -157,9 +198,10 @@ const ComplaintListScreen = () => {
 
   return (
     <>
+      {renderStatusTabs()}
       {renderDatePickers()}
       <FlatList
-        data={complaints}
+        data={filteredComplaints}
         keyExtractor={item => item._id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
@@ -184,6 +226,22 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
     flexGrow: 1,
+  },
+   statusTabs: {
+    marginTop:12,
+    marginHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    borderRadius: 10,
+    backgroundColor: COLORS.light,
+  },
+  statusTab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 10,
   },
   card: {
     backgroundColor: '#fff',
@@ -227,7 +285,6 @@ const styles = StyleSheet.create({
   dateFilter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 16,
     marginHorizontal: 16,
   },
   dateBtn: {

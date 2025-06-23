@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -15,26 +15,54 @@ import { useTheme, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getUserComplaint } from '../../../services/complaint_service';
 import { ROUTES } from '../../../constants/routes';
+import { useSelector } from 'react-redux';
+import { COLORS } from '../../../constants/theme/colors';
+
+const ROLE_HIERARCHY = ['sc', 'asm', 'zm', 'hod'];
 
 const UserComplaintListScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const today = new Date();
+  const {role : userRole} = useSelector(state => state.auth);
+
 
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
+  const [roleModalVisible, setRoleModalVisible] = useState(false);
 
   const [complaints, setComplaints] = useState([]);
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [selectedRole, setSelectedRole] = useState('');
+  const [filteredComplaints,setFilteredComplaints]=useState([]);
 
+  const index = ROLE_HIERARCHY.indexOf(userRole);
+  const filteredRoles = ROLE_HIERARCHY.slice(0, index);
+
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => setRoleModalVisible(true)}
+          style={{ paddingHorizontal: 16 }}>
+          <Icon name="filter-list" size={24} color={theme.colors.primary} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
   useEffect(() => {
     fetchUserComplaints(1);
-  }, [status, startDate, endDate]);
+  }, [status, startDate, endDate, selectedRole]);
+
+  useEffect(()=>{
+    complaintsFilteredByRole(selectedRole);
+  }, [complaints])
 
   const fetchUserComplaints = async (pageNumber = 1) => {
     if (loading || !hasMore) return;
@@ -44,18 +72,22 @@ const UserComplaintListScreen = () => {
         start: dayjs(startDate).format('YYYY-MM-DD'),
         end: dayjs(endDate).format('YYYY-MM-DD'),
         page: pageNumber,
-        status: status,
+        status,
+      //  role: selectedRole || undefined,
       });
+
+     
 
       const { data, success } = res?.data;
       if (success) {
+        const newData = data.complaints || data;
         if (pageNumber === 1) {
-          setComplaints(data.complaints || data);
+          setComplaints(newData);
         } else {
-          setComplaints(prev => [...prev, ...(data.complaints || data)]);
+          setComplaints(prev => [...prev, ...newData]);
         }
         setPage(pageNumber + 1);
-        setHasMore((data.complaints || data).length > 0);
+        setHasMore(newData.length > 0);
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch complaints');
@@ -63,6 +95,17 @@ const UserComplaintListScreen = () => {
       setLoading(false);
     }
   };
+    const complaintsFilteredByRole=(role)=>{
+     setSelectedRole(role);
+     if(role===''){
+      setFilteredComplaints(complaints);
+     }
+     else{
+      const filteredData=complaints.filter(item =>item.user_role.toLowerCase() === role.toLowerCase());
+      setFilteredComplaints(filteredData);
+     }
+  }
+
 
   const renderItem = ({ item }) => {
     const statusColor = item.status === 'closed' ? '#4CAF50' : '#F44336';
@@ -170,13 +213,68 @@ const UserComplaintListScreen = () => {
       />
     </View>
   );
+  const renderRoleModal = () => (
+    <Modal visible={roleModalVisible} transparent animationType="fade" onDismiss={()=>{setRoleModalVisible(false)}}>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Filter by Role</Text>
+          <Text style={{ marginBottom: 10, color: '#999' }}>
+            Your Role: <Text style={{ fontWeight: 'bold' }}>{userRole.toUpperCase()}</Text>
+          </Text>
+
+          <TouchableOpacity
+            style={[
+              styles.roleOption,
+              selectedRole === '' && { backgroundColor: theme.colors.primary },
+            ]}
+            onPress={() => {
+              // setSelectedRole('');
+              // setComplaints([]);
+              // setPage(1);
+              // setHasMore(true);
+              complaintsFilteredByRole('');
+              setRoleModalVisible(false);
+            }}>
+            <Text style={[styles.roleText, selectedRole === '' && { color: '#fff' }]}>
+              All Roles
+            </Text>
+          </TouchableOpacity>
+
+          {filteredRoles.map(r => (
+            <TouchableOpacity
+              key={r}
+              style={[
+                styles.roleOption,
+                selectedRole === r && { backgroundColor: theme.colors.primary },
+              ]}
+              onPress={() => {
+                // setSelectedRole(r);
+                // setComplaints([]);
+                // setPage(1);
+                // setHasMore(true);
+                complaintsFilteredByRole(r);
+                setRoleModalVisible(false);
+              }}>
+              <Text style={[styles.roleText, selectedRole === r && { color: '#fff' }]}>
+                {r.toUpperCase()}
+              </Text>
+            </TouchableOpacity>
+          ))}
+
+          <Button onPress={() => setRoleModalVisible(false)} style={{ marginTop: 10 }}>
+            Close
+          </Button>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <View style={styles.container}>
       {renderStatusTabs()}
       {renderDatePickers()}
       <FlatList
-        data={complaints}
+        data={filteredComplaints}
         keyExtractor={item => item._id}
         renderItem={renderItem}
         onEndReached={() => fetchUserComplaints(page)}
@@ -184,6 +282,7 @@ const UserComplaintListScreen = () => {
         ListFooterComponent={loading ? <Text>Loading...</Text> : null}
         contentContainerStyle={styles.listContainer}
       />
+      {renderRoleModal()}
     </View>
   );
 };
@@ -191,7 +290,6 @@ const UserComplaintListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
     padding: 16,
   },
   listContainer: {
@@ -230,20 +328,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 12,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 8,
-    elevation: 2,
+    borderRadius: 10,
+    backgroundColor: COLORS.light,
   },
   statusTab: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#eee',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 10,
   },
-  statusText: {
-    color: '#333',
-  },
+
   dateFilter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,6 +352,35 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   dateText: {
+    color: '#333',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 16,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  roleOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#eee',
+  },
+  roleText: {
+    fontSize: 16,
     color: '#333',
   },
 });

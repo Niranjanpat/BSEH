@@ -68,7 +68,6 @@ const MyVisitScreen = ({navigation}) => {
   const fetchStorageBeat = async () => {
     const beat = await mmkv.getItem('selectedBeat');
 
-    console.log('selected beat', beat);
 
     if (beat && beat !== '') {
       setSelectedBeat(beat);
@@ -96,8 +95,6 @@ const MyVisitScreen = ({navigation}) => {
       const response = await client.get(URLS.myVisits);
       const {data, errors, success} = response.data;
       if (success) {
-        console.log(data.customers);
-
         setData(data.customers);
         setFullData(data.customers);
       } else {

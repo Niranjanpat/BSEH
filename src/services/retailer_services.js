@@ -2,11 +2,6 @@ import {URLS} from '../constants/urls';
 import client from './axios_client';
 import clientMultipart from './axios_multipart_client';
 
-// get all customers and also there is remaining to add the pagination 
-// export const getRetailer = async () => {
-//   return await client.get(URLS.customer);
-// };
-//get all customers with pagination
 export const getRetailer = async (
   routeId,
   filterData,
@@ -27,7 +22,6 @@ export const getRetailer = async (
   });
 };
 
-//get customer detail by id
 export const getRetailerDetailById = async id => {
   return await client.get(`${URLS.customer}/${id}`);
 }
@@ -37,12 +31,10 @@ export const getTodayRetailer= async () =>{
 }
 
 
-//create customer api :-working 
 export const addShop = async data => {
   return await clientMultipart.post(URLS.customer.replace('/', ''), data);
 };
 
-//update customer api :- working
 export const editShop = async (data, id) => {
   console.log("form data",data,id);
   return await clientMultipart.post(URLS.customer + id, data);
@@ -95,3 +87,13 @@ export const getCitiesList = async (value, pinCode) => {
 export const getCitiesDetail = async value => {
   return await client.get(`cities/${value}`);
 };
+
+export const getRetailerCount = async assignee => {
+  const url = `${URLS.customer}count`;
+  return await client.get(url, {
+    params: {
+      assignee: assignee,
+    },
+  });
+};
+

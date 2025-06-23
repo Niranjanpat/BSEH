@@ -23,7 +23,6 @@ const AttendanceDetail = ({navigation}) => {
       .then(res => {
         const {data, errors, success} = res.data;
         if (success) {
-          console.log(data);
           setData(data.attendances);
         } else {
           if (errors) {

@@ -38,6 +38,10 @@ const Filter = lazy(() =>
   import('../../components/retailer_master/RetailerMasterFilter'),
 );
 
+const RetailerMasterCount = lazy(
+  () => import('../../components/retailer_master/RetailerMasterCount'),
+);
+
 const RetailerMaster = ({navigation, route}) => {
   const {retailerFilterData} = useSelector(state => state.retailer);
   const [retailerList, setRetailerList] = useState([]);
@@ -122,6 +126,11 @@ const RetailerMaster = ({navigation, route}) => {
     navigation.setOptions({
       headerRight: () => (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+
+          <Suspense>
+            <RetailerMasterCount />
+          </Suspense>
+
           <IconButton
             icon="filter-variant"
             style={{margin: 0}}

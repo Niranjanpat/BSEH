@@ -64,7 +64,6 @@ const AddShop = () => {
       if (!granted)
         Alert.alert('Camera permission denied', 'Enable it in settings');
     });
-    console.log('AddShop component mounted', pinCodeList);
   }, []);
 
   useEffect(() => {
@@ -88,7 +87,6 @@ const AddShop = () => {
     getPinCodeList(text, beatDetail?.city_id)
     getPinCodeList(text, beatDetail?.city_id)
       .then(res => {
-        console.log('Pin codes fetched:', res.data);
         setPinCodeList(res?.data?.data?.pin_codes || []);
       })
       .catch(e => {
@@ -105,7 +103,6 @@ const AddShop = () => {
   const getShopType = () => {
     getCustomerTypeList()
       .then(res => {
-        console.log(res.data);
         const {data, success, errors} = res.data;
         if (success) {
           setShopType(data.customer_types);
@@ -254,7 +251,6 @@ const AddShop = () => {
 
           addShop(formData)
             .then(res => {
-              console.log(res);
               const {data, success, errors} = res.data;
               if (success) {
                 Alert.alert('Success', 'Customer added successfully');
@@ -289,7 +285,6 @@ const AddShop = () => {
                   getBeatDetail(value)
                     .then(res => {
                       const {data} = res.data;
-                      console.log(data);
                       if (res.data.success) {
                         setBeatDetail(data);
                         setFieldValue('city', data.city_name);

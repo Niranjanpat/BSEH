@@ -94,7 +94,7 @@ export default function BottomTabStack({navigation}) {
         component={MyVisitStack}
       />
 
-      {role !== 'sc' && role !== 'asm' && (
+      {/* {role !== 'sc' && role !== 'asm' && (
         <>
           <Screen
             name="UserHierarchy"
@@ -111,7 +111,7 @@ export default function BottomTabStack({navigation}) {
             component={UserHierarchyStack}
           />
         </>
-      )}
+      )} */}
 
       {/* {role == 'sc' ? (
         <>

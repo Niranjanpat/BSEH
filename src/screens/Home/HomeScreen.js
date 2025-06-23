@@ -37,22 +37,10 @@ const HomeScreen = ({}) => {
         <JointWorkingView />
         {role === 'promoter' && <PromoterVisits />}
         {/* {role !== 'promoter' && <TodayOrder self={1} />} */}
-        {role === 'sc' || role === 'asm' ? (
-          <>
-            {/* <Achievement /> */}
-            <>
-              {/* <DsmCurrentTarget /> */}
+
               <AttendanceInformation data={data} />
               <CallDetails data={data} />
-              {/* <OrderDetails data={data} /> */}
-              {loading && <LoadingView />}
-            </>
-
-            {/* <RecentOrder /> */}
-          </>
-        ) : (
-          <>{role !== 'promoter' && <AttendanceSummary />}</>
-        )}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
         {/* {role === 'asm' && <RecentOrder />}  */}
         {role !== 'promoter' && (
           <>

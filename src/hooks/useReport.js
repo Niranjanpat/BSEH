@@ -22,9 +22,6 @@ const useReport = () => {
     getTodayReport()
       .then(res => {
         setLoading(false);
-
-        console.log('today report', res);
-
         const {data, success} = res.data;
 
         if (success) {

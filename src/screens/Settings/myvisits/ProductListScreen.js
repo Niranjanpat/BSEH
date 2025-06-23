@@ -136,8 +136,6 @@ const ProductListScreen = ({route, navigation}) => {
   const sampleProducts = data.filter(item => item.is_sample === 'Yes');
 
   const filterData = channel === 'sample' ? sampleProducts : data;
-
-  console.log("filterData",filterData,data);
   
   return (
     <View style={styles.container}>

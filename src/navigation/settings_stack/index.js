@@ -9,6 +9,7 @@ import MyVisitScreen from '../../screens/Settings/myvisits/MyVisitScreen';
 import UpdateCustomerLocationScreen from '../../screens/Settings/myvisits/UpdateCustomerLocationScreen';
 import MyVisitDetailsScreen from '../../screens/Settings/myvisits/MyVisitDetailsScreen';
 import FeedBackScreen from '../../screens/Settings/myvisits/FeedBackScreen';
+import ProductDetailScreen from '../../screens/Settings/myvisits/ProductDetailScreen';
 
 // Order stacks
 import VerticalListScreen from '../../screens/Settings/myvisits/VerticalListScreen';
@@ -105,6 +106,13 @@ export const MyVisitStack = () => {
         options={({route}) => ({
           title: route.params?.data?.name || 'Product List',
           headerRight: () => <OrderCartIcon />,
+        })}
+      />
+         <Screen
+        name={ROUTES.product_detail}
+        component={ProductDetailScreen}
+        options={({route}) => ({
+          title: route.params?.title || 'My Visit Details',
         })}
       />
        <Screen
@@ -386,21 +394,21 @@ export const UserComplaintStack = () => {
         name={ROUTES.user_complaint}
         component={UserComplaintListScreen}
         options={{
-          title: 'User Complaint',
+          title: 'Sub-Ordinate Complaints',
         }}
       />
       <Screen
         name={ROUTES.update_user_complaint}
         component={UpdateComplaintScreen}
         options={{
-          title: 'Update UserComplaint',
+          title: 'Update Sub-Ordinate Complaints',
         }}
       />
       <Screen
         name={ROUTES.detail_user_complaint}
         component={UserComplaintDetailScreen}
         options={{
-          title: 'User Complaint Detail',
+          title: 'Sub-Ordinate Complaint Detail',
         }}
       />
     </Navigator>

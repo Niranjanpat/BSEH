@@ -370,7 +370,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           )} */}
 
         <HorizontalSpacer />
-        <Button
+        <>
+          {isCheckedIn && <View style={{flexDirection:'row'}}>
+             <Button
           icon="tag-outline"
           mode="contained"
            onPress={() => navigation.navigate(ROUTES.product, {data: data,channel:'sample'})}>
@@ -384,6 +386,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           onPress={() => {navigation.navigate(ROUTES.complaint,{channel:'add',complaint:null , id:data._id})}}>
           Complaint
         </Button>
+          </View>}
+        </>
+       
 
         {/* {role !== 'promoter' && (
           <>

@@ -1,4 +1,5 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {
   Appbar,
@@ -22,15 +23,25 @@ const ProfileScreen = ({navigation}) => {
     navigation.navigate(ROUTES.update_profile);
   };
 
-  // Prepare dictionary object with profile fields
+  console.log("profile", profile);
+
+  // Prepare dictionary object with updated profile fields
   const profileFields = {
-    Address: profile?.address || 'N/A',
-    'Contact Number': profile?.contact_number || 'N/A',
-    DOB: profile?.date_of_birth || 'N/A',
-    'E-mail': profile?.email || 'N/A',
     'Emp Code': profile?.emp_code || 'N/A',
+    'E-mail': profile?.email || 'N/A',
+    'Contact Number': profile?.contact_number || 'N/A',
+    DOB:dayjs(profile?.date_of_birth).format('DD-MM-YYYY') || 'N/A',
     Gender: profile?.gender || 'N/A',
-    Verticals: profile?.verticals || 'N/A',
+    Region: profile?.region_name || 'N/A',
+    State: profile?.state_name || 'N/A',
+    Headquarters: profile?.headquarters_name || 'N/A',
+    'Join Date': dayjs(profile?.join_date).format('DD-MM-YYYY') || 'N/A',
+    Address: profile?.address || 'N/A',
+    'Aadhar Number': profile?.aadhar_number || 'N/A',
+    'PAN Number': profile?.pan_number || 'N/A',
+    'Emergency Contact Name': profile?.emergency_contact_name || 'N/A',
+    'Emergency Contact Number': profile?.emergency_contact_number || 'N/A',
+    'Last Working Day': profile?.last_working_day || 'N/A',
   };
 
   return (
@@ -43,13 +54,14 @@ const ProfileScreen = ({navigation}) => {
       <View style={styles.profileCard}>
         <Avatar.Text
           style={styles.avatar}
-          size={100}
+          size={80}
           label={profile?.name ? profile.name.charAt(0) : 'P'}
           color="#fff"
         />
         <Title style={styles.name}>{profile?.name || 'User'}</Title>
         <Caption style={styles.role}>{role || 'N/A'}</Caption>
       </View>
+
 
       <View style={styles.detailsContainer}>
         <View
@@ -87,34 +99,36 @@ const ProfileScreen = ({navigation}) => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
-  container: {
+ container: {
     flex: 1,
     backgroundColor: COLORS.background || '#f5f7fa',
   },
   appbar: {
     elevation: 0,
+    backgroundColor: '#fff',
   },
   profileCard: {
-    alignItems: 'center',
-    paddingVertical: SPACINGS.lg,
     backgroundColor: '#fff',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    marginBottom: SPACINGS.md,
+    marginHorizontal: SPACINGS.lg,
+    marginTop: SPACINGS.md,
+    paddingVertical: SPACINGS.sm,
+    paddingHorizontal:SPACINGS.sm,
+    borderRadius: 12,
+    alignItems: 'center',
+    elevation: 2,
   },
   avatar: {
     backgroundColor: COLORS.primary,
+    marginBottom: 10,
   },
   name: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: COLORS.textDark || '#212121',
-    marginTop: 10,
   },
   role: {
     fontSize: 14,
     color: COLORS.textLight || '#757575',
-    marginTop: 2,
   },
   detailsContainer: {
     paddingHorizontal: SPACINGS.lg,

@@ -5,10 +5,18 @@ import {Checkbox, Subheading, Text} from 'react-native-paper';
 import dayjs from 'dayjs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const STATUS_BORDER_COLORS = {
+  approved: COLORS.success,
+  rejected: COLORS.error,
+  pending: COLORS.accentPrimary,
+};
+
 const UserRouteScheduleCard = ({item, isSelected, onClick}) => {
+  const borderColor = STATUS_BORDER_COLORS[item.status] || COLORS.primary;
+
   return (
     <Pressable
-      style={styles.container}
+      style={[styles.container]}
       onPress={() => {
         if (item.status === 'pending') {
           onClick(item._id);
@@ -19,9 +27,9 @@ const UserRouteScheduleCard = ({item, isSelected, onClick}) => {
           <Checkbox status={isSelected ? 'checked' : 'unchecked'} />
         )}
       </View>
-      <View style={styles.right}>
+      <View style={[styles.right, {borderLeftColor: borderColor}]}>
         <Subheading style={styles.title}>
-          {dayjs(item.date).format('DD MMMM YYYY')} ({item.status})
+          {dayjs(item.date).format('DD MMMM YYYY')} <Text style={{color:borderColor,fontWeight:'bold'}}>({item.status})</Text> 
         </Subheading>
         <View style={styles.row}>
           <Icon name="map-marker" size={22} />
@@ -65,6 +73,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: COLORS.light,
     borderRadius: 10,
+    borderLeftWidth: 5, // colored left border
   },
   title: {
     fontWeight: 'bold',
@@ -78,23 +87,6 @@ const styles = StyleSheet.create({
   },
   text: {
     paddingHorizontal: 10,
-  },
-  approved: {
-    color: COLORS.success,
-  },
-  rejected: {
-    color: COLORS.error,
-  },
-  pending: {
-    color: COLORS.accentPrimary,
-  },
-  section: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  subSection: {
-    flex: 1,
   },
 });
 
