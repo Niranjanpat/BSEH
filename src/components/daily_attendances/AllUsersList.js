@@ -24,13 +24,13 @@ const AllUsersList = ({item, onAbentClick, date}) => {
         <View style={styles.row}>
           <Icon name="briefcase" size={20} />
           <Text numberOfLines={1} style={styles.text}>
-            {item?.role ? item?.role : 'N/A'}
+            {item?.role ? item?.role?.toUpperCase() : 'N/A'}
           </Text>
         </View>
         <View style={styles.row}>
           <Icon name="calendar" size={20} />
-          <Text numberOfLines={1} style={styles.text}>
-            {item?.status ? item?.status : 'Not marked'}
+          <Text numberOfLines={1} style={[styles.text, {color: item?.status === 'present' ? 'green' : item?.status === 'absent' ? 'red' : null}]}>
+            {item?.status ? item?.status?.toUpperCase() : 'Not marked'}
           </Text>
         </View>
       </View>

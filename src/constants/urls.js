@@ -97,6 +97,7 @@ export const URLS = {
   punchStatus: 'attendances/punch-status',
   status: 'daily-attendances/status',
   attendanceMonthly: '/daily-attendances/monthly',
+  userDailyAttendaces: 'user-daily-attendances',
 
   //expense
   expenseType:'expenses/type',
@@ -120,9 +121,9 @@ export const URLS = {
 };
 
 export const clientId =
-  '33OkryzDZsLkqjCaP8_S3IGTGccUcWVBPSQikgGFO2Ir0J_3qWyfh6p99xkkL51IxhnVHlqrljiY8jdmlmHhGvGzCf321yZ4';
+  '33OkryzDZsLKOf5SRuEbdNokINidGcnNteyK1cL-R9t_XivvRr7UjUIbWInW4u8qk72vlOPb8bFscJU1TWpJKQ==';
 export const clientSecret =
-  'lrFxI-iSEg8PQEozuUk9fF93mKxpeNfmbopNVxy05mQxN6OMooTAXHhqpe_xxwcinZmYGtXxrbbqnQzZFCKV9agH1yhgUIZzpz6MRxu7yzg=';
+  'lrFxI-iSEg8PQEozuUk9fJdxwjFBFD9oChtfvvZxvpktEevCsZFHOnabTcPSegg2w6eBNMuYFihT77FgEdMTn-xBPaPKvPuX';
 
-export const MapSDKKey = 'c509092e27ffcb2ead37fe1b88a0c2cd';
-export const RestAPIkey = '3ec61c9b058136b9cd7c1927682aa80e';
+// export const MapSDKKey = 'c509092e27ffcb2ead37fe1b88a0c2cd';
+// export const RestAPIkey = '3ec61c9b058136b9cd7c1927682aa80e';

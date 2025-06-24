@@ -45,11 +45,11 @@ const MonthlyAttendanceList = ({
             <Subheading style={styles.title}>Date</Subheading>
           </View>
           <View style={styles.section}>
-            <Subheading style={styles.title}>Punch in</Subheading>
+            <Subheading style={styles.title}>Punch in/{'\n'}Punch out</Subheading>
           </View>
-          <View style={styles.section}>
+          {/* <View style={styles.section}>
             <Subheading style={styles.title}>Punch out</Subheading>
-          </View>
+          </View> */}
           <View style={styles.section}>
             <Subheading style={styles.title}>Status</Subheading>
           </View>
@@ -77,14 +77,15 @@ const MonthlyAttendanceList = ({
                 </View>
                 <View style={styles.section}>
                   <Subheading style={styles.data}>
-                    {item?.punch_in_time ? item?.punch_in_time : 'N/A'}
-                  </Subheading>
-                </View>
-                <View style={styles.section}>
-                  <Subheading style={styles.data}>
+                    {item?.punch_in_time ? item?.punch_in_time : 'N/A'}/{'\n'}
                     {item?.punch_out_time ? item?.punch_out_time : 'N/A'}
                   </Subheading>
                 </View>
+                {/* <View style={styles.section}>
+                  <Subheading style={styles.data}>
+                    {item?.punch_out_time ? item?.punch_out_time : 'N/A'}
+                  </Subheading>
+                </View> */}
                 <View style={styles.section}>
                   <Subheading style={styles.data}>
                     {item?.status ? item.status : 'No data'}

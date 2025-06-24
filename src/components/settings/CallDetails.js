@@ -6,7 +6,7 @@ import {COLORS} from '../../constants/theme/colors';
 const GridItem = ({width = '50%', label, value}) => (
   <View style={[styles.item, {width: width}]}>
     <Subheading style={styles.title} numberOfLines={1}>
-      {value?.length !== 0 ? value : 'N/A'}
+      {value?.length !== 0 ? value : '--:--'}
     </Subheading>
     <Text numberOfLines={1}>{label}</Text>
   </View>
@@ -27,9 +27,9 @@ const CallDetails = ({data}) => {
       <View style={styles.section}>
         <GridItem label="First call" value={data.first_call} />
         <GridItem label="Last call" value={data.last_call} />
-        <GridItem label="Scheduled calls" value={data.scheduled_call} />
-        <GridItem label="Visited calls" value={data.visited_call} />
-        <GridItem label="Customer Count" value={data.customer_count} />
+        <GridItem label="Scheduled calls" value={data.scheduled_call ?? "0"} />
+        <GridItem label="Visited calls" value={data.visited_call ?? "0"} />
+        <GridItem label="Customer Count" value={data.customer_count ?? "0"} />
         {/* <GridItem label="Productive calls" value={data?.productive_call ?? 0} /> */}
       </View>
     </View>

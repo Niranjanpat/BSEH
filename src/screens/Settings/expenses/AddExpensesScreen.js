@@ -184,7 +184,7 @@ const AddExpensesScreen = ({route, navigation}) => {
         setExpenseType(data.expense_types);
       } else {
         console.log('Expense type error:', errors);
-        Alert.alert('Error', JSON.stringify(errors));
+        // Alert.alert('Error', JSON.stringify(errors));
       }
     } catch (error) {
       console.log('getExpenseTypes error:', error);
@@ -252,7 +252,7 @@ const AddExpensesScreen = ({route, navigation}) => {
         </View>
 
         <View style={styles.container}>
-          <Text style={styles.label}>Extra</Text>
+          <Text style={styles.label}>Extra Expenses</Text>
           <TextInput
             style={styles.input}
             placeholder="Extra"

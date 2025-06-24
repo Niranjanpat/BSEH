@@ -23,13 +23,17 @@ const UserRouteScheduleCard = ({item, isSelected, onClick}) => {
         }
       }}>
       <View style={styles.left}>
-        {item.status === 'pending' && (
-          <Checkbox status={isSelected ? 'checked' : 'unchecked'} />
-        )}
+        <Checkbox
+          status={isSelected ? 'checked' : 'unchecked'}
+          disabled={item.status !== 'pending'}
+        />
       </View>
       <View style={[styles.right, {borderLeftColor: borderColor}]}>
         <Subheading style={styles.title}>
-          {dayjs(item.date).format('DD MMMM YYYY')} <Text style={{color:borderColor,fontWeight:'bold'}}>({item.status})</Text> 
+          {dayjs(item.date).format('DD MMMM YYYY')}{' '}
+          <Text style={{color: borderColor, fontWeight: 'bold'}}>
+            ({item.status})
+          </Text>
         </Subheading>
         <View style={styles.row}>
           <Icon name="map-marker" size={22} />

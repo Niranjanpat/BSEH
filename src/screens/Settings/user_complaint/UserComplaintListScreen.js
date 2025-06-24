@@ -294,8 +294,8 @@ const UserComplaintListScreen = () => {
 
   return (
     <View style={styles.container}>
-      {renderStatusTabs()}
       {renderDatePickers()}
+      {renderStatusTabs()}
       <FlatList
         data={filteredComplaints}
         keyExtractor={item => item._id}
@@ -304,6 +304,7 @@ const UserComplaintListScreen = () => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={loading ? <Text>Loading...</Text> : null}
         contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
       />
       {renderRoleModal()}
     </View>

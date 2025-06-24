@@ -78,14 +78,9 @@ const useRouteSchedule = () => {
           Alert.alert('Success', 'Route schedule has been added');
           goBack();
         } else {
-          const {route_id} = errors;
-
-          if (route_id) {
-            Alert.alert('Error', 'Beat has to be selected');
-            return;
+          if (errors) {
+            Alert.alert(null, Object.values(errors).join(', '));
           }
-
-          Alert.alert(null, JSON.stringify(errors));
         }
       })
       .catch(err => {

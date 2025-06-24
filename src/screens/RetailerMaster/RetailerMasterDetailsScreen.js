@@ -1,10 +1,11 @@
-import React, {useEffect, useState, useLayoutEffect} from 'react';
+import React, {useEffect, useState, useLayoutEffect, useRef} from 'react';
 import {
   Alert,
   Dimensions,
   Image,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {
@@ -42,6 +43,7 @@ import {
 } from '../../store/actions/order';
 import {getCustomerTarget} from '../../services/retailer_services';
 import {useFocusEffect} from '@react-navigation/native';
+import ProductImageModal from '../../components/ProductImageModal';
 
 const size = Dimensions.get('window');
 const imgSize = size.width * 0.25;
@@ -58,6 +60,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {role} = useSelector(state => state.auth);
   const {customerVisitStatus} = useSelector(state => state.order);
+  const childRefImage = useRef(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -147,7 +150,17 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.imgContainer}>
-          <Image source={IMAGE.retailer} style={styles.logo} />
+          {customer?.photo_url ? (
+            <TouchableOpacity
+              onPress={() => childRefImage.current?.showImage(true)}>
+              <Image
+                source={{uri: customer.photo_url}}
+                style={styles.customerImage}
+              />
+            </TouchableOpacity>
+          ) : (
+            <Image source={IMAGE.retailer} style={styles.logo} />
+          )}
         </View>
 
         <View style={styles.retailerBasicDetails}>
@@ -172,6 +185,15 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             </Button>
           </View>
         </View> */}
+        {customer?.photo_url && (
+          <ProductImageModal
+            item={{
+              name: 'Customer Photo',
+              photo_url: customer?.photo_url,
+            }}
+            ref={childRefImage}
+          />
+        )}
 
         {customerTarget.length > 0 && (
           <CustomerTarget target={customerTarget} />
@@ -277,5 +299,11 @@ const styles = StyleSheet.create({
   notAvailableTxt: {
     color: COLORS.accentPrimary,
     fontStyle: 'italic',
+  },
+  customerImage: {
+    width: imgSize,
+    height: imgSize,
+    borderRadius: imgSize / 2,
+    resizeMode: 'cover',
   },
 });

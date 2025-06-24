@@ -6,7 +6,7 @@ import {COLORS} from '../../constants/theme/colors';
 const GridItem = ({width = '50%', label, value}) => (
   <View style={[styles.item, {width: width}]}>
     <Subheading style={styles.title} numberOfLines={1}>
-      {value?.length > 0 ? value : 'N/A'}
+      {value?.length > 0 ? value : '--:--'}
     </Subheading>
     <Text numberOfLines={1}>{label}</Text>
   </View>
@@ -27,7 +27,8 @@ const AttendanceInformation = ({data}) => {
         </Subheading>
       </View>
       <View style={styles.section}>
-        <GridItem label="Attendance Time" value={data.attendance_time} />
+        <GridItem label="Punch-In Time" value={data.attendance_punch_in_time} />
+        <GridItem label="Punch-Out Time" value={data.attendance_punch_out_time} />
         <GridItem label="Working hours" value={data.working_hours} />
       </View>
     </View>

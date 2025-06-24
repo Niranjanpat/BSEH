@@ -37,13 +37,12 @@ const RetailerMasterCount = ({assignee}) => {
 
   return (
     <View style={styles.container}>
-      <Text variant="titleMedium" style={{color: 'green'}}>3435324
+      <Text variant="titleMedium" style={{color: 'green'}}>
         {countData?.active_customer_count}
       </Text>
       <Text variant="titleSmall">/</Text>
       <Text variant="labelSmall">
         {countData?.customer_count}
-        3434343
       </Text>
     </View>
   );
