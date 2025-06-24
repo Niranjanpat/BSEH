@@ -2,7 +2,14 @@ import dayjs from 'dayjs';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, FlatList, Pressable, StyleSheet, View} from 'react-native';
 import MonthPicker from 'react-native-month-year-picker';
-import {ActivityIndicator, Appbar, Divider, Subheading, Text, TextInput} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Appbar,
+  Divider,
+  Subheading,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 import {getMonthlyAttendanceTravel} from '../../services/auth_service';
 import {COLORS} from '../../constants/theme/colors';
 
@@ -20,7 +27,7 @@ const MonthlyTravelDistance = ({navigation}) => {
     setLoading(true);
     const year = dayjs(date).format('YYYY');
     const month = dayjs(date).format('MM');
-    
+
     getMonthlyAttendanceTravel(year, month)
       .then(res => {
         const {success, data, errors} = res.data;
@@ -74,7 +81,11 @@ const MonthlyTravelDistance = ({navigation}) => {
               editable={false}
               style={{flex: 1, backgroundColor: COLORS.light}}
             />
-            {loading && <ActivityIndicator style={{position: 'absolute', right: '2%', alignSelf: 'center',}} />}
+            {loading && (
+              <ActivityIndicator
+                style={{position: 'absolute', right: '2%', alignSelf: 'center'}}
+              />
+            )}
           </Pressable>
           {openModal && (
             <MonthPicker
@@ -99,39 +110,38 @@ const MonthlyTravelDistance = ({navigation}) => {
               <Subheading style={styles.title}>Distance (KM)</Subheading>
             </View>
           </View>
-          <View style={styles.listContainer}>
-            <FlatList
-              data={distanceList}
-              keyExtractor={(_, index) => index}
-              ListEmptyComponent={() => (
-                <Text style={styles.emptyText}>No data found!</Text>
-              )}
-              showsVerticalScrollIndicator={false}
-              renderItem={({item, index}) => (
-                <>
-                  <View style={styles.row}>
-                    <View style={styles.section}>
-                      <Subheading style={styles.data}>
-                        {item?.punch_in_time ? item?.punch_in_time : 'N/A'}
-                      </Subheading>
-                    </View>
-                    <View style={styles.section}>
-                      <Subheading style={styles.data}>
-                        {item?.punch_out_time ? item?.punch_out_time : 'N/A'}
-                      </Subheading>
-                    </View>
-                    <View style={styles.section}>
-                      <Subheading style={styles.data}>
-                        {item?.advance_distance}
-                      </Subheading>
-                    </View>
+          <FlatList
+            data={distanceList}
+            keyExtractor={(_, index) => index}
+            ListEmptyComponent={() => (
+              <Text style={styles.emptyText}>No data found!</Text>
+            )}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item, index}) => (
+              <>
+                <View style={styles.row}>
+                  <View style={styles.section}>
+                    <Subheading style={styles.data}>
+                      {item?.punch_in_time ? item?.punch_in_time : 'N/A'}
+                    </Subheading>
                   </View>
-                  <Divider />
-                  <Divider />
-                </>
-              )}
-            />
-          </View>
+                  <View style={styles.section}>
+                    <Subheading style={styles.data}>
+                      {item?.punch_out_time ? item?.punch_out_time : 'N/A'}
+                    </Subheading>
+                  </View>
+                  <View style={styles.section}>
+                    <Subheading style={styles.data}>
+                      {item?.total_vehicle_km}
+                    </Subheading>
+                  </View>
+                </View>
+                <Divider />
+                <Divider />
+              </>
+            )}
+          />
         </View>
       </View>
     </>
@@ -177,12 +187,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   container: {
+    flex: 1,
     backgroundColor: COLORS.light,
     elevation: 3,
     borderRadius: 10,
     padding: 10,
   },
   main: {
+    flex: 1,
     padding: 5,
   },
   emptyText: {

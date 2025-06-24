@@ -14,6 +14,7 @@ import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ROUTES} from '../../../constants/routes';
 import {getTaDas} from '../../../services/ta_das_services'; // Create this service method
+import TabFilter, {filterOptions} from '../../../components/TabFilter';
 
 const TaDasListScreen = () => {
   const theme = useTheme();
@@ -29,11 +30,12 @@ const TaDasListScreen = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [status, setStatus] = useState('All');
 
   useEffect(() => {
     setPage(1);
     fetchTaDas(1);
-  }, [startDate, endDate]);
+  }, [startDate, endDate, status]);
 
   const fetchTaDas = async (pageNumber = 1) => {
     setLoading(true);
@@ -42,6 +44,7 @@ const TaDasListScreen = () => {
         start_date: dayjs(startDate).format('YYYY-MM-DD'),
         end_date: dayjs(endDate).format('YYYY-MM-DD'),
         page: pageNumber,
+        status: filterOptions[status],
       });
 
       console.log(res?.data?.data);
@@ -94,7 +97,9 @@ const TaDasListScreen = () => {
           <View style={styles.row}>
             <Icon name="how-to-vote" size={20} color={theme.colors.primary} />
             <Text style={styles.label}>Status: </Text>
-            <Text style={[styles.value, {color: statusColor}]}>{item.status?.toUpperCase() ?? ""}</Text>
+            <Text style={[styles.value, {color: statusColor}]}>
+              {item.status?.toUpperCase() ?? ''}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -149,6 +154,7 @@ const TaDasListScreen = () => {
   return (
     <View style={styles.container}>
       {renderDatePickers()}
+      <TabFilter initialValue={'All'} onFilterChange={v => setStatus(v)} />
       <FlatList
         refreshing={loading}
         onRefresh={() => {
@@ -156,6 +162,7 @@ const TaDasListScreen = () => {
           fetchTaDas(page);
         }}
         data={data}
+        showsVerticalScrollIndicator={false}
         keyExtractor={item => item._id}
         renderItem={renderItem}
         onEndReached={() => {
@@ -175,11 +182,10 @@ const TaDasListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
-    padding: 16,
+    // padding: 16,
   },
   listContainer: {
-    paddingBottom: 20,
+    paddingHorizontal: 16,
   },
   cardWrapper: {
     flexDirection: 'row',
@@ -213,7 +219,8 @@ const styles = StyleSheet.create({
   dateFilter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
   dateBtn: {
     backgroundColor: '#fff',

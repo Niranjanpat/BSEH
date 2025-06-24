@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'; 
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import {Button} from 'react-native-paper';
+import {ActivityIndicator, Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from 'react-native-geolocation-service';
@@ -38,6 +38,7 @@ const AddExpensesScreen = ({route, navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const latitude = useRef(null);
   const longitude = useRef(null);
+  const [loadingExpenseType, setLoadingExpenseType] = useState(true);
 
   const onExpenseTypeSelected = type => {
     expenseTypeSelected.current = type;
@@ -179,6 +180,7 @@ const AddExpensesScreen = ({route, navigation}) => {
       const res = await getExpenseType();
       const {data, success, errors} = res?.data;
       if (success) {
+        onExpenseTypeSelected(expenseDetail?.expense_type ?? null);
         setExpenseType(data.expense_types);
       } else {
         console.log('Expense type error:', errors);
@@ -186,6 +188,8 @@ const AddExpensesScreen = ({route, navigation}) => {
       }
     } catch (error) {
       console.log('getExpenseTypes error:', error);
+    } finally {
+      setLoadingExpenseType(false);
     }
   };
 
@@ -218,7 +222,9 @@ const AddExpensesScreen = ({route, navigation}) => {
             channel="Expense Type"
             item={expenseType}
             onOptionChanged={onExpenseTypeSelected}
+            initialValue={expenseTypeSelected.current}
           />
+          {loadingExpenseType && <ActivityIndicator style={{position: 'absolute', bottom: 14, right: 30}}/>}
         </View>
 
         <View style={styles.container}>

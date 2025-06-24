@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, {useEffect, useState, useLayoutEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import dayjs from 'dayjs';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme, Button } from 'react-native-paper';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useTheme, Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { getUserComplaint } from '../../../services/complaint_service';
-import { ROUTES } from '../../../constants/routes';
-import { useSelector } from 'react-redux';
-import { COLORS } from '../../../constants/theme/colors';
+import {getUserComplaint} from '../../../services/complaint_service';
+import {ROUTES} from '../../../constants/routes';
+import {useSelector} from 'react-redux';
+import {COLORS} from '../../../constants/theme/colors';
 
 const ROLE_HIERARCHY = ['sc', 'asm', 'zm', 'hod'];
 
@@ -24,8 +24,7 @@ const UserComplaintListScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const today = new Date();
-  const {role : userRole} = useSelector(state => state.auth);
-
+  const {role: userRole} = useSelector(state => state.auth);
 
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
@@ -39,30 +38,32 @@ const UserComplaintListScreen = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [selectedRole, setSelectedRole] = useState('');
-  const [filteredComplaints,setFilteredComplaints]=useState([]);
+  const [filteredComplaints, setFilteredComplaints] = useState([]);
 
   const index = ROLE_HIERARCHY.indexOf(userRole);
   const filteredRoles = ROLE_HIERARCHY.slice(0, index);
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
           onPress={() => setRoleModalVisible(true)}
-          style={{ paddingHorizontal: 16 }}>
+          style={{paddingHorizontal: 16}}>
           <Icon name="filter-list" size={24} color={theme.colors.primary} />
         </TouchableOpacity>
       ),
     });
   }, [navigation]);
-  useEffect(() => {
-    fetchUserComplaints(1);
-  }, [status, startDate, endDate, selectedRole]);
 
-  useEffect(()=>{
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserComplaints(1);
+    }, [status, startDate, endDate, selectedRole]),
+  );
+
+  useEffect(() => {
     complaintsFilteredByRole(selectedRole);
-  }, [complaints])
+  }, [complaints]);
 
   const fetchUserComplaints = async (pageNumber = 1) => {
     if (loading || !hasMore) return;
@@ -73,12 +74,10 @@ const UserComplaintListScreen = () => {
         end: dayjs(endDate).format('YYYY-MM-DD'),
         page: pageNumber,
         status,
-      //  role: selectedRole || undefined,
+        //  role: selectedRole || undefined,
       });
 
-     
-
-      const { data, success } = res?.data;
+      const {data, success} = res?.data;
       if (success) {
         const newData = data.complaints || data;
         if (pageNumber === 1) {
@@ -95,28 +94,28 @@ const UserComplaintListScreen = () => {
       setLoading(false);
     }
   };
-    const complaintsFilteredByRole=(role)=>{
-     setSelectedRole(role);
-     if(role===''){
+  const complaintsFilteredByRole = role => {
+    setSelectedRole(role);
+    if (role === '') {
       setFilteredComplaints(complaints);
-     }
-     else{
-      const filteredData=complaints.filter(item =>item.user_role.toLowerCase() === role.toLowerCase());
+    } else {
+      const filteredData = complaints.filter(
+        item => item.user_role.toLowerCase() === role.toLowerCase(),
+      );
       setFilteredComplaints(filteredData);
-     }
-  }
+    }
+  };
 
-
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     const statusColor = item.status === 'closed' ? '#4CAF50' : '#F44336';
 
     return (
       <TouchableOpacity
         style={styles.cardWrapper}
         onPress={() =>
-          navigation.navigate(ROUTES.detail_user_complaint, { complaint: item })
+          navigation.navigate(ROUTES.detail_user_complaint, {complaint: item})
         }>
-        <View style={[styles.statusStrip, { backgroundColor: statusColor }]} />
+        <View style={[styles.statusStrip, {backgroundColor: statusColor}]} />
         <View style={styles.card}>
           <View style={styles.row}>
             <Icon name="subject" size={20} color={theme.colors.primary} />
@@ -134,7 +133,11 @@ const UserComplaintListScreen = () => {
             <Text style={styles.value}>{item.customer_route}</Text>
           </View>
           <View style={styles.row}>
-            <Icon name="calendar-today" size={20} color={theme.colors.primary} />
+            <Icon
+              name="calendar-today"
+              size={20}
+              color={theme.colors.primary}
+            />
             <Text style={styles.label}>Created: </Text>
             <Text style={styles.value}>{item.created_at}</Text>
           </View>
@@ -155,7 +158,7 @@ const UserComplaintListScreen = () => {
           key={s}
           style={[
             styles.statusTab,
-            status === s && { backgroundColor: theme.colors.primary },
+            status === s && {backgroundColor: theme.colors.primary},
           ]}
           onPress={() => {
             setComplaints([]);
@@ -166,7 +169,7 @@ const UserComplaintListScreen = () => {
           <Text
             style={[
               styles.statusText,
-              status === s && { color: '#fff', fontWeight: 'bold' },
+              status === s && {color: '#fff', fontWeight: 'bold'},
             ]}>
             {s === '' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
           </Text>
@@ -177,18 +180,24 @@ const UserComplaintListScreen = () => {
 
   const renderDatePickers = () => (
     <View style={styles.dateFilter}>
-      <TouchableOpacity onPress={() => setOpenStart(true)} style={styles.dateBtn}>
-        <Text style={styles.dateText}>Start: {dayjs(startDate).format('YYYY-MM-DD')}</Text>
+      <TouchableOpacity
+        onPress={() => setOpenStart(true)}
+        style={styles.dateBtn}>
+        <Text style={styles.dateText}>
+          Start: {dayjs(startDate).format('YYYY-MM-DD')}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setOpenEnd(true)} style={styles.dateBtn}>
-        <Text style={styles.dateText}>End: {dayjs(endDate).format('YYYY-MM-DD')}</Text>
+        <Text style={styles.dateText}>
+          End: {dayjs(endDate).format('YYYY-MM-DD')}
+        </Text>
       </TouchableOpacity>
       <DatePicker
         modal
         mode="date"
         open={openStart}
         date={startDate}
-        onConfirm={(date) => {
+        onConfirm={date => {
           setOpenStart(false);
           setStartDate(date);
           setComplaints([]);
@@ -202,7 +211,7 @@ const UserComplaintListScreen = () => {
         mode="date"
         open={openEnd}
         date={endDate}
-        onConfirm={(date) => {
+        onConfirm={date => {
           setOpenEnd(false);
           setEndDate(date);
           setComplaints([]);
@@ -214,18 +223,25 @@ const UserComplaintListScreen = () => {
     </View>
   );
   const renderRoleModal = () => (
-    <Modal visible={roleModalVisible} transparent animationType="fade" onDismiss={()=>{setRoleModalVisible(false)}}>
+    <Modal
+      visible={roleModalVisible}
+      transparent
+      animationType="fade"
+      onDismiss={() => {
+        setRoleModalVisible(false);
+      }}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Filter by Role</Text>
-          <Text style={{ marginBottom: 10, color: '#999' }}>
-            Your Role: <Text style={{ fontWeight: 'bold' }}>{userRole.toUpperCase()}</Text>
+          <Text style={{marginBottom: 10, color: '#999'}}>
+            Your Role:{' '}
+            <Text style={{fontWeight: 'bold'}}>{userRole.toUpperCase()}</Text>
           </Text>
 
           <TouchableOpacity
             style={[
               styles.roleOption,
-              selectedRole === '' && { backgroundColor: theme.colors.primary },
+              selectedRole === '' && {backgroundColor: theme.colors.primary},
             ]}
             onPress={() => {
               // setSelectedRole('');
@@ -235,7 +251,8 @@ const UserComplaintListScreen = () => {
               complaintsFilteredByRole('');
               setRoleModalVisible(false);
             }}>
-            <Text style={[styles.roleText, selectedRole === '' && { color: '#fff' }]}>
+            <Text
+              style={[styles.roleText, selectedRole === '' && {color: '#fff'}]}>
               All Roles
             </Text>
           </TouchableOpacity>
@@ -245,7 +262,7 @@ const UserComplaintListScreen = () => {
               key={r}
               style={[
                 styles.roleOption,
-                selectedRole === r && { backgroundColor: theme.colors.primary },
+                selectedRole === r && {backgroundColor: theme.colors.primary},
               ]}
               onPress={() => {
                 // setSelectedRole(r);
@@ -255,13 +272,19 @@ const UserComplaintListScreen = () => {
                 complaintsFilteredByRole(r);
                 setRoleModalVisible(false);
               }}>
-              <Text style={[styles.roleText, selectedRole === r && { color: '#fff' }]}>
+              <Text
+                style={[
+                  styles.roleText,
+                  selectedRole === r && {color: '#fff'},
+                ]}>
                 {r.toUpperCase()}
               </Text>
             </TouchableOpacity>
           ))}
 
-          <Button onPress={() => setRoleModalVisible(false)} style={{ marginTop: 10 }}>
+          <Button
+            onPress={() => setRoleModalVisible(false)}
+            style={{marginTop: 10}}>
             Close
           </Button>
         </View>

@@ -5,14 +5,12 @@ import {Text} from 'react-native-paper';
 import {COLORS} from '../../constants/theme/colors';
 
 const BeatAssigneeFilter = ({onAssigneeChange}) => {
-  const {role} = useSelector(state => state.auth);
-
   const [assignee, setAssignee] = useState('');
 
-  const handleChangeAssignee = (value) => {
+  const handleChangeAssignee = value => {
     setAssignee(value);
     onAssigneeChange(value);
-  }
+  };
 
   return (
     <View style={styles.container}>

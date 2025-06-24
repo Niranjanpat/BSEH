@@ -109,10 +109,9 @@ const styles = StyleSheet.create({
   },
   profileCard: {
     backgroundColor: '#fff',
-    marginHorizontal: SPACINGS.lg,
+    marginHorizontal: SPACINGS.sm,
     marginTop: SPACINGS.md,
-    paddingVertical: SPACINGS.sm,
-    paddingHorizontal:SPACINGS.sm,
+    padding: SPACINGS.sm,
     borderRadius: 12,
     alignItems: 'center',
     elevation: 2,
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
     color: COLORS.textLight || '#757575',
   },
   detailsContainer: {
-    paddingHorizontal: SPACINGS.lg,
+    paddingHorizontal: SPACINGS.sm,
     paddingVertical: SPACINGS.md,
   },
   sectionTitle: {

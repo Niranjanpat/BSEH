@@ -104,7 +104,7 @@ const DailyAttendacesListScreen = ({navigation}) => {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="Daily attendances" />
+        <Appbar.Content title="User Daily Attendance" />
         <Appbar.Action icon="calendar-outline" onPress={() => setOpen(true)} />
       </Appbar.Header>
       <View style={styles.container}>

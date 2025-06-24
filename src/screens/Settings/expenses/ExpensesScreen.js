@@ -15,6 +15,8 @@ import {ROUTES} from '../../../constants/routes';
 import {getExpense} from '../../../services/expense_sevice';
 import DatePicker from 'react-native-date-picker';
 import dayjs from 'dayjs';
+import theme from '../../../constants/theme';
+import TabFilter, { filterOptions } from '../../../components/TabFilter';
 
 const STATUS_COLORS = {
   approved: 'green',
@@ -34,6 +36,7 @@ const ExpensesListScreen = () => {
   const [endDate, setEndDate] = useState(today);
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
+  const [status, setStatus] = useState('All');
 
   const navigation = useNavigation();
 
@@ -41,7 +44,7 @@ const ExpensesListScreen = () => {
     React.useCallback(() => {
       page.current = 1;
       fetchExpenses(1);
-    }, [endDate, startDate]),
+    }, [endDate, startDate, status]),
   );
 
   const fetchExpenses = async currentPage => {
@@ -51,6 +54,7 @@ const ExpensesListScreen = () => {
         start_date: dayjs(startDate).format('YYYY-MM-DD'),
         end_date: dayjs(endDate).format('YYYY-MM-DD'),
         page: currentPage,
+        status: filterOptions[status],
       });
       const {data, success, errors} = res?.data;
       if (success) {
@@ -152,6 +156,10 @@ const ExpensesListScreen = () => {
   return (
     <View style={{flex: 1}}>
       {renderDatePickers()}
+      <TabFilter
+        initialValue={'All'}
+        onFilterChange={(v) => setStatus(v)}
+      />
       {expense.length ? (
         <FlatList
           refreshing={isLoading}
@@ -162,7 +170,8 @@ const ExpensesListScreen = () => {
           data={expense}
           keyExtractor={item => item._id}
           renderItem={renderItem}
-          contentContainerStyle={{padding: 16}}
+          contentContainerStyle={{paddingHorizontal: 16}}
+          showsVerticalScrollIndicator={false}
           onEndReached={() => {
             if (isLoading || !hasMore) {
               return;
@@ -174,7 +183,7 @@ const ExpensesListScreen = () => {
         />
       ) : (
         <View style={styles.empty}>
-          <Text>No Expense available</Text>
+          <Text>No {status} Expense available</Text>
         </View>
       )}
 

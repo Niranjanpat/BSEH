@@ -1,4 +1,4 @@
-import React, {useEffect, useState ,useLayoutEffect} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {
   Alert,
   Dimensions,
@@ -41,7 +41,7 @@ import {
   setHideCheckoutAfterOrderPlaces,
 } from '../../store/actions/order';
 import {getCustomerTarget} from '../../services/retailer_services';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 const size = Dimensions.get('window');
 const imgSize = size.width * 0.25;
@@ -81,7 +81,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       const res = await client.get(URLS.customer + data._id);
       if (res.data.success) {
         console.log(res.data);
-        
+
         setCustomer(res.data.data);
       } else {
         console.log('Error:', res.data.errors);
@@ -132,18 +132,17 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title={title} />
-        
-          <IconButton
-            icon="square-edit-outline"
-            onPress={() =>
-              navigation.navigate(ROUTES.edit_customer, {
-                title,
-                data: customer,
-                id: data._id,
-              })
-            }
-          />
-        
+
+        {/* <IconButton
+          icon="square-edit-outline"
+          onPress={() =>
+            navigation.navigate(ROUTES.edit_customer, {
+              title,
+              data: customer,
+              id: data._id,
+            })
+          }
+        /> */}
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -155,7 +154,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           <Title>{data.name}</Title>
           <Caption>{data.owner_contact_number}</Caption>
         </View>
-        <View style={styles.btnContainer}>
+        {/* <View style={styles.btnContainer}>
           <View style={styles.buttonContainer}>
             <Button
               mode="contained"
@@ -172,7 +171,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               Complaint
             </Button>
           </View>
-        </View>
+        </View> */}
 
         {customerTarget.length > 0 && (
           <CustomerTarget target={customerTarget} />
@@ -227,10 +226,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  btnContainer:{
-    flexDirection:'row',
-    justifyContent:'space-around',
-    alignContent:'center'
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center',
   },
   content: {
     paddingBottom: SPACINGS.lg,

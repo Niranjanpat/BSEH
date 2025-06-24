@@ -3,7 +3,7 @@ import React from 'react';
 import {FlatList, Pressable, StyleSheet, View} from 'react-native';
 import MonthPicker from 'react-native-month-year-picker';
 import {Divider, Subheading, Text, TextInput} from 'react-native-paper';
-import { COLORS } from '../../constants/theme/colors';
+import {COLORS} from '../../constants/theme/colors';
 
 const MonthlyAttendanceList = ({
   datas,
@@ -57,54 +57,54 @@ const MonthlyAttendanceList = ({
             <Subheading style={styles.title}>Purpose/reason</Subheading>
           </View>
         </View>
-        <View style={styles.listContainer}>
-          <FlatList
-            data={datas}
-            keyExtractor={(_, index) => index}
-            ListEmptyComponent={() => (
-              <Text style={styles.emptyText}>No data found!</Text>
-            )}
-            renderItem={({item, index}) => (
-              <>
-                <Divider />
-                <Divider />
-                <View style={styles.row}>
-                  <View style={styles.section}>
-                    <Subheading style={styles.data}>
-                      {item?.date ? item?.date : 'N/A'}
-                    </Subheading>
-                  </View>
-                  <View style={styles.section}>
-                    <Subheading style={styles.data}>
-                      {item?.punch_in_time ? item?.punch_in_time : 'N/A'}
-                    </Subheading>
-                  </View>
-                  <View style={styles.section}>
-                    <Subheading style={styles.data}>
-                      {item?.punch_out_time ? item?.punch_out_time : 'N/A'}
-                    </Subheading>
-                  </View>
-                  <View style={styles.section}>
-                    <Subheading style={styles.data}>
-                      {item?.status ? item.status : 'No data'}
-                    </Subheading>
-                  </View>
-                  <View style={styles.section}>
-                    <Subheading style={styles.data}>
-                      {item?.absent_reason_text
-                        ? item?.absent_reason_text
-                        : item?.present_reason_text
-                        ? item?.present_reason_text
-                        : 'N/A'}
-                    </Subheading>
-                  </View>
+        <FlatList
+          data={datas}
+          keyExtractor={(_, index) => index}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>No data found!</Text>
+          )}
+          renderItem={({item, index}) => (
+            <>
+              <Divider />
+              <Divider />
+              <View style={styles.row}>
+                <View style={styles.section}>
+                  <Subheading style={styles.data}>
+                    {item?.date ? item?.date : 'N/A'}
+                  </Subheading>
                 </View>
-                <Divider />
-                <Divider />
-              </>
-            )}
-          />
-        </View>
+                <View style={styles.section}>
+                  <Subheading style={styles.data}>
+                    {item?.punch_in_time ? item?.punch_in_time : 'N/A'}
+                  </Subheading>
+                </View>
+                <View style={styles.section}>
+                  <Subheading style={styles.data}>
+                    {item?.punch_out_time ? item?.punch_out_time : 'N/A'}
+                  </Subheading>
+                </View>
+                <View style={styles.section}>
+                  <Subheading style={styles.data}>
+                    {item?.status ? item.status : 'No data'}
+                  </Subheading>
+                </View>
+                <View style={styles.section}>
+                  <Subheading style={styles.data}>
+                    {item?.absent_reason_text
+                      ? item?.absent_reason_text
+                      : item?.present_reason_text
+                      ? item?.present_reason_text
+                      : 'N/A'}
+                  </Subheading>
+                </View>
+              </View>
+              <Divider />
+              <Divider />
+            </>
+          )}
+        />
       </View>
     </View>
   );
@@ -146,12 +146,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   container: {
+    flex: 1,
     backgroundColor: COLORS.light,
     elevation: 3,
     borderRadius: 10,
     padding: 10,
   },
   main: {
+    flex: 1,
     padding: 5,
   },
   emptyText: {

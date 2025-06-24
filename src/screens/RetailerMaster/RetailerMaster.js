@@ -32,18 +32,19 @@ import {COLORS} from '../../constants/theme/colors';
 import {getRetailerList, storeRetailerList} from '../../store/actions/retailer';
 import {getBeatList, getRetailer} from '../../services/retailer_services';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import BeatAssigneeFilter from '../../components/retailer_master/BeatAssigneeFilter';
+import TabFilter from '../../components/TabFilter';
 
 const Filter = lazy(() =>
   import('../../components/retailer_master/RetailerMasterFilter'),
 );
 
-const RetailerMasterCount = lazy(
-  () => import('../../components/retailer_master/RetailerMasterCount'),
+const RetailerMasterCount = lazy(() =>
+  import('../../components/retailer_master/RetailerMasterCount'),
 );
 
 const RetailerMaster = ({navigation, route}) => {
   const {retailerFilterData} = useSelector(state => state.retailer);
+  const {role} = useSelector(state => state.auth);
   const [retailerList, setRetailerList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
@@ -59,6 +60,11 @@ const RetailerMaster = ({navigation, route}) => {
   const hasMore = useRef(false);
   const searchbarAnim = useRef(new Animated.Value(1)).current;
   const scrollOffset = useRef(0);
+  const filterOption = {
+    All: '',
+    Own: 'me',
+    Subordinate: 'subordinate'
+  }
 
   const dispatch = useDispatch();
 
@@ -126,7 +132,6 @@ const RetailerMaster = ({navigation, route}) => {
     navigation.setOptions({
       headerRight: () => (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-
           <Suspense>
             <RetailerMasterCount />
           </Suspense>
@@ -183,10 +188,10 @@ const RetailerMaster = ({navigation, route}) => {
     );
   };
 
-  const clearSearch = () => { 
+  const clearSearch = () => {
     searchbarRef.current?.blur();
     handleChange('');
-  }
+  };
 
   const hideSearchbar = () => {
     Animated.timing(searchbarAnim, {
@@ -266,20 +271,24 @@ const RetailerMaster = ({navigation, route}) => {
           ref={searchbarRef}
         />
 
-        <BeatAssigneeFilter
-          onAssigneeChange={v => {
-            page.current = 0;
-            selectedAssignee.current = v;
-            fetchRetailers();
-          }}
-        />
+        {role !== 'sc' && (
+          <TabFilter
+            initialValue={'All'}
+            filterOptionsObject={filterOption}
+            onFilterChange={v => {
+              page.current = 0;
+              selectedAssignee.current = filterOption[v];
+              fetchRetailers();
+            }}
+          />
+        )}
       </Animated.View>
 
       <View style={styles.container}>
         <FlatList
           onScroll={handleScroll}
           scrollEventThrottle={16}
-          contentContainerStyle={{paddingTop: 120}}
+          contentContainerStyle={{paddingTop: role === 'sc' ? 60 : 120}}
           onRefresh={() => {
             page.current = 0;
             fetchRetailers();

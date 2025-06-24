@@ -165,7 +165,7 @@ export const SettingsStackNavigation = () => {
       <SettingsStack.Screen
         name={ROUTES.user_route_schedule_list}
         component={UserRouteScheduleListScreen}
-        options={{title: 'User Route Schedules', headerShown: true}}
+        options={{title: 'Sub-Ordinate Schedules', headerShown: true}}
       />
 
       <SettingsStack.Screen

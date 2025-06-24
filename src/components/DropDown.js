@@ -1,10 +1,14 @@
 import {View, StyleSheet, Platform} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 
-const MyDropdown = ({onOptionChanged, item, channel}) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+const MyDropdown = ({onOptionChanged, item, channel, initialValue}) => {
+  const [selectedOption, setSelectedOption] = useState();
+
+  useEffect(() => {
+    setSelectedOption(initialValue ?? null);
+  }, [initialValue]);
 
   return (
     <View style={styles.container}>

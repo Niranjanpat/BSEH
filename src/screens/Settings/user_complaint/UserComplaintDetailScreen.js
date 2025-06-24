@@ -15,7 +15,7 @@ import {ROUTES} from '../../../constants/routes';
 
 const UserComplaintDetailScreen = ({route}) => {
   const {complaint} = route.params;
-  const id=complaint._id;
+  const id = complaint._id;
   const [complaintDetail, setComplaintDetail] = useState(null);
   const navigation = useNavigation();
   const theme = useTheme();
@@ -43,6 +43,7 @@ const UserComplaintDetailScreen = ({route}) => {
   useEffect(() => {
     fetchUserComplaintDetail();
   }, []);
+  
   const fetchUserComplaintDetail = async () => {
     try {
       const res = await getUserComplaintDetail(id);

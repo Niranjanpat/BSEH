@@ -14,6 +14,7 @@ import {ROUTES} from '../../../constants/routes';
 import {getComplaints} from '../../../services/complaint_service';
 import dayjs from 'dayjs';
 import DatePicker from 'react-native-date-picker';
+import TabFilter from '../../../components/TabFilter';
 
 const STATUS_COLORS = {
   open: COLORS.primary,
@@ -23,9 +24,11 @@ const STATUS_COLORS = {
 const getStatusColor = status => STATUS_COLORS[status] || COLORS.primary;
 
 const ComplaintListScreen = () => {
+  const filterOption = {
+    All: '', Open: 'open', Closed: 'closed'
+  }
   const today = new Date();
   const [complaints, setComplaints] = useState([]);
-  const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,25 +43,18 @@ const ComplaintListScreen = () => {
     useCallback(() => {
       setPage(1);
       fetchComplaintList(1);
-    }, [startDate, endDate]),
+    }, [startDate, endDate, status]),
   );
-
-  useEffect(() => {
-    filterComplaintsByStatus('');
-  }, [complaints]);
 
   const fetchComplaintList = async currentPage => {
     setIsLoading(true);
-    console.log(
-      dayjs(startDate).format('YYYY-MM-DD'),
-      dayjs(endDate).format('YYYY-MM-DD'),
-    );
 
     try {
       const res = await getComplaints({
         start_date: dayjs(startDate).format('YYYY-MM-DD'),
         end_date: dayjs(endDate).format('YYYY-MM-DD'),
         page: currentPage,
+        status: filterOption[status],
       });
       const {data, success, errors} = res?.data;
       if (success) {
@@ -124,38 +120,7 @@ const ComplaintListScreen = () => {
 
   const filterComplaintsByStatus = selectedStatus => {
     setStatus(selectedStatus);
-
-    if (selectedStatus === '') {
-      setFilteredComplaints(complaints);
-    } else {
-      const filtered = complaints.filter(
-        item => item.status.toLowerCase() === selectedStatus.toLowerCase(),
-      );
-      setFilteredComplaints(filtered);
-    }
   };
-
-  const renderStatusTabs = () => (
-    <View style={styles.statusTabs}>
-      {['', 'open', 'closed'].map(s => (
-        <TouchableOpacity
-          key={s}
-          style={[
-            styles.statusTab,
-            status === s && {backgroundColor: theme.colors.primary},
-          ]}
-          onPress={() => filterComplaintsByStatus(s)}>
-          <Text
-            style={[
-              styles.statusText,
-              status === s && {color: '#fff', fontWeight: 'bold'},
-            ]}>
-            {s === '' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
 
   const renderDatePickers = () => (
     <View style={styles.dateFilter}>
@@ -198,20 +163,21 @@ const ComplaintListScreen = () => {
 
   return (
     <>
-      {renderStatusTabs()}
       {renderDatePickers()}
+      <TabFilter initialValue={'All'} filterOptionsObject={filterOption} onFilterChange={(s) => filterComplaintsByStatus(s)} />
       <FlatList
-        data={filteredComplaints}
+        data={complaints}
         keyExtractor={item => item._id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         onEndReached={() => {
           if (!isLoading && hasMore) {
             fetchComplaintList(page);
           }
         }}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
+        // ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
         refreshing={isLoading}
         onRefresh={handleRefresh}
@@ -224,11 +190,11 @@ export default ComplaintListScreen;
 
 const styles = StyleSheet.create({
   listContent: {
-    padding: 16,
+    paddingHorizontal: 16,
     flexGrow: 1,
   },
-   statusTabs: {
-    marginTop:12,
+  statusTabs: {
+    marginTop: 12,
     marginHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -285,6 +251,7 @@ const styles = StyleSheet.create({
   dateFilter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 16,
     marginHorizontal: 16,
   },
   dateBtn: {

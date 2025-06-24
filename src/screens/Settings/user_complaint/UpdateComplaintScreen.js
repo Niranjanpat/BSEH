@@ -29,9 +29,9 @@ const UpdateComplaintScreen = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    setSubject(complaint.subject || '');
-    setRemark(complaint.remark || '');
-    setComplaintTypeSelected(complaint.complaint_type_name || null);
+    setSubject(complaint?.subject ?? '');
+    setRemark(complaint?.remarks ?? '');
+    setComplaintTypeSelected(complaint?.complaint_type_id ?? null);
     setStatus(complaint?.status);
   }, [complaint, complaintType]);
 

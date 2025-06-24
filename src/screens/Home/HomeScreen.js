@@ -37,15 +37,17 @@ const HomeScreen = ({}) => {
         <JointWorkingView />
         {role === 'promoter' && <PromoterVisits />}
         {/* {role !== 'promoter' && <TodayOrder self={1} />} */}
-
-              <AttendanceInformation data={data} />
-              <CallDetails data={data} />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+        {/* <Achievement /> */}
+        {/* <DsmCurrentTarget /> */}
+        <AttendanceInformation data={data} />
+        <CallDetails data={data} />
+        {/* <OrderDetails data={data} /> */}
         {/* {role === 'asm' && <RecentOrder />}  */}
         {role !== 'promoter' && (
           <>
             {/* <TopCustomerTable /> */}
             {/* <WeeklyOrderLog /> */}
+            {/* <AttendanceSummary /> */}
           </>
         )}
         <View style={styles.margin_bottom}></View>
