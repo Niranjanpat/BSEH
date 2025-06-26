@@ -26,7 +26,7 @@ const RouteMapScreen = ({navigation, route}) => {
           Alert.alert('Location is not available');
         }
       } else {
-        alert(JSON.stringify(errors));
+         Alert.alert('Error', Object.values(errors).join(', '));
       }
     });
   };

@@ -75,7 +75,7 @@ const usePerformance = () => {
       if (success) {
         setUsers(data.users);
       } else {
-        console.log(errors);
+          Alert.alert('Error', Object.values(errors).join(', '));
       }
     });
   };
@@ -95,6 +95,7 @@ const usePerformance = () => {
         if (success) {
           setProducts(data.products);
         } else {
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {

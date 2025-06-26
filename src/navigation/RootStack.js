@@ -65,7 +65,7 @@ import {TaDasStack} from './settings_stack';
 import DailyAttendacesListScreen from '../screens/Settings/daily_attendance';
 import { SampleStack } from './sample_stack';
 import SampleCheckOutScreen from '../screens/Settings/myvisits/SampleCheckOutScreen';
-const SettingsStack = createNativeStackNavigator();
+const SettingsStack = createNativeStackNavigator();   
 export const SettingsStackNavigation = () => {
   return (
     <SettingsStack.Navigator

@@ -198,7 +198,7 @@ const EditCustomerScreen = ({navigation, route}) => {
           customer_type_id: data?.customer_type_id || '',
           customer_class_id: data?.customer_class_id || '',
           pin_code_id: data?.pin_code_id || '',
-          divisions: '', // not present in data
+          divisions: data?.division_names||null, // not present in data
           gst_number: data?.gst_number || '',
           owner_name: data?.owner_name || '',
           owner_email: data?.owner_email || '',
@@ -207,7 +207,7 @@ const EditCustomerScreen = ({navigation, route}) => {
           town: data?.town || '',
           latitude: data?.latitude || '',
           longitude: data?.longitude || '',
-          image: null, // still null by default
+          image: data?.photo_url || null, // still null by default
           city: data?.city_name || '',
           state: data?.state_name || '',
           district: data?.district_name || '',

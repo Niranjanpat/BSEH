@@ -63,7 +63,7 @@ const ExpenseDetailScreen = ({route, navigation}) => {
         setExpenseDetail(data);
       } else {
         console.log(errors);
-        Alert.alert('Error', JSON.stringify(errors));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getExpenses', error);

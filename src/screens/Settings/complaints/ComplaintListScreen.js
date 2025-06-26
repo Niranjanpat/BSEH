@@ -25,8 +25,10 @@ const getStatusColor = status => STATUS_COLORS[status] || COLORS.primary;
 
 const ComplaintListScreen = () => {
   const filterOption = {
-    All: '', Open: 'open', Closed: 'closed'
-  }
+    All: '',
+    Open: 'open',
+    Closed: 'closed',
+  };
   const today = new Date();
   const [complaints, setComplaints] = useState([]);
   const [page, setPage] = useState(1);
@@ -67,7 +69,7 @@ const ComplaintListScreen = () => {
         setHasMore(data?.has_more);
         if (data?.has_more) setPage(prev => prev + 1);
       } else {
-        Alert.alert('Error', JSON.stringify(errors));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.error('fetchComplaintList error:', error);
@@ -164,7 +166,11 @@ const ComplaintListScreen = () => {
   return (
     <>
       {renderDatePickers()}
-      <TabFilter initialValue={'All'} filterOptionsObject={filterOption} onFilterChange={(s) => filterComplaintsByStatus(s)} />
+      <TabFilter
+        initialValue={'All'}
+        filterOptionsObject={filterOption}
+        onFilterChange={s => filterComplaintsByStatus(s)}
+      />
       <FlatList
         data={complaints}
         keyExtractor={item => item._id}

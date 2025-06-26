@@ -87,6 +87,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
 
         setCustomer(res.data.data);
       } else {
+        Alert.alert('Error', res.data.errors.join(', '));
         console.log('Error:', res.data.errors);
       }
     } catch (error) {

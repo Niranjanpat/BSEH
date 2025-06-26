@@ -52,7 +52,7 @@ export const getCurrentOverAllTargetsAmount = () => {
         if (success) {
           dispatch(storeCurrentOverAllTargetsAmount(data));
         } else {
-          Alert.alert(null, JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

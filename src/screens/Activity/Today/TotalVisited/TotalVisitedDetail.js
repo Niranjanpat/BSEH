@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList ,Alert} from 'react-native';
 import {Caption, List, Subheading, Text} from 'react-native-paper';
 import {SPACINGS} from '../../../../constants/theme';
 import {COLORS} from '../../../../constants/theme/colors';
@@ -26,6 +26,7 @@ const TotalVisitedDetail = ({route}) => {
         // console.log('fetchMyVisit:::', data);
         setCustomer(data.customers);
       } else {
+        Alert.alert('Error', Object.values(errors).join(', '));
         // Alert.alert('Oops!', error.toString())
         console.log('fetchMyVisit error:::', errors);
       }

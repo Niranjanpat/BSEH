@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Caption, List, Subheading, Text} from 'react-native-paper';
 import {ROUTES} from '../../../constants/routes';
 import {COLORS} from '../../../constants/theme/colors';
@@ -28,7 +28,7 @@ const OrderScreen = ({navigation, route}) => {
         if (success) {
           setData(data.invoices);
         } else {
-          alert(JSON.stringify(errors));
+           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

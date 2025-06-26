@@ -51,7 +51,7 @@ const UserComplaintDetailScreen = ({route}) => {
       if (success) {
         setComplaintDetail(data);
       } else {
-        Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getComplaintDetail', error);

@@ -58,7 +58,7 @@ const useRouteSchedule = () => {
         if (success) {
           setRoutes(data.routes);
         } else {
-          Alert.alert(null, JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {
@@ -100,7 +100,7 @@ const useRouteSchedule = () => {
         if (success) {
           setScehduleDetail(data);
         } else {
-          Alert.alert(null, JSON.stringify(errors));
+           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {
@@ -150,7 +150,7 @@ const useRouteSchedule = () => {
           Alert.alert('Success', 'Route schedule has been deleted');
           goBack();
         } else {
-          Alert.alert(null, JSON.stringify(errors));
+           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {

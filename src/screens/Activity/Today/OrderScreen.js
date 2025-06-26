@@ -39,7 +39,7 @@ const OrderScreen = ({navigation, route}) => {
         if (success) {
           setData(data.orders);
         } else {
-          alert(JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -115,7 +115,7 @@ const OrderScreen = ({navigation, route}) => {
               if (success) {
                 getOrderList();
               } else {
-                alert(JSON.stringify(errors));
+                 Alert.alert('Error', Object.values(errors).join(', '));
               }
             });
           },

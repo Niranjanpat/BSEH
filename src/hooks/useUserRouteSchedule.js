@@ -38,6 +38,9 @@ const useUserRouteSchedule = () => {
             );
           }
         }
+        else{
+            Alert.alert('Error', Object.values(errors).join(', '));
+        }
       })
       .catch(err => {
         setLoading(false);
@@ -59,7 +62,7 @@ const useUserRouteSchedule = () => {
 
           onSuccess();
         } else {
-          Alert.alert(null, JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {
@@ -81,7 +84,7 @@ const useUserRouteSchedule = () => {
           Alert.alert('Success', 'Selected schedules have been rejected');
           onSuccess();
         } else {
-          Alert.alert(null, JSON.stringify(errors));
+           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, Alert} from 'react-native';
 import {Col, Grid} from 'react-native-easy-grid';
 import {Caption, DataTable, Divider, Text, Title} from 'react-native-paper';
 import {IMAGE} from '../constants/images';
@@ -27,7 +27,7 @@ const TopCustomerTable = () => {
         if (success) {
           setData(data.customers.slice(0, 5));
         } else {
-          Alert.alert('Error', JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

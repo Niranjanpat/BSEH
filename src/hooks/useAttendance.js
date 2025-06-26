@@ -26,7 +26,7 @@ export const useAttendance = () => {
         if (success) {
           setData(data.reasons);
         } else {
-          Alert.alert('Error', JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -45,7 +45,7 @@ export const useAttendance = () => {
         if (success) {
           setData(data.reasons);
         } else {
-          Alert.alert('Error', JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import React, {memo, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {getRetailerCount} from '../../services/retailer_services';
@@ -23,7 +23,8 @@ const RetailerMasterCount = ({assignee}) => {
         if (success) {
           setCountData(data);
         } else if (errors) {
-          console.log('count', errors);
+          
+           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

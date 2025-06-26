@@ -1,6 +1,6 @@
 
 import React, {useEffect, useLayoutEffect, useState,memo} from 'react';
-import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {View, StyleSheet, FlatList, ScrollView, Alert} from 'react-native';
 import {
   Button,
   IconButton,
@@ -44,6 +44,9 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
         const {data, success, errors} = res.data;
         if (success) {
           setBeat(data.routes);
+        }
+        else{
+           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

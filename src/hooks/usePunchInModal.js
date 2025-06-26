@@ -56,7 +56,7 @@ const usePunchInModal = () => {
       if (success) {
         setWorkType(data.work_types);
       } else {
-        Alert.alert('Error', JSON.stringify(errors));
+         Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getWorkTypes', error);
@@ -70,7 +70,7 @@ const usePunchInModal = () => {
       if (success) {
         setVehicleType(data.vehicle_types);
       } else {
-        Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getVehicleTypes', error);

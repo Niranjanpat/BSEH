@@ -220,6 +220,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
           setCustomerTarget(data.targets);
         } else {
           console.log(errors);
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

@@ -50,7 +50,7 @@ const usePunchOutModal = () => {
       if (success) {
         setDailyAllowance(data.daily_allowances);
       } else {
-        Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (e) {
       console.log('fetchDailyAllowances', e);

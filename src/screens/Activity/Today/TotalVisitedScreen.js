@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
+import {View, StyleSheet, Dimensions, Alert} from 'react-native';
 import {Appbar, Button, Divider, Subheading, Text} from 'react-native-paper';
 import {COLORS} from '../../../constants/theme/colors';
 import {scheduleSummary} from '../../../services/activity_service';
@@ -28,7 +28,7 @@ const TotalVisitedScreen = ({navigation, route}) => {
       if (success) {
         setData(data);
       } else {
-        alert(JSON.stringify(errors));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     });
   };

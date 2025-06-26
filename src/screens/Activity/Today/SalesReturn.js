@@ -45,7 +45,7 @@ const SalesReturn = ({navigation, route}) => {
         if (success) {
           setData(data.sales_returns);
         } else {
-          alert(JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -67,7 +67,7 @@ const SalesReturn = ({navigation, route}) => {
               if (success) {
                 getSalesReturnList();
               } else {
-                alert(JSON.stringify(errors));
+                 Alert.alert('Error', Object.values(errors).join(', '));
               }
             });
           },

@@ -37,7 +37,7 @@ const SampleDetailScreen = ({ navigation, route }) => {
         customer.current=data.customer || '';
         createdAt.current=data.created_at || '';
       } else {
-        Alert.alert('Error', errors || 'Something went wrong');
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (err) {
       Alert.alert('Error', 'Failed to fetch samples');

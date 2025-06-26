@@ -15,6 +15,7 @@ import {getSample} from '../../../services/sample_service';
 import {useNavigation} from '@react-navigation/native';
 import {ROUTES} from '../../../constants/routes';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SampleListScreen = () => {
   const theme = useTheme();
@@ -26,9 +27,12 @@ const SampleListScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchSampleList();
-  }, [date]);
+    useFocusEffect(
+      React.useCallback(() => {
+        fetchSampleList();
+      },[date]),
+    );
+  
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -54,7 +58,7 @@ const SampleListScreen = () => {
       if (success) {
         setData(data.samples || []);
       } else {
-        Alert.alert('Error', errors || 'Something went wrong');
+         Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (err) {
       Alert.alert('Error', 'Failed to fetch samples');
@@ -109,7 +113,11 @@ const SampleListScreen = () => {
 
       <FlatList
         data={data}
+        refreshing={loading}
         keyExtractor={item => item._id}
+         onRefresh={() => {
+             fetchSampleList();
+          }}
         renderItem={renderItem}
         ListEmptyComponent={
           !loading ? (

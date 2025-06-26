@@ -40,7 +40,7 @@ const TopAsmsScreen = ({route}) => {
         if (success) {
           setData(data.users);
         } else {
-          Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

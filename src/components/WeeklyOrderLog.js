@@ -26,7 +26,7 @@ const WeekOrderLog = () => {
         if (success) {
           setData(data.days);
         } else {
-          Alert.alert('Error orders', JSON.stringify(errors));
+          Alert.alert('Error orders', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

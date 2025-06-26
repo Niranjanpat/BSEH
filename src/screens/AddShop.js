@@ -77,6 +77,9 @@ const AddShop = () => {
         if (success) {
           setBeat(data.routes);
         }
+        else{
+            Alert.alert('Error', Object.values(errors).join(', '));
+        }
       })
       .catch(e => {
         alert(e);

@@ -133,7 +133,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
           if (errors.add_order) {
             Alert.alert('Failed', errors.add_order);
           } else {
-            Alert.alert('Failed', JSON.stringify(errors));
+           Alert.alert('Error', Object.values(errors).join(', '));
           }
         }
         setOrderLoading(false);

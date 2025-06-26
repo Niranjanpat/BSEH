@@ -39,7 +39,6 @@ const usePromotionalItems = () => {
       .then(res => {
         const {success, data, errors} = res.data;
 
-        console.log('promotional items', data);
 
         if (success) {
           setCustomerPromotionalItems(data.customer_promotional_items);

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, Alert} from 'react-native';
 import {Caption, List, Subheading, Text} from 'react-native-paper';
 
 import {COLORS} from '../../../../constants/theme/colors';
@@ -21,7 +21,7 @@ const OrderDetail = ({route}) => {
       if (success) {
         setData(data);
       } else {
-        alert(JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
       }
     });
   };

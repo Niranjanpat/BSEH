@@ -153,7 +153,7 @@ const AddExpensesScreen = ({route, navigation}) => {
             navigation.goBack();
           } else {
             console.log(errors);
-            Alert.alert('Error', JSON.stringify(errors));
+            Alert.alert('Error', Object.values(errors).join(', '));
           }
         };
 
@@ -224,7 +224,11 @@ const AddExpensesScreen = ({route, navigation}) => {
             onOptionChanged={onExpenseTypeSelected}
             initialValue={expenseTypeSelected.current}
           />
-          {loadingExpenseType && <ActivityIndicator style={{position: 'absolute', bottom: 14, right: 30}}/>}
+          {loadingExpenseType && (
+            <ActivityIndicator
+              style={{position: 'absolute', bottom: 14, right: 30}}
+            />
+          )}
         </View>
 
         <View style={styles.container}>

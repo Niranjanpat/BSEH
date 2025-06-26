@@ -27,7 +27,7 @@ const EditOwnerNumberScreen = ({ route, navigation }) => {
           Alert.alert('Updated', 'Owner number has been updated');
           navigation.goBack();
         } else {
-          Alert.alert('Error', JSON.stringify(errors));
+         Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {

@@ -1,5 +1,5 @@
 import React ,{useEffect,useState} from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView ,Alert} from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getTaDasDetail } from '../../../services/ta_das_services';
@@ -22,7 +22,7 @@ const TaDasDetailScreen = ({ route }) => {
           setData(data);
         } else {
           console.log(errors);
-          Alert.alert('Error', JSON.stringify(errors));
+         Alert.alert('Error', Object.values(errors).join(', '));
         }
       } catch (error) {
         console.log('getExpenses', error);
