@@ -55,6 +55,7 @@ const AddShop = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [beatDetail, setBeatDetail] = useState({});
   const [beatDetailLoading, setBeatDetailLoading] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   useEffect(() => {
     getBeat();
@@ -76,9 +77,8 @@ const AddShop = () => {
         const {data, success, errors} = res.data;
         if (success) {
           setBeat(data.routes);
-        }
-        else{
-            Alert.alert('Error', Object.values(errors).join(', '));
+        } else {
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -87,7 +87,7 @@ const AddShop = () => {
   };
 
   const getPinCode = text => {
-    getPinCodeList(text, beatDetail?.city_id)
+    getPinCodeList(text, beatDetail?.city_id);
     getPinCodeList(text, beatDetail?.city_id)
       .then(res => {
         setPinCodeList(res?.data?.data?.pin_codes || []);
@@ -130,6 +130,7 @@ const AddShop = () => {
   };
 
   const getCurrentLocation = async setFieldValue => {
+    
     if (Platform.OS === 'ios') {
       Geolocation.requestAuthorization('always');
     } else {
@@ -138,14 +139,17 @@ const AddShop = () => {
       );
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) return;
     }
-
+    setLoadingLocation(true);
     Geolocation.getCurrentPosition(
       position => {
         const {latitude, longitude} = position.coords;
         setFieldValue('latitude', latitude);
         setFieldValue('longitude', longitude);
+        setLoadingLocation(false);
       },
-      error => console.log(error),
+      error =>{ console.log(error)
+        setLoadingLocation(false);
+      },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   };
@@ -242,7 +246,7 @@ const AddShop = () => {
           formData.append('town', values.town);
           formData.append('latitude', values.latitude);
           formData.append('longitude', values.longitude);
-          formData.append('address',values.address);
+          formData.append('address', values.address);
 
           if (values.image) {
             formData.append('photo', {
@@ -257,7 +261,7 @@ const AddShop = () => {
               const {data, success, errors} = res.data;
               if (success) {
                 Alert.alert('Success', 'Customer added successfully');
-                resetForm(); 
+                resetForm();
               } else {
                 setErrors(res.data.errors || {});
               }
@@ -277,7 +281,12 @@ const AddShop = () => {
             <Subheading style={{color: COLORS.accentPrimary}}>
               Shop Information
             </Subheading>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
               <FormPicker
                 label="Beat"
                 selectedValue={values.route_id}
@@ -368,7 +377,7 @@ const AddShop = () => {
 
             <TextInput
               style={styles.input}
-              error={!!errors.location}
+              error={!!errors.longitude}
               value={
                 values.latitude && values.longitude
                   ? `${values.latitude}, ${values.longitude}`
@@ -378,13 +387,19 @@ const AddShop = () => {
               label="GPS Location"
               mode="outlined"
               right={
-                <TextInput.Icon
-                  icon="map-marker-radius-outline"
-                  onPress={() => getCurrentLocation(setFieldValue)}
-                />
+                loadingLocation ? (
+                  <TextInput.Icon
+                    icon={() => <ActivityIndicator size={20} />}
+                  />
+                ) : (
+                  <TextInput.Icon
+                    icon="map-marker-radius-outline"
+                    onPress={() => getCurrentLocation(setFieldValue)}
+                  />
+                )
               }
             />
-            {errors.longitude && errors.latitude && (
+            {errors.longitude && (
               <Text style={styles.errorText}>{errors.longitude}</Text>
             )}
 
@@ -577,7 +592,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingTop: 10,
-   // backgroundColor: '#f1f9fe'
+    // backgroundColor: '#f1f9fe'
   },
   input: {
     marginTop: 10,

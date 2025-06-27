@@ -1,4 +1,3 @@
-// AddShop.js
 import React, {useEffect, useState} from 'react';
 import {
   PermissionsAndroid,
@@ -9,6 +8,7 @@ import {
   Platform,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {Button, Subheading, Text, TextInput} from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
@@ -49,6 +49,7 @@ const EditCustomerScreen = ({navigation, route}) => {
   const [pinCodeList, setPinCodeList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [beatDetail, setBeatDetail] = useState([]);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   useEffect(() => {
     getBeat();
@@ -116,14 +117,18 @@ const EditCustomerScreen = ({navigation, route}) => {
       );
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) return;
     }
-
+    setLoadingLocation(true);
     Geolocation.getCurrentPosition(
       position => {
         const {latitude, longitude} = position.coords;
         setFieldValue('latitude', latitude);
         setFieldValue('longitude', longitude);
+        setLoadingLocation(false);
       },
-      error => console.log(error),
+      error => {
+        console.log(error)
+        setLoadingLocation(false);
+      },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   };
@@ -331,7 +336,7 @@ const EditCustomerScreen = ({navigation, route}) => {
 
             <TextInput
               style={styles.input}
-              error={!!errors.location}
+              error={!!errors.longitude}
               value={
                 values.latitude && values.longitude
                   ? `${values.latitude}, ${values.longitude}`
@@ -340,14 +345,20 @@ const EditCustomerScreen = ({navigation, route}) => {
               editable={false}
               label="GPS Location"
               mode="outlined"
-              right={
-                <TextInput.Icon
-                  icon="map-marker-radius-outline"
-                  onPress={() => getCurrentLocation(setFieldValue)}
-                />
+               right={
+                loadingLocation ? (
+                  <TextInput.Icon
+                    icon={() => <ActivityIndicator size={20} color={COLORS.primary} />}
+                  />
+                ) : (
+                  <TextInput.Icon
+                    icon="map-marker-radius-outline"
+                    onPress={() => getCurrentLocation(setFieldValue)}
+                  />
+                )
               }
             />
-            {errors.longitude && errors.latitude && (
+            {errors.longitude  && (
               <Text style={styles.errorText}>{errors.longitude}</Text>
             )}
 

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import {
   Button,
   TextInput,
@@ -18,10 +18,10 @@ import { COLORS } from '../../constants/theme/colors';
 
 const maximumDate = dayjs().subtract(13, 'year').toDate();
 
-const UpdateProfileScreen = ({navigation}) => {
+const UpdateProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { profile } = useSelector(state => state.auth);
-
+ 
   const initialDate = profile.date_of_birth ? dayjs(profile.date_of_birth).toDate() : null;
 
   const [dob, setDob] = useState(initialDate);
@@ -33,35 +33,29 @@ const UpdateProfileScreen = ({navigation}) => {
   const [isDobVisible, setIsDobVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const btnSubmitEnabled = dob && email && phone && address;
+  const [errors, setErrors] = useState({});
 
-  const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
+  const formattedDob = useMemo(() => (dob ? dayjs(dob).format('YYYY-MM-DD') : ''), [dob]);
 
-  const handleDobModal = () => {
-    setIsDobVisible(true);
-  };
+  const btnSubmitEnabled = useMemo(() => {
+    return dob && email && phone && address && Object.keys(errors).length === 0;
+  }, [dob, email, phone, address, errors]);
 
-  const validation = () => {
-    if (!dob) {
-      Alert.alert(null, 'Please select your date of birth');
-      return false;
-    }
-    if (!email.includes('@') || !email.includes('.')) {
-      Alert.alert(null, 'Email address you entered is invalid');
-      return false;
-    }
-    if (!/^[0-9]{10}$/.test(phone)) {
-      Alert.alert(null, 'Phone number you entered is invalid');
-      return false;
-    }
-    if (!address.trim()) {
-      Alert.alert(null, 'Address you entered is invalid');
-      return false;
-    }
-    return true;
-  };
+  const validateFields = useCallback(() => {
+    const newErrors = {};
+    if (!dob) newErrors.dob = 'Please select your date of birth';
+    if (!email.includes('@') || !email.includes('.')) newErrors.email = 'Invalid email address';
+    if (!/^[0-9]{10}$/.test(phone)) newErrors.phone = 'Phone number must be 10 digits';
+    if (!address.trim()) newErrors.address = 'Address cannot be empty';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [dob, email, phone, address]);
 
-  const updateProfile = () => {
+  useEffect(() => {
+    validateFields();
+  }, [dob, email, phone, address]);
+
+  const updateProfile = async () => {
     setIsLoading(true);
     const body = {
       gender,
@@ -71,36 +65,31 @@ const UpdateProfileScreen = ({navigation}) => {
       address,
     };
 
-    updateUserProfile(body)
-      .then(res => {
-        const { data, success, errors } = res.data;
-        if (success) {
-          dispatch(storeAccount({ ...profile, ...body }));
-          Alert.alert('Success', 'Your profile has been successfully updated.');
-          navigation.goBack();
-        } else if (errors) {
-          Alert.alert(null, Object.values(errors).join(', '));
-        }
-      })
-      .catch(err => {
-        console.error('update profile error:', err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    try {
+      const res = await updateUserProfile(body);
+      const { data, success, errors: apiErrors } = res.data;
+      if (success) {
+        dispatch(storeAccount({ ...profile, ...body }));
+        Alert.alert('Success', 'Your profile has been successfully updated.');
+        navigation.goBack();
+      } else if (apiErrors) {
+        Alert.alert(null, Object.values(apiErrors).join(', '));
+      }
+    } catch (err) {
+      console.error('update profile error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = () => {
-    if (validation()) {
+    if (validateFields()) {
       updateProfile();
     }
   };
 
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={styles.contentContainer}
-    >
+    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.contentContainer}>
       <View style={styles.section}>
         <Subheading style={styles.sectionTitle}>Gender</Subheading>
         <RadioButton.Group onValueChange={setGender} value={gender}>
@@ -117,7 +106,7 @@ const UpdateProfileScreen = ({navigation}) => {
 
       <View style={styles.section}>
         <Subheading style={styles.sectionTitle}>Date of Birth</Subheading>
-        <Pressable onPress={handleDobModal} style={styles.dateInputWrapper} android_ripple={{ color: '#eee' }}>
+        <Pressable onPress={() => setIsDobVisible(true)} style={styles.dateInputWrapper} android_ripple={{ color: '#eee' }}>
           <TextInput
             editable={false}
             value={formattedDob}
@@ -125,8 +114,10 @@ const UpdateProfileScreen = ({navigation}) => {
             style={styles.dateInput}
             pointerEvents="none"
             mode="outlined"
+            error={!!errors.dob}
           />
         </Pressable>
+        {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
       </View>
 
       <View style={styles.section}>
@@ -139,7 +130,9 @@ const UpdateProfileScreen = ({navigation}) => {
           style={styles.textInput}
           autoCapitalize="none"
           autoComplete="email"
+          error={!!errors.email}
         />
+        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
       </View>
 
       <View style={styles.section}>
@@ -151,7 +144,9 @@ const UpdateProfileScreen = ({navigation}) => {
           maxLength={10}
           mode="outlined"
           style={styles.textInput}
+          error={!!errors.phone}
         />
+        {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
       </View>
 
       <View style={styles.section}>
@@ -163,13 +158,15 @@ const UpdateProfileScreen = ({navigation}) => {
           multiline
           numberOfLines={2}
           style={styles.textInput}
+          error={!!errors.address}
         />
+        {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
       </View>
 
       <Button
         mode="contained"
         onPress={handleSubmit}
-        labelStyle={{fontWeight:'bold',color:'black'}}
+        labelStyle={{ fontWeight: 'bold', color: 'black' }}
         disabled={!btnSubmitEnabled || isLoading}
         loading={isLoading}
         style={styles.submitButton}
@@ -232,6 +229,12 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     borderRadius: 8,
-    backgroundColor:COLORS.primary,
+    backgroundColor: COLORS.primary,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 13,
+    marginTop: 4,
+    marginLeft: 4,
   },
 });

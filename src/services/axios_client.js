@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
 import VersionNumber from 'react-native-version-number';
 
@@ -8,7 +8,6 @@ import store from '../store';
 import {URLS} from '../constants/urls';
 import {storeIsInvalid} from '../store/actions/auth';
 
-//initialize mmkv storage
 const mmkv = new MMKVStorage.Loader().initialize();
 
 const client = axios.create({
@@ -40,7 +39,11 @@ client.interceptors.response.use(
     return response;
   },
   error => {
-    return error;
+    if (error.message === 'Network Error') {
+      Alert.alert('No Internet', 'Internet connection is not available.');
+    }
+
+    return Promise.reject(error);
   },
 );
 

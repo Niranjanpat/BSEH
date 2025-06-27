@@ -1,6 +1,6 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
-import {Button, Text, TextInput} from 'react-native-paper';
+import {Button, Text, TextInput , ActivityIndicator} from 'react-native-paper';
 import Geolocation from 'react-native-geolocation-service';
 
 import VerticalSpacer from '../../../components/VerticalSpacer';
@@ -11,12 +11,14 @@ const UpdateCustomerLocationScreen = ({route}) => {
   const customerID = route.params.id;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
   const [location, setLocation] = useState({
     latitude: customer.latitude,
     longitude: customer.longitude,
   });
 
   const getCurrentLocation = () => {
+    setLoadingLocation(true);
     Geolocation.getCurrentPosition(
       position => {
         var data = {
@@ -24,9 +26,11 @@ const UpdateCustomerLocationScreen = ({route}) => {
           longitude: position.coords.longitude,
         };
         setLocation(data);
+        setLoadingLocation(false);
       },
       error => {
         console.log(error.code, error.message);
+        setLoadingLocation(false);
       },
       {
         enableHighAccuracy: true,
@@ -67,12 +71,18 @@ const UpdateCustomerLocationScreen = ({route}) => {
         editable={false}
         placeholder="Press on the icon at right"
         mode="flat"
-        right={
-          <TextInput.Icon
-            icon="map-marker-radius-outline"
-            onPress={() => getCurrentLocation()}
-          />
-        }
+         right={
+                loadingLocation ? (
+                  <TextInput.Icon
+                    icon={() => <ActivityIndicator size={20} />}
+                  />
+                ) : (
+                  <TextInput.Icon
+                    icon="map-marker-radius-outline"
+                    onPress={() => getCurrentLocation()}
+                  />
+                )
+              }
       />
       <VerticalSpacer />
       <Button

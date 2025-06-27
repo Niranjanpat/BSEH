@@ -36,8 +36,7 @@ const AddExpensesScreen = ({route, navigation}) => {
   const [image, setImage] = useState(null);
   const [expenseType, setExpenseType] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const latitude = useRef(null);
-  const longitude = useRef(null);
+  const [location, setLocation] = useState({latitude: null, longitude: null});
   const [loadingExpenseType, setLoadingExpenseType] = useState(true);
 
   const onExpenseTypeSelected = type => {
@@ -56,7 +55,9 @@ const AddExpensesScreen = ({route, navigation}) => {
     };
     checkCameraPermission();
     fetchExpenseTypes();
+    fetchLocation(); 
   }, []);
+
 
   useEffect(() => {
     if (channel === 'update' && expenseDetail) {
@@ -82,6 +83,23 @@ const AddExpensesScreen = ({route, navigation}) => {
     );
   };
 
+
+  const fetchLocation = () => { 
+     // Fetch location separately
+    Geolocation.getCurrentPosition(
+      position => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      error => {
+        console.log('Location error:', error.message);
+      },
+      {enableHighAccuracy: true, timeout: 10000, maximumAge: 10000},
+    );
+  }
+
   const handleOpenGallery = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) return;
@@ -101,78 +119,69 @@ const AddExpensesScreen = ({route, navigation}) => {
   };
 
   const onSubmit = () => {
-    if (
-      !amount ||
-      !details ||
-      !extra ||
-      !expenseTypeSelected.current ||
-      !image
-    ) {
+    const moneyRegex = /^\d+(\.\d{1,2})?$/;
+
+    if(location.longitude === null || location.latitude === null) {
+      fetchLocation();
+    }
+
+    if (!amount || !details || !expenseTypeSelected.current || !image) {
+      return Alert.alert('Error', 'Please fill in all fields and select an image.');
+    }
+
+    if (!moneyRegex.test(amount) || (extra && !moneyRegex.test(extra))) {
       return Alert.alert(
-        'Error',
-        'Please fill in all fields and select an image.',
+        'Invalid Amount',
+        'Amount and Extra must be valid positive numbers (no negative or invalid decimals).',
       );
     }
 
     const formattedDate = dayjs(date).format('YYYY-MM-DD');
     setIsLoading(true);
 
-    Geolocation.getCurrentPosition(
-      position => {
-        latitude.current = position.coords.latitude;
-        longitude.current = position.coords.longitude;
+    const formData = new FormData();
+    if (channel === 'update') {
+      formData.append('_method', 'PUT');
+    }
+    if (image) {
+      formData.append('photo', {
+        uri: image,
+        type: 'image/jpeg',
+        name: 'expense.jpeg',
+      });
+    }
 
-        const formData = new FormData();
-        if (channel === 'update') {
-          formData.append('_method', 'PUT');
-        }
-        if (image) {
-          formData.append('photo', {
-            uri: image,
-            type: 'image/jpeg',
-            name: 'expense.jpeg',
-          });
-        }
-        formData.append('date', formattedDate);
-        formData.append('longitude', longitude.current);
-        formData.append('latitude', latitude.current);
-        formData.append('expense_type', expenseTypeSelected.current);
-        formData.append('amount', amount);
-        formData.append('details', details);
-        formData.append('extra', extra);
+    formData.append('date', formattedDate);
+    formData.append('longitude', location.longitude || '');
+    formData.append('latitude', location.latitude || '');
+    formData.append('expense_type', expenseTypeSelected.current);
+    formData.append('amount', amount);
+    formData.append('details', details);
+    formData.append('extra', extra);
 
-        const handleResponse = res => {
-          const {success, errors} = res.data;
-          if (success) {
-            Alert.alert(
-              'Success',
-              `Expense ${
-                channel === 'update' ? 'updated' : 'added'
-              } successfully`,
-            );
-            navigation.goBack();
-          } else {
-            console.log(errors);
-            Alert.alert('Error', Object.values(errors).join(', '));
-          }
-        };
+    const handleResponse = res => {
+      const {success, errors} = res.data;
+      if (success) {
+        Alert.alert(
+          'Success',
+          `Expense ${channel === 'update' ? 'updated' : 'added'} successfully`,
+        );
+        navigation.goBack();
+      } else {
+        console.log(errors);
+        Alert.alert('Error', Object.values(errors).join(', '));
+      }
+    };
 
-        const apiCall =
-          channel === 'update'
-            ? updateExpense(formData, id)
-            : addExpense(formData);
+    const apiCall =
+      channel === 'update'
+        ? updateExpense(formData, id)
+        : addExpense(formData);
 
-        apiCall
-          .then(handleResponse)
-          .catch(err => console.log(err))
-          .finally(() => setIsLoading(false));
-      },
-      error => {
-        setIsLoading(false);
-        Alert.alert('Location', 'Check if your location service is enabled.');
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
+    apiCall
+      .then(handleResponse)
+      .catch(err => console.log(err))
+      .finally(() => setIsLoading(false));
   };
 
   const fetchExpenseTypes = async () => {
@@ -184,7 +193,6 @@ const AddExpensesScreen = ({route, navigation}) => {
         setExpenseType(data.expense_types);
       } else {
         console.log('Expense type error:', errors);
-        // Alert.alert('Error', JSON.stringify(errors));
       }
     } catch (error) {
       console.log('getExpenseTypes error:', error);
