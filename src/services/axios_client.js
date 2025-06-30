@@ -7,6 +7,7 @@ import outdatedVersion from '../utils/outdatedVersion';
 import store from '../store';
 import {URLS} from '../constants/urls';
 import {storeIsInvalid} from '../store/actions/auth';
+import tokenInvalid from '../utils/invalid_token';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -32,6 +33,7 @@ client.interceptors.response.use(
     if (errors && errors.token) {
       mmkv.clearStore();
       store.dispatch(storeIsInvalid(true));
+      tokenInvalid(navigation)
     }
     if (errors && errors.version) {
       outdatedVersion();

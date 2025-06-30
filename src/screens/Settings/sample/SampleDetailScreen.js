@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   customerText: {
+    color:'black',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 6,
@@ -157,10 +158,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
+    color:'black',
     fontWeight: '600',
     marginLeft: 6,
   },
   value: {
+    color:'black',
     marginLeft: 4,
     flexShrink: 1,
   },

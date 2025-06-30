@@ -22,9 +22,6 @@ const useMonthlyAttendance = () => {
     getMonthlyAttendance(year, month)
       .then(res => {
         const {daily_attendances} = res.data?.data;
-
-        console.log('aaa', daily_attendances);
-
         setData(daily_attendances);
       })
       .catch(err => {

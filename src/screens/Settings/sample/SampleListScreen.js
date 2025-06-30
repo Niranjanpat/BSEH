@@ -161,10 +161,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
+    color:'black',
     fontWeight: '600',
     marginLeft: 6,
   },
   value: {
+    color:'black',
     marginLeft: 4,
     flexShrink: 1,
   },

@@ -102,8 +102,7 @@ export const postCustomerCheckIn = (location, navigation) => {
             navigation.navigate(ROUTES.feedback, {checkStatus: false});
             return;
           }
-
-          alert(JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

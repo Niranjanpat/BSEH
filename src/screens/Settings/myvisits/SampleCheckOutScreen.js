@@ -364,7 +364,7 @@ const SampleImageModal = ({image, visible, hideModal, submitOrder}) => {
           Sample Image
         </Text>
         <CameraModal
-          buttonText="Take Sample Photo"
+          buttonText="Sample"
           onImageSelect={onImageSelected}
         />
         <Button

@@ -3,9 +3,6 @@ import client from './axios_client';
 import clientMultipart from './axios_multipart_client';
 //login api
 export const login = async (email, password, deviceInfo) => {
-  console.log('deviceInfo', deviceInfo);
-  console.log('email', email);
-  console.log('password', password);
   return await client.post(URLS.login, {
     email,
     password,

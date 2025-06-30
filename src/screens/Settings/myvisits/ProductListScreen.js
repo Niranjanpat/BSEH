@@ -33,7 +33,7 @@ import {COLORS} from '../../../constants/theme/colors';
 import {SPACINGS, TYPOGRAPHY} from '../../../constants/theme';
 import {FONTS} from '../../../constants/theme/fonts';
 import {ROUTES} from '../../../constants/routes';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import PromotionalQuantity from '../../../components/promotional_item/PromotionalQuantity';
 
 const ProductListScreen = ({route, navigation}) => {
@@ -136,7 +136,7 @@ const ProductListScreen = ({route, navigation}) => {
   const sampleProducts = data.filter(item => item.is_sample === 'Yes');
 
   const filterData = channel === 'sample' ? sampleProducts : data;
-  
+
   return (
     <View style={styles.container}>
       <Searchbar
@@ -208,7 +208,7 @@ const ProductListScreen = ({route, navigation}) => {
   );
 };
 
-const FeaturedProduct = ({item,channel}) => (
+const FeaturedProduct = ({item, channel}) => (
   <LinearGradient
     style={styles.featuredProductContainer}
     colors={[COLORS.primary, COLORS.primaryDark, COLORS.accentPrimary]}>
@@ -217,7 +217,7 @@ const FeaturedProduct = ({item,channel}) => (
   </LinearGradient>
 );
 
-const NormalProduct = ({item,channel}) => {
+const NormalProduct = ({item, channel}) => {
   const navigation = useNavigation();
   const childRef = useRef(null);
   const [imageError, setImageError] = useState(false);
@@ -241,10 +241,11 @@ const NormalProduct = ({item,channel}) => {
           )}
           right={_ => (
             <View style={styles.listRight}>
-              {
-                (channel === 'sample' ? (<PromotionalQuantity data={item} />) : (<ProductQuantity data={item} />))
-              }
-              
+              {channel === 'sample' ? (
+                <PromotionalQuantity data={item} />
+              ) : (
+                <ProductQuantity data={item} />
+              )}
             </View>
           )}
           left={_ => (
