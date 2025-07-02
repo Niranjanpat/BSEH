@@ -104,18 +104,19 @@ export const MyVisitStack = () => {
         name={ROUTES.product}
         component={ProductListScreen}
         options={({route}) => ({
-          title: route.params?.data?.name || 'Product List',
+          title:
+            route.params?.channel === 'sample' ? 'Sample List' : 'Product List',
           headerRight: () => <OrderCartIcon />,
         })}
       />
-         <Screen
+      <Screen
         name={ROUTES.product_detail}
         component={ProductDetailScreen}
         options={({route}) => ({
-          title: route.params?.title || 'My Visit Details',
+          title: 'Sample Detail',
         })}
       />
-       <Screen
+      <Screen
         name={ROUTES.sample_checkout}
         component={SampleCheckOutScreen}
         options={{
@@ -298,7 +299,9 @@ const ReturnOrderStack = () => {
 
 export const ComplaintStack = () => {
   return (
-    <Navigator initialRouteName={ROUTES.complaint} screenOptions={{animation: 'slide_from_right'}}>
+    <Navigator
+      initialRouteName={ROUTES.complaint}
+      screenOptions={{animation: 'slide_from_right'}}>
       <Screen
         name={ROUTES.complaint}
         component={ComplaintListScreen}
@@ -313,7 +316,7 @@ export const ComplaintStack = () => {
           title: 'Add Complaints',
         }}
       />
-       <Screen       
+      <Screen
         name={ROUTES.complaint_detail}
         component={ComplaintDetailScreen}
         options={{
@@ -333,7 +336,9 @@ export const ComplaintStack = () => {
 
 export const ExpenseStack = () => {
   return (
-    <Navigator initialRouteName={ROUTES.expenses} screenOptions={{animation: 'slide_from_right'}}>
+    <Navigator
+      initialRouteName={ROUTES.expenses}
+      screenOptions={{animation: 'slide_from_right'}}>
       <Screen
         name={ROUTES.expenses}
         component={ExpensesListScreen}
@@ -368,7 +373,9 @@ export const ExpenseStack = () => {
 
 export const TaDasStack = () => {
   return (
-     <Navigator initialRouteName={ROUTES.ta_das} screenOptions={{animation: 'slide_from_right'}}>
+    <Navigator
+      initialRouteName={ROUTES.ta_das}
+      screenOptions={{animation: 'slide_from_right'}}>
       <Screen
         name={ROUTES.ta_das}
         component={TaDasListScreen}
@@ -389,7 +396,9 @@ export const TaDasStack = () => {
 
 export const UserComplaintStack = () => {
   return (
-    <Navigator initialRouteName={ROUTES.user_complaint } screenOptions={{animation: 'slide_from_right'}}>
+    <Navigator
+      initialRouteName={ROUTES.user_complaint}
+      screenOptions={{animation: 'slide_from_right'}}>
       <Screen
         name={ROUTES.user_complaint}
         component={UserComplaintListScreen}

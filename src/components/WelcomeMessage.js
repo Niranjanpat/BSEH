@@ -52,6 +52,7 @@ const WelcomeMessage = () => {
           autoTrackingConfig: {
             endTimeConfig: {hour: 10, minute: 0, amPm: 'pm'},
           },
+          displacement: 50
         });
       }
     } else {

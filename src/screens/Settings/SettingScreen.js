@@ -1,11 +1,11 @@
 import MapplsIntouch from 'mappls-intouch-react-native';
 import React from 'react';
-import {View, StyleSheet, SafeAreaView, ScrollView, Alert} from 'react-native';
+import {View, StyleSheet, SafeAreaView, ScrollView, Alert, Platform} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
 import {Avatar, Button, List, Subheading, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../constants/routes';
-import {COLORS} from '../../constants/theme/colors'; // Add this import
+import {COLORS} from '../../constants/theme/colors';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -141,6 +141,7 @@ export default SettingScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    paddingTop: Platform.OS === 'android' && Platform.Version >= 33 ? 40 : 6,
     //  backgroundColor: '#f9f9f9',
   },
   logout: {

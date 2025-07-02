@@ -33,7 +33,6 @@ client.interceptors.response.use(
     if (errors && errors.token) {
       mmkv.clearStore();
       store.dispatch(storeIsInvalid(true));
-      tokenInvalid(navigation)
     }
     if (errors && errors.version) {
       outdatedVersion();

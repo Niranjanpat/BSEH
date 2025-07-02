@@ -45,8 +45,11 @@ export const getCustomerTarget = async id => {
   return await client.get(url);
 };
 
-export const updateShopLocation = async (id, data) => {
-  return await client.post(URLS.customer + id + '/update-location', data);
+export const updateShopLocation = async (id, location) => {
+  return await client.post(URLS.customer + id + '/update-location', {
+    'latitude': location.latitude,
+    'longitude': location.longitude
+  });
 };
 export const getCustomerTypeList = async () => {
   return await client.get(URLS.customerType);

@@ -1,6 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import {Platform, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 
 import Achievement from '../../components/Achievement';
 import TodayOrder from '../../components/TodayOrder';
@@ -60,6 +60,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    paddingTop: Platform.OS === 'android' && Platform.Version >= 33 ? 40 : 6,
   },
   margin_bottom: {
     marginBottom: 30,

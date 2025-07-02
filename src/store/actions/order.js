@@ -72,8 +72,8 @@ export const updateCustomerLocation = (id, location) => {
       const {data, errors, success} = res.data;
       if (success) {
         Alert.alert('Success', 'Location has been updated');
-      } else {
-        Alert.alert('Error', JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     })
     .catch(e => {
@@ -81,7 +81,7 @@ export const updateCustomerLocation = (id, location) => {
     });
 };
 
-export const postCustomerCheckIn = (location, navigation) => {
+export const postCustomerCheckIn = (location, navigation, updateLocation) => {
   return async dispatch => {
     CustomerCheckIn(location)
       .then(res => {
@@ -93,7 +93,7 @@ export const postCustomerCheckIn = (location, navigation) => {
         } else {
           dispatch(storeCustomerVisitStatusLoading(false));
           if (errors.check_in == 'out_of_range') {
-            alertChangeLocation(location.customer_id, location);
+            alertChangeLocation(updateLocation.customer_id, updateLocation);
             return;
           }
 

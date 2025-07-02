@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, ScrollView, Image, StyleSheet } from 'react-native';
-import { getProductDetail } from '../../../services/order_service';
-import { useTheme } from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  ActivityIndicator,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import {getProductDetail} from '../../../services/order_service';
+import {Text, useTheme} from 'react-native-paper';
 
-const ProductDetailScreen = ({ route }) => {
-  const { colors } = useTheme();
+const ProductDetailScreen = ({route}) => {
+  const {colors} = useTheme();
   const data = route.params.data;
   const [detail, setDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,20 +24,20 @@ const ProductDetailScreen = ({ route }) => {
     setIsLoading(true);
     getProductDetail(data._id)
       .then(res => {
-        const { success, data, error } = res.data;
+        const {success, data, errors} = res.data;
         if (success) {
           setDetail(data);
-        } else {
-          Alert.alert('Error', error);
+        } else if (errors) {
+          Alert.alert('Error!', Object.values(errors).join(', '));
         }
       })
-      .catch(console.warn)
+      .catch(console.log)
       .finally(() => {
         setIsLoading(false);
       });
   };
 
-  if (isLoading || !detail) {
+  if (isLoading) {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -38,10 +45,18 @@ const ProductDetailScreen = ({ route }) => {
     );
   }
 
+  if (!detail) {
+    return (
+      <View style={styles.loaderContainer}>
+        <Text>No Detail Found</Text>
+      </View>
+    );
+  }
+
   return (
-      <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image
-        source={{ uri: detail.photo_url }}
+        source={{uri: detail.photo_url}}
         style={styles.productImage}
         resizeMode="contain"
       />
@@ -51,7 +66,10 @@ const ProductDetailScreen = ({ route }) => {
       <View style={styles.detailCard}>
         <DetailRow label="MRP" value={`₹ ${detail.mrp}`} />
         <DetailRow label="Dealer Price" value={`₹ ${detail.dealer_price}`} />
-        <DetailRow label="Supplier Price" value={`₹ ${detail.supplier_selling_price}`} />
+        <DetailRow
+          label="Supplier Price"
+          value={`₹ ${detail.supplier_selling_price}`}
+        />
         <DetailRow label="Net Weight" value={`${detail.net_weight} kg`} />
         <DetailRow label="Unit" value={detail.unit} />
         <DetailRow label="GST Rate" value={`${detail.gst_rate}%`} />
@@ -62,11 +80,10 @@ const ProductDetailScreen = ({ route }) => {
         <Text style={styles.description}>{detail.description}</Text>
       </View>
     </ScrollView>
-    
   );
 };
 
-const DetailRow = ({ label, value }) => (
+const DetailRow = ({label, value}) => (
   <View style={styles.row}>
     <Text style={styles.label}>{label}:</Text>
     <Text style={styles.value}>{value}</Text>

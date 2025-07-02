@@ -96,7 +96,7 @@ export const attendancePunchIn = data => {
     dispatch(storeAttendanceLoading(true));
 
     try {
-      const res = await punchIn(data); // data can be FormData or plain object
+      const res = await punchIn(data);
       const { data: responseData, errors, success } = res?.data ?? {};
 
       if (success) {
@@ -109,6 +109,7 @@ export const attendancePunchIn = data => {
           autoTrackingConfig: {
             endTimeConfig: { hour: 10, minute: 0, amPm: 'pm' },
           },
+          displacement: 50
         });
 
         MapplsIntouch.getCurrentLocationUpdate();

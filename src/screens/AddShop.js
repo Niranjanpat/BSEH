@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'android' && Platform.Version >= 33 ? 40 : 6,
     // backgroundColor: '#f1f9fe'
   },
   input: {

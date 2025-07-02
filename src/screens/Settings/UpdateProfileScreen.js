@@ -166,7 +166,7 @@ const UpdateProfileScreen = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={handleSubmit}
-        labelStyle={{ fontWeight: 'bold', color: 'black' }}
+        labelStyle={{ fontWeight: 'bold'}}
         disabled={!btnSubmitEnabled || isLoading}
         loading={isLoading}
         style={styles.submitButton}

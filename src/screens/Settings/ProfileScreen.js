@@ -1,6 +1,12 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import dayjs from 'dayjs';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {
   Appbar,
   Avatar,
@@ -10,96 +16,125 @@ import {
   Text,
   Title,
 } from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {ROUTES} from '../../constants/routes';
 import {COLORS} from '../../constants/theme/colors';
 import {SPACINGS} from '../../constants/theme';
+import {profile} from '../../services/auth_service';
+import {storeAccount} from '../../store/actions/auth';
 
 const ProfileScreen = ({navigation}) => {
-  const {profile, role} = useSelector(state => state.auth);
+  const {profile: userDetails, role} = useSelector(state => state.auth);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useDispatch();
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    profile()
+      .then(res => {
+        const {data, errors, success} = res.data;
+        if (success) {
+          dispatch(storeAccount(data));
+        } else {
+          if (errors) {
+            Alert.alert('Error!', Object.values(errors).join(', '));
+          }
+        }
+      })
+      .catch(e => {
+        console.log('getProfileDetail', e);
+      })
+      .finally(() => setRefreshing(false));
+  }, []);
 
   const handleEditPressed = () => {
     navigation.navigate(ROUTES.update_profile);
   };
 
-  console.log("profile", profile);
+  console.log('profile', userDetails);
 
-  // Prepare dictionary object with updated profile fields
   const profileFields = {
-    'Emp Code': profile?.emp_code || 'N/A',
-    'E-mail': profile?.email || 'N/A',
-    'Contact Number': profile?.contact_number || 'N/A',
-    DOB:dayjs(profile?.date_of_birth).format('DD-MM-YYYY') || 'N/A',
-    Gender: profile?.gender || 'N/A',
-    Region: profile?.region_name || 'N/A',
-    State: profile?.state_name || 'N/A',
-    Headquarters: profile?.headquarters_name || 'N/A',
-    'Join Date': dayjs(profile?.join_date).format('DD-MM-YYYY') || 'N/A',
-    Address: profile?.address || 'N/A',
-    'Aadhar Number': profile?.aadhar_number || 'N/A',
-    'PAN Number': profile?.pan_number || 'N/A',
-    'Emergency Contact Name': profile?.emergency_contact_name || 'N/A',
-    'Emergency Contact Number': profile?.emergency_contact_number || 'N/A',
-    'Last Working Day': profile?.last_working_day || 'N/A',
+    'Emp Code': userDetails?.emp_code || '',
+    'E-mail': userDetails?.email || '',
+    'Contact Number': userDetails?.contact_number || '',
+    DOB: dayjs(userDetails?.date_of_birth).format('DD-MM-YYYY') || '',
+    Gender: userDetails?.gender || '',
+    Region: userDetails?.region_name || '',
+    State: userDetails?.state_name || '',
+    Headquarters: userDetails?.headquarters_name || '',
+    'Join Date': dayjs(userDetails?.join_date).format('DD-MM-YYYY') || '',
+    Address: userDetails?.address || '',
+    'Aadhar Number': userDetails?.aadhar_number || '',
+    'PAN Number': userDetails?.pan_number || '',
+    // 'Emergency Contact Name': userDetails?.emergency_contact_name || '',
+    'Emergency Contact Number': userDetails?.emergency_contact_number || '',
+    'Last Working Day':
+      dayjs(userDetails?.last_working_day).format('DD-MM-YYYY') || '',
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <>
       <Appbar.Header style={styles.appbar}>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Profile" />
       </Appbar.Header>
-
-      <View style={styles.profileCard}>
-        <Avatar.Text
-          style={styles.avatar}
-          size={80}
-          label={profile?.name ? profile.name.charAt(0) : 'P'}
-          color="#fff"
-        />
-        <Title style={styles.name}>{profile?.name || 'User'}</Title>
-        <Caption style={styles.role}>{role || 'N/A'}</Caption>
-      </View>
-
-
-      <View style={styles.detailsContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Subheading style={styles.sectionTitle}>Profile Info</Subheading>
-          <Button
-            style={styles.editButton}
-            mode="contained"
-            icon="account-edit"
-            onPress={handleEditPressed}></Button>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.profileCard}>
+          <Avatar.Text
+            style={styles.avatar}
+            size={80}
+            label={userDetails?.name ? userDetails.name.charAt(0) : 'P'}
+            color="#fff"
+          />
+          <Title style={styles.name}>{userDetails?.name || 'User'}</Title>
+          <Caption style={styles.role}>{role || ''}</Caption>
         </View>
 
-        <View style={styles.dictionaryContainer}>
-          {Object.entries(profileFields).map(([key, value]) => (
-            <View style={styles.fieldRow} key={key}>
-              <Text style={styles.fieldLabel}>{key}:</Text>
-              <Text
-                style={
-                  value === 'N/A' ? styles.notAvailableValue : styles.fieldValue
-                }>
-                {value}
-              </Text>
-            </View>
-          ))}
+        <View style={styles.detailsContainer}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Subheading style={styles.sectionTitle}>Profile Info</Subheading>
+            <Button
+              style={styles.editButton}
+              mode="contained"
+              icon="account-edit"
+              onPress={handleEditPressed}></Button>
+          </View>
+
+          <View style={styles.dictionaryContainer}>
+            {Object.entries(profileFields).map(([key, value]) => (
+              <View style={styles.fieldRow} key={key}>
+                <Text style={styles.fieldLabel}>{key}:</Text>
+                <Text
+                  style={
+                    value === '' ? styles.notAvailableValue : styles.fieldValue
+                  }>
+                  {value}
+                </Text>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 };
 
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     flex: 1,
     backgroundColor: COLORS.background || '#f5f7fa',
   },

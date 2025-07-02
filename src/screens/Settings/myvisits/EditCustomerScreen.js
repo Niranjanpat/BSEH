@@ -32,7 +32,7 @@ import {requestCameraPermission} from '../../../utils/useCameraPermission';
 // Helper Picker Component
 const FormPicker = ({label, selectedValue, items, onValueChange}) => (
   <View style={styles.picker}>
-    <Picker selectedValue={selectedValue} onValueChange={onValueChange}>
+    <Picker selectedValue={selectedValue} onValueChange={onValueChange} dropdownIconColor={'black'} style={{color: 'black',}}>
       <Picker.Item label={`Select ${label}`} value="" />
       {items.map(item => (
         <Picker.Item key={item._id} label={item.name} value={item._id} />

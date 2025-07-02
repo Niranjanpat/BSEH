@@ -334,7 +334,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
 const Header = ({isForPromotional, isCollapsed, onCollapsePressed}) => (
   <View style={styles.headerContainer}>
     <Text style={[TYPOGRAPHY.body1, {textAlign: 'center'}]}>
-      {isForPromotional ? 'Added Promotionals' : 'Added Products'}
+      {isForPromotional ? 'Added Samples' : 'Added Products'}
     </Text>
     <TouchableOpacity
       activeOpacity={0.7}
@@ -442,7 +442,6 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 14,
-    color: COLORS.grey,
   },
   totalValue: {
     fontSize: 16,

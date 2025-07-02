@@ -25,7 +25,7 @@
     "dayjs": "^1.11.10",
     "formik": "^2.4.5",
     "jail-monkey": "^2.8.0",
-    "mappls-intouch-react-native": "^1.0.4",
+    "mappls-intouch-react-native": "^1.0.5",
     "mobx": "^6.13.7",
     "mobx-react": "^9.2.0",
     "react": "18.2.0",

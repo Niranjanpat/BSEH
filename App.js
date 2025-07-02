@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
+import React, {useEffect} from 'react';
+import {Provider} from 'react-redux';
 import codePush from 'react-native-code-push';
-import { NavigationContainer, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import {
+  NavigationContainer,
+  DefaultTheme as NavigationDefaultTheme,
+} from '@react-navigation/native';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 
 import store from './src/store';
 import theme from './src/constants/theme';
 import AppNavigation from './src/navigation';
 
-const codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
 
 const App = () => {
   // useEffect(() => {
@@ -22,7 +25,16 @@ const App = () => {
   return (
     <PaperProvider theme={theme}>
       <Provider store={store}>
-        <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <StatusBar
+          backgroundColor={theme.colors.background}
+          barStyle="dark-content"
+          animated={true}
+        />
+        <SafeAreaView
+          style={[
+            styles.container,
+            {backgroundColor: theme.colors.background},
+          ]}>
           <NavigationContainer
             theme={{
               ...NavigationDefaultTheme,
@@ -30,8 +42,7 @@ const App = () => {
                 ...NavigationDefaultTheme.colors,
                 background: theme.colors.background,
               },
-            }}
-          >
+            }}>
             {/* <StatusBar animated={true} backgroundColor={COLORS.primary} /> */}
             <AppNavigation />
           </NavigationContainer>

@@ -70,7 +70,6 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
   );
   const {role, token} = useSelector(state => state.auth);
 
-
   const [visitLogVisible, setVisitLogVisible] = useState(false);
   const [topSellingVisible, setTopSellingVisible] = useState(false);
   const [returnDialogVisible, setReturnDialogVisible] = useState(false);
@@ -197,7 +196,13 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             type: 'image/jpeg',
             name: 'punchin.jpeg',
           });
-          dispatch(postCustomerCheckIn(datas, navigation));
+          dispatch(
+            postCustomerCheckIn(datas, navigation, {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              customer_id: data._id,
+            }),
+          );
         }
       },
       error => {
@@ -233,7 +238,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     try {
       const res = await client.get(url);
       const {data, errors, success} = res.data;
-     // console.log(res.data);
+      // console.log(res.data);
 
       if (success) {
         setCustomer(data);
@@ -372,24 +377,36 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
 
         <HorizontalSpacer />
         <>
-          {isCheckedIn && <View style={{flexDirection:'row'}}>
-             <Button
-          icon="tag-outline"
-          mode="contained"
-           onPress={() => navigation.navigate(ROUTES.product, {data: data,channel:'sample'})}>
-          Samples
-        </Button>
+          {isCheckedIn && (
+            <View style={{flexDirection: 'row'}}>
+              <Button
+                icon="tag-outline"
+                mode="contained"
+                onPress={() =>
+                  navigation.navigate(ROUTES.product, {
+                    data: data,
+                    channel: 'sample',
+                  })
+                }>
+                Samples
+              </Button>
 
-        <HorizontalSpacer />
-        <Button
-          mode="contained"
-          icon="comment-account-outline"
-          onPress={() => {navigation.navigate(ROUTES.complaint,{channel:'add',complaint:null , id:data._id})}}>
-          Complaint
-        </Button>
-          </View>}
+              <HorizontalSpacer />
+              <Button
+                mode="contained"
+                icon="comment-account-outline"
+                onPress={() => {
+                  navigation.navigate(ROUTES.complaint, {
+                    channel: 'add',
+                    complaint: null,
+                    id: data._id,
+                  });
+                }}>
+                Complaint
+              </Button>
+            </View>
+          )}
         </>
-       
 
         {/* {role !== 'promoter' && (
           <>
