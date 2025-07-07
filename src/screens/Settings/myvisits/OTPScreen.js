@@ -56,7 +56,7 @@ const OTPScreen = ({route, navigation}) => {
             return;
           }
 
-          Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {

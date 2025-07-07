@@ -57,7 +57,7 @@ const useRouteSchedule = () => {
 
         if (success) {
           setRoutes(data.routes);
-        } else {
+        } else if (errors) {
             Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
@@ -99,7 +99,7 @@ const useRouteSchedule = () => {
 
         if (success) {
           setScehduleDetail(data);
-        } else {
+        } else if (errors) {
            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
@@ -121,7 +121,7 @@ const useRouteSchedule = () => {
         if (success) {
           Alert.alert('Success', 'Route schedule has been updated');
           pop(2);
-        } else {
+        } else if (errors) {
           const {route_id} = errors;
 
           if (route_id) {
@@ -129,7 +129,7 @@ const useRouteSchedule = () => {
             return;
           }
 
-          Alert.alert(null, JSON.stringify(errors));
+          Alert.alert(null, Object.values(errors).join(', '));
         }
       })
       .catch(err => {
@@ -149,7 +149,7 @@ const useRouteSchedule = () => {
         if (success) {
           Alert.alert('Success', 'Route schedule has been deleted');
           goBack();
-        } else {
+        } else if (errors) {
            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
@@ -171,7 +171,7 @@ const useRouteSchedule = () => {
         if (success) {
           Alert.alert('Success', 'Route schedule has been cancelled');
           goBack();
-        } else {
+        } else if (errors) {
           const {reason} = errors;
 
           if (reason) {
@@ -179,7 +179,7 @@ const useRouteSchedule = () => {
             return;
           }
 
-          Alert.alert(null, JSON.stringify(errors));
+          Alert.alert(null, Object.values(errors).join(', '));
         }
       })
       .catch(err => {

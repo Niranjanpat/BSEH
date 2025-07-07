@@ -38,6 +38,7 @@ const AddExpensesScreen = ({route, navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState({latitude: null, longitude: null});
   const [loadingExpenseType, setLoadingExpenseType] = useState(true);
+  const moneyRegex = /^\d+(\.\d{1,2})?$/;
 
   const onExpenseTypeSelected = type => {
     expenseTypeSelected.current = type;
@@ -64,7 +65,7 @@ const AddExpensesScreen = ({route, navigation}) => {
       const parsedDate = new Date(expenseDetail.date);
       setDate(!isNaN(parsedDate) ? parsedDate : new Date());
       setDetails(expenseDetail.details || '');
-      setExtra(expenseDetail.extra || '');
+      setExtra(expenseDetail.extra ? `${expenseDetail.extra}` : '');
       setAmount(expenseDetail.amount?.toString() || '');
       expenseTypeSelected.current = expenseDetail.expense_type || null;
       setImage(expenseDetail.photo_path || null);
@@ -119,8 +120,6 @@ const AddExpensesScreen = ({route, navigation}) => {
   };
 
   const onSubmit = () => {
-    const moneyRegex = /^\d+(\.\d{1,2})?$/;
-
     if(location.longitude === null || location.latitude === null) {
       fetchLocation();
     }
@@ -129,10 +128,10 @@ const AddExpensesScreen = ({route, navigation}) => {
       return Alert.alert('Error', 'Please fill in all fields and select an image.');
     }
 
-    if (!moneyRegex.test(amount) || (extra && !moneyRegex.test(extra))) {
+    if (!amount.match(moneyRegex) || (extra && !extra.match(moneyRegex))) {
       return Alert.alert(
         'Invalid Amount',
-        'Amount and Extra must be valid positive numbers (no negative or invalid decimals).',
+        'Amount and Extra Expenses must be valid amount upto two decimal numbers.',
       );
     }
 
@@ -167,7 +166,7 @@ const AddExpensesScreen = ({route, navigation}) => {
           `Expense ${channel === 'update' ? 'updated' : 'added'} successfully`,
         );
         navigation.goBack();
-      } else {
+      } else if (errors) {
         console.log(errors);
         Alert.alert('Error', Object.values(errors).join(', '));
       }

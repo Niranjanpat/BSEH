@@ -57,7 +57,7 @@ const SampleListScreen = () => {
       const {success, data, errors} = res.data;
       if (success) {
         setData(data.samples || []);
-      } else {
+      } else if (errors) {
          Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (err) {

@@ -35,8 +35,8 @@ const TopDistributorScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.distributors);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

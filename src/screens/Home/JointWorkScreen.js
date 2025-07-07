@@ -135,14 +135,15 @@ const JointWorkScreen = ({navigation}) => {
                 setIsLoading(false);
                 navigation.goBack();
                 dispatch(fetchJointWorkStatus());
-              } else {
-                setIsLoading(false);
+              } else if (errors) {
+                
                 if (errors?.joint_working) {
                   return Alert.alert('Error', errors.joint_working);
                 }
 
-                Alert.alert('Error', JSON.stringify(errors));
+                Alert.alert('Error', Object.values(errors).join(', '));
               }
+              setIsLoading(false);
             })
             .catch(e => {
               setIsLoading(false);

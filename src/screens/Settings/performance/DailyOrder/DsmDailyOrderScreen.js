@@ -38,10 +38,10 @@ const DsmDailyOrderScreen = ({id, date}) => {
             setHasMore(data.has_more);
             setDataDSM(data.customers);
           }
-        } else {
+        } else if (errors) {
           console.log('err', errors);
 
-          alert(JSON.stringify(errors));
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

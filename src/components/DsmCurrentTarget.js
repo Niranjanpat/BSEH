@@ -25,12 +25,12 @@ const DsmCurrentTarget = () => {
         setTargets(data.targets);
 
         console.log(data);
-      } else {
+      } else if (errors) {
         if (errors.id) {
           Alert.alert('Oops', `${errors.id} while fetching current target`);
           return;
         }
-        Alert.alert('Oops', JSON.stringify(errors));
+        Alert.alert('Oops', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('fetchDsmCurrentTarget exception', error);

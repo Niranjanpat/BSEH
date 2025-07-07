@@ -39,7 +39,7 @@ const TopAsmsScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.users);
-        } else {
+        } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

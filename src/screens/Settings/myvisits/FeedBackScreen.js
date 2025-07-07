@@ -33,7 +33,7 @@ const FeedBackScreen = ({navigation, route}) => {
             return {label: feed.text, value: feed._id};
           });
           setData(tmp_arr);
-        } else {
+        } else if (errors) {
           if (errors.feedbacks) {
             Alert.alert('Denied', errors.feedbacks);
           } else {
@@ -71,7 +71,7 @@ const FeedBackScreen = ({navigation, route}) => {
           if (success) {
             navigation.goBack();
             alert('Feedback Saved');
-          } else {
+          } else if (errors) {
             if (errors.feedbacks) {
               Alert.alert('Denied', errors.feedbacks);
             } else {

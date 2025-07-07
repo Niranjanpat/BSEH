@@ -34,8 +34,8 @@ const TopSOListScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.users);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

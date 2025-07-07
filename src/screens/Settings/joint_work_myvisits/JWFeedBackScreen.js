@@ -37,7 +37,7 @@ const JWFeedbackScreen = ({route, navigation}) => {
         );
 
         navigation.goBack();
-      } else {
+      } else if (errors) {
         if (errors?.save_feedback) {
           return Alert.alert('Error', errors.save_feedback);
         }
@@ -46,7 +46,7 @@ const JWFeedbackScreen = ({route, navigation}) => {
           return Alert.alert('Error', errors.feedback);
         }
 
-        Alert.alert('Error', JSON.stringify(errors));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('save feedback', error);
@@ -71,12 +71,12 @@ const JWFeedbackScreen = ({route, navigation}) => {
           setLoading(false);
           alert('Checked out & feedback submitted!');
           navigation.navigate('Home');
-        } else {
+        } else if (errors) {
           if (errors.feedback) {
             return alert(errors.feedback);
           }
 
-          Alert.alert('Errors', JSON.stringify(errors));
+          Alert.alert('Errors', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

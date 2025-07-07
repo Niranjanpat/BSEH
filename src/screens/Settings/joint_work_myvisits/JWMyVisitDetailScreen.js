@@ -102,7 +102,7 @@ const JWMyVisitDetailcreen = ({route, navigation}) => {
       const {data, errors, success} = res.data;
       if (success) {
         setCustomer(data);
-      } else {
+      } else if (errors) {
         console.log('fetchCustomerDetails:::', JSON.stringify(errors));
         if (errors.token_role) {
           return Alert.alert(
@@ -145,7 +145,7 @@ const JWMyVisitDetailcreen = ({route, navigation}) => {
 
         if (success) {
           fetchCheckInStatus();
-        } else {
+        } else if (errors) {
           if (errors.check_in == 'out_of_range') {
             Alert.alert(
               'Confirm',
@@ -160,7 +160,7 @@ const JWMyVisitDetailcreen = ({route, navigation}) => {
             return;
           }
 
-          alert(JSON.stringify(errors));
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -180,7 +180,7 @@ const JWMyVisitDetailcreen = ({route, navigation}) => {
 
         if (success) {
           fetchCheckInStatus();
-        } else {
+        } else if (errors) {
           if (errors.feedback) {
             return navigation.navigate(ROUTES.jw_feedback, {
               node: 'check_out',
@@ -188,7 +188,7 @@ const JWMyVisitDetailcreen = ({route, navigation}) => {
             });
           }
 
-          Alert.alert('Errors', JSON.stringify(errors));
+          Alert.alert('Errors', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

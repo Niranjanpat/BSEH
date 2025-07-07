@@ -37,12 +37,12 @@ const LastTenVisitsModal = ({visible = false, onClose = () => {}, id}) => {
       // console.log(data);
       if (success) {
         setVisits(data.customer_visits);
-      } else {
+      } else if (errors) {
         if (errors.token_role) {
           return Alert.alert('Oops', errors.token_role);
         }
 
-        Alert.alert('Oops', JSON.stringify(errors));
+        Alert.alert('Oops', Object.values(errors).join(', '));
       }
     } catch (error) {
       Alert.alert('Error', error.toString());

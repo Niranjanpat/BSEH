@@ -93,9 +93,9 @@ const AddComplaintScreen = ({route, navigation}) => {
         );
         if (channel === 'add') resetForm();
         navigation.goBack();
-      } else {
+      } else if (errors) {
         console.log(errors);
-        Alert.alert('Error', JSON.stringify(errors));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (err) {
       console.log(err);

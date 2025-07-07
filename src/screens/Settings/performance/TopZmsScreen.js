@@ -35,8 +35,8 @@ const TopZmsScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.users);
-        } else {
-          Alert.alert('Error', JSON.stringify(errors));
+        } else if (errors) {
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

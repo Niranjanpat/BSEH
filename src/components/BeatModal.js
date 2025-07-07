@@ -45,7 +45,7 @@ const BeatModal = ({isMyVisits, value, setValue}) => {
         if (success) {
           setBeat(data.routes);
         }
-        else{
+        else if (errors) {
            Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

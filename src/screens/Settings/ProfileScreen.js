@@ -71,8 +71,7 @@ const ProfileScreen = ({navigation}) => {
     'PAN Number': userDetails?.pan_number || '',
     // 'Emergency Contact Name': userDetails?.emergency_contact_name || '',
     'Emergency Contact Number': userDetails?.emergency_contact_number || '',
-    'Last Working Day':
-      dayjs(userDetails?.last_working_day).format('DD-MM-YYYY') || '',
+    'Last Working Day': dayjs(userDetails?.last_working_day).isValid() ? dayjs(userDetails?.last_working_day).format('DD-MM-YYYY') : '',
   };
 
   return (

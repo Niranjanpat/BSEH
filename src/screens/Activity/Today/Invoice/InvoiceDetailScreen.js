@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, FlatList, TextInput} from 'react-native';
+import {View, StyleSheet, FlatList, TextInput, Alert} from 'react-native';
 import {
   Caption,
   IconButton,
@@ -27,8 +27,8 @@ const InvoiceDetailScreen = ({navigation, route}) => {
       console.log(data);
       if (success) {
         setData(data);
-      } else {
-        alert(JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert('Error!', Object.values(errors).join(', '));
       }
     });
   };

@@ -19,8 +19,8 @@ const VerticalListScreen = ({navigation}) => {
         const {data, errors, success} = res.data;
         if (success) {
           setData(data.verticals);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

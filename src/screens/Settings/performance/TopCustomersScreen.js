@@ -40,8 +40,8 @@ const TopCustomersScreen = ({route}) => {
         console.log(data);
         if (success) {
           setDataDSM(data.customers);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -63,8 +63,8 @@ const TopCustomersScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.customers);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

@@ -44,7 +44,7 @@ const SalesReturn = ({navigation, route}) => {
         const {data, success, errors} = res.data;
         if (success) {
           setData(data.sales_returns);
-        } else {
+        } else if (errors) {
             Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

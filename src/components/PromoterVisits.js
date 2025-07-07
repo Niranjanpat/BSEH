@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {Text, Title} from 'react-native-paper';
 
@@ -27,8 +27,8 @@ const PromoterVisitList = () => {
       if (success) {
         console.log(data);
         setVisits(data.customer_visits);
-      } else {
-        Alert.alert('Oops', JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert('Oops', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('fetchVisits excp', error);

@@ -123,11 +123,9 @@ const useReport = () => {
         setLoading(false);
         const {data, success, errors} = res.data;
 
-        console.log(res.data);
-
         if (success) {
           setData(data);
-        } else {
+        } else if (errors) {
           const {id} = errors;
 
           if (id) {

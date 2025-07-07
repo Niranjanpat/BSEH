@@ -35,8 +35,8 @@ const JWRoutescreen = ({navigation}) => {
       const {success, data, errors} = res.data;
       if (success) {
         setRoutes(data.routes);
-      } else {
-        Alert.alert(JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert(Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log(error);

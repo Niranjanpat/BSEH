@@ -54,8 +54,8 @@ const OrderLogScreen = ({route}) => {
         console.log(data);
         if (success) {
           setDataDSM(data.days);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -78,8 +78,8 @@ const OrderLogScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.days);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

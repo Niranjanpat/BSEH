@@ -16,7 +16,7 @@ import {getExpense} from '../../../services/expense_sevice';
 import DatePicker from 'react-native-date-picker';
 import dayjs from 'dayjs';
 import theme from '../../../constants/theme';
-import TabFilter, { filterOptions } from '../../../components/TabFilter';
+import TabFilter, {filterOptions} from '../../../components/TabFilter';
 
 const STATUS_COLORS = {
   approved: 'green',
@@ -71,7 +71,7 @@ const ExpensesListScreen = () => {
           page.current = page.current + 1;
         }
       } else {
-       Alert.alert('Error', Object.values(errors).join(', '));
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getExpenses', error);
@@ -111,13 +111,19 @@ const ExpensesListScreen = () => {
   const renderDatePickers = () => (
     <View style={styles.dateFilter}>
       <TouchableOpacity
-        onPress={() => setOpenStart(true)}
+        onPress={() => {
+          if (!openStart) setOpenStart(true);
+        }}
         style={styles.dateBtn}>
         <Text style={styles.dateText}>
           Start: {dayjs(startDate).format('YYYY-MM-DD')}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setOpenEnd(true)} style={styles.dateBtn}>
+      <TouchableOpacity
+        onPress={() => {
+          if (!openEnd) setOpenEnd(true);
+        }}
+        style={styles.dateBtn}>
         <Text style={styles.dateText}>
           End: {dayjs(endDate).format('YYYY-MM-DD')}
         </Text>
@@ -156,10 +162,7 @@ const ExpensesListScreen = () => {
   return (
     <View style={{flex: 1}}>
       {renderDatePickers()}
-      <TabFilter
-        initialValue={'All'}
-        onFilterChange={(v) => setStatus(v)}
-      />
+      <TabFilter initialValue={'All'} onFilterChange={v => setStatus(v)} />
       {expense.length ? (
         <FlatList
           refreshing={isLoading}

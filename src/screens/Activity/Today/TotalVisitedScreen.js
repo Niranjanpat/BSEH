@@ -27,7 +27,7 @@ const TotalVisitedScreen = ({navigation, route}) => {
       const {data, success, errors} = res.data;
       if (success) {
         setData(data);
-      } else {
+      } else if (errors) {
         Alert.alert('Error', Object.values(errors).join(', '));
       }
     });

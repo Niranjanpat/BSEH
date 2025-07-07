@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Platform} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {URLS} from '../constants/urls';
 import MMKVStorage from 'react-native-mmkv-storage';
 import VersionNumber from 'react-native-version-number';
@@ -7,6 +7,7 @@ import VersionNumber from 'react-native-version-number';
 import outdatedVersion from '../utils/outdatedVersion';
 import store from '../store';
 import {storeIsInvalid} from '../store/actions/auth';
+import { handleNetworkError } from './axios_client';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -32,15 +33,16 @@ clientMultipart.interceptors.response.use(
     if (errors.token) {
       mmkv.clearStore();
       store.dispatch(storeIsInvalid(true));
+      return Promise.resolve({
+        data: { data: null, errors: null, success: false },
+      });
     }
     if (errors.version) {
       outdatedVersion();
     }
     return response;
   },
-  error => {
-    return error;
-  },
+  error => handleNetworkError(error),
 );
 
 export default clientMultipart;

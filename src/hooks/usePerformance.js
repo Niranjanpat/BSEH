@@ -51,7 +51,7 @@ const usePerformance = () => {
 
         if (success) {
           setData(data);
-        } else {
+        } else if (errors) {
           const {start_date, end_date} = errors;
 
           if (start_date) {
@@ -66,7 +66,8 @@ const usePerformance = () => {
       .catch(err => {
         setLoading(false);
         console.log('fetch cumulative performance error', err?.response?.data);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const fetchSubordinates = () => {
@@ -74,7 +75,7 @@ const usePerformance = () => {
       const {data, errors, success} = res.data;
       if (success) {
         setUsers(data.users);
-      } else {
+      } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
       }
     });
@@ -94,7 +95,7 @@ const usePerformance = () => {
 
         if (success) {
           setProducts(data.products);
-        } else {
+        } else if (errors) {
             Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

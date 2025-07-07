@@ -1,5 +1,5 @@
 import React, {useEffect, memo, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {COLORS} from '../constants/theme/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Title, Text} from 'react-native-paper';
@@ -19,8 +19,8 @@ const AttendanceSummary = () => {
       const {data, errors, success} = res.data;
       if (success) {
         setAttendanceSummary(data);
-      } else {
-        Alert.alert('Oops', JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert('Error!', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('getAttendanceSummary', error);

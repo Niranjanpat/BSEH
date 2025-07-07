@@ -97,7 +97,7 @@ const MyVisitScreen = ({navigation}) => {
       if (success) {
         setData(data.customers);
         setFullData(data.customers);
-      } else {
+      } else if (errors) {
         console.log('fetchMyVisit error:::', errors);
         Alert.alert('Error', Object.values(errors).join(', '));
       }

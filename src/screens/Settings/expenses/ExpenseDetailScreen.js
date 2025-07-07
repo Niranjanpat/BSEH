@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {getExpenseDetail} from '../../../services/expense_sevice';
 import {ROUTES} from '../../../constants/routes';
 import {useFocusEffect} from '@react-navigation/native';
+import RemoteImage from '../../../components/RemoteImage';
 
 const getStatusColor = {
   approved: 'green',
@@ -90,8 +91,8 @@ const ExpenseDetailScreen = ({route, navigation}) => {
         <DetailRow icon="category" label="Expense Type" value={expense_type} />
         <DetailRow icon="calendar-today" label="Date" value={date} />
         <DetailRow icon="attach-money" label="Amount" value={`₹ ${amount}`} />
-        <DetailRow icon="notes" label="Details" value={details || 'N/A'} />
-        <DetailRow icon="info" label="Extra Info" value={extra || 'N/A'} />
+        <DetailRow icon="notes" label="Details" value={details || ''} />
+        <DetailRow icon="info" label="Extra Expense" value={extra ? `₹ ${extra}` : ''} />
 
         <DetailRow
           icon="flag"
@@ -133,7 +134,7 @@ const ExpenseDetailScreen = ({route, navigation}) => {
         {photo_path ? (
           <>
             <Text style={styles.photoLabel}>Photo</Text>
-            <Image source={{uri: photo_path}} style={styles.image} />
+            <RemoteImage uri={photo_path} style={styles.image} />
           </>
         ) : (
           <Text style={[styles.value, {marginTop: 10}]}>No image uploaded</Text>

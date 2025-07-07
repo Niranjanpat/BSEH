@@ -27,7 +27,7 @@ const RecentOrder = () => {
         setRecentOrder(data.orders);
       } else {
         console.log(errors);
-      //  Alert.alert('Oops', JSON.stringify(errors));
+      //  Alert.alert('Oops', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('fetchLastTenVisits excp', error);

@@ -33,8 +33,8 @@ const TodayCustomerOrder = ({route}) => {
         console.log(data);
         if (success) {
           setDataDSM(data);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -52,8 +52,8 @@ const TodayCustomerOrder = ({route}) => {
         console.log(data);
         if (success) {
           setData(data);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

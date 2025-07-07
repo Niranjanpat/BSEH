@@ -1,4 +1,4 @@
-import {StyleSheet, Image, View} from 'react-native';
+import {StyleSheet, Image, View, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {launchCamera} from 'react-native-image-picker';
 import {Button} from 'react-native-paper';

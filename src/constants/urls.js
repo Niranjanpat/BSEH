@@ -1,5 +1,5 @@
 export const URLS = {
-  // base: 'http://182.18.142.47/ruchi-soya-nutrition/api/', //live
+  // base: 'http://206.1.13.176:4001/api/', //live
   base: 'http://182.18.142.21/divya-prakashan/api/', //local test
 
   login: 'users/login',

@@ -19,16 +19,16 @@ import {UserHierarchyStack} from './user_hierarchy_stack';
 const {Navigator, Screen} = createBottomTabNavigator();
 
 export default function BottomTabStack({navigation}) {
-  const dispatch = useDispatch();
-  const {isInvalid, role, jointStatus} = useSelector(state => state.auth);
+  // const dispatch = useDispatch();
+  const {role, jointStatus} = useSelector(state => state.auth);
 
-  React.useEffect(() => {
-    console.log('is token invalid', isInvalid);
+  // React.useEffect(() => {
+  //   console.log('is token invalid', isInvalid);
 
-    if (isInvalid) {
-      dispatch(tokenInvalid(navigation));
-    }
-  }, [isInvalid]);
+  //   if (isInvalid) {
+  //     dispatch(tokenInvalid(navigation));
+  //   }
+  // }, [isInvalid]);
 
   return (
     <Navigator

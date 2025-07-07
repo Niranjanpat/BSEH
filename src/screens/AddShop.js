@@ -77,7 +77,7 @@ const AddShop = () => {
         const {data, success, errors} = res.data;
         if (success) {
           setBeat(data.routes);
-        } else {
+        } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
@@ -87,7 +87,6 @@ const AddShop = () => {
   };
 
   const getPinCode = text => {
-    getPinCodeList(text, beatDetail?.city_id);
     getPinCodeList(text, beatDetail?.city_id)
       .then(res => {
         setPinCodeList(res?.data?.data?.pin_codes || []);
@@ -262,8 +261,8 @@ const AddShop = () => {
               if (success) {
                 Alert.alert('Success', 'Customer added successfully');
                 resetForm();
-              } else {
-                setErrors(res.data.errors || {});
+              } else if (errors) {
+                setErrors(errors || {});
               }
             })
             .catch(err => console.log(err))

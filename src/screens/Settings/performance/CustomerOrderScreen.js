@@ -41,8 +41,8 @@ const CustomerOrderScreen = ({route}) => {
         console.log(data);
         if (success) {
           setDataDSM(data.customers);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -65,8 +65,8 @@ const CustomerOrderScreen = ({route}) => {
         console.log(data);
         if (success) {
           setData(data.customers);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

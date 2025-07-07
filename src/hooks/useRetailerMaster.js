@@ -33,13 +33,13 @@ export const useRetailerMaster = () => {
           setCustomerData(data.customer_types);
         } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
-          setLoading(false);
         }
       })
       .catch(e => {
         Alert.alert(e);
         setLoading(false);
-      });
+      })
+      .finally(() => setLoading(false));;
   };
 
   const fetchCustomerClasses = () => {
@@ -52,13 +52,13 @@ export const useRetailerMaster = () => {
           setCustomerData(data.customer_classes);
         } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
-          setLoading(false);
         }
       })
       .catch(e => {
         Alert.alert(e);
         setLoading(false);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const setCustomerData = value => {

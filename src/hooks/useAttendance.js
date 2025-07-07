@@ -65,7 +65,7 @@ export const useAttendance = () => {
           setSelection(channel);
           navigation.navigate(ROUTES.attendance, {openPunchIn: true});
           hideModal();
-        } else {
+        } else if (errors) {
           Alert.alert('Error!', Object.values(errors || {}).join(', '));
         }
       })
@@ -92,7 +92,7 @@ export const useAttendance = () => {
           setSelection(channel);
           navigation.navigate(ROUTES.attendance);
           hideModal();
-        } else {
+        } else if (errors) {
           Alert.alert('Error!', Object.values(errors || {}).join(', '));
         }
       })
@@ -178,7 +178,7 @@ export const useAttendance = () => {
 //         if (success) {
 //           setData(data.reasons);
 //         } else {
-//           Alert.alert('Error', JSON.stringify(errors));
+//           Alert.alert('Error', Object.values(errors).join(', '));
 //         }
 //       })
 //       .catch(e => {
@@ -193,7 +193,7 @@ export const useAttendance = () => {
 //         if (success) {
 //           setData(data.reasons);
 //         } else {
-//           Alert.alert('Error', JSON.stringify(errors));
+//           Alert.alert('Error', Object.values(errors).join(', '));
 //         }
 //       })
 //       .catch(e => {

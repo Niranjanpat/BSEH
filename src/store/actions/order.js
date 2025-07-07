@@ -90,7 +90,7 @@ export const postCustomerCheckIn = (location, navigation, updateLocation) => {
         if (success) {
           dispatch(getCustomerVisitStatus());
           mmkv.setString('checked_in_at', dayjs().toISOString());
-        } else {
+        } else if (errors) {
           dispatch(storeCustomerVisitStatusLoading(false));
           if (errors.check_in == 'out_of_range') {
             alertChangeLocation(updateLocation.customer_id, updateLocation);
@@ -123,7 +123,7 @@ export const postCustomerCheckOut = (location, navigation, screen) => {
           if (location.feedbacks) {
             navigation.goBack();
           }
-        } else {
+        } else if (errors) {
           dispatch(storeCustomerVisitStatusLoading(false));
           if (errors.feedbacks) {
             if (screen === 'FeedbackScreen') {
@@ -137,7 +137,7 @@ export const postCustomerCheckOut = (location, navigation, screen) => {
             });
             return;
           }
-          Alert.alert('Errors', JSON.stringify(errors));
+          Alert.alert('Errors', Object.values(errors).join(', '));
         }
       })
       .catch(e => {

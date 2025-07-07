@@ -38,8 +38,8 @@ const SoDailyOrderScreen = ({id, date}) => {
             setHasMore(data.has_more);
             setDataDSM(data.customers);
           }
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

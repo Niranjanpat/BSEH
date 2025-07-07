@@ -38,7 +38,7 @@ const ScheduleSummaryModal = ({visible = false, onClose = () => {}}) => {
 
         if (success) {
           setData(data);
-        } else {
+        } else if (errors) {
             Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

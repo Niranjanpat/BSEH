@@ -30,7 +30,7 @@ const JointWorkingView = () => {
 
             if (success) {
               dispatch(storeJointStatus({}));
-            } else {
+            } else if (errors) {
               if (errors?.latitude || errors?.longitude) {
                 return Alert.alert(
                   'Error',
@@ -38,7 +38,7 @@ const JointWorkingView = () => {
                 );
               }
 
-              Alert.alert(JSON.stringify(errors));
+              Alert.alert(Object.values(errors).join(', '));
             }
           } catch (error) {
             console.log(error);

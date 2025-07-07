@@ -39,7 +39,7 @@ const usePromoterVisit = (number, date, stockDate) => {
         if (success) {
           Alert.alert('Success', 'New sales data has been added');
           navigation.pop(2);
-        } else {
+        } else if (errors) {
           const {add_order, products} = errors;
 
           if (add_order) {
@@ -52,7 +52,7 @@ const usePromoterVisit = (number, date, stockDate) => {
             return;
           }
 
-          Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       } catch (err) {
         Alert.alert(JSON.stringify(err));
@@ -90,7 +90,7 @@ const usePromoterVisit = (number, date, stockDate) => {
         if (success) {
           Alert.alert('Success', 'Closing stock has been added.');
           navigation.pop(2);
-        } else {
+        } else if (errors) {
           const {products, add_order} = errors;
 
           if (add_order) {

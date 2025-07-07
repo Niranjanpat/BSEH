@@ -6,6 +6,7 @@ import performanceReducer from './reducers/performance';
 import retailerReducer from './reducers/retailer';
 import returnsReducer from './reducers/returns';
 import orderCartPromotionalReducer from './reducers/cartPromotional';
+import tokenMiddleware from './tokenMiddleware';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -19,6 +20,8 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(tokenMiddleware),
 });
 
 export default store;

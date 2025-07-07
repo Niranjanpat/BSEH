@@ -26,7 +26,7 @@ const TopCustomerTable = () => {
         const {data, errors, success} = res.data;
         if (success) {
           setData(data.customers.slice(0, 5));
-        } else {
+        } else if(errors) {
             Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

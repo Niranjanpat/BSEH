@@ -12,8 +12,8 @@ export const getTodaysOrder = data => {
         const {data, errors, success} = res.data;
         if (success) {
           dispatch(storeTodaysOrder(data));
-        } else {
-          Alert.alert(null, JSON.stringify(errors));
+        } else if (errors) {
+          Alert.alert(null, Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -30,7 +30,7 @@ export const getTotalAchievements = () => {
         if (success) {
           dispatch(storeAchievementAmount(data.total_achievements));
         } else {
-          //  Alert.alert(null, JSON.stringify(errors));
+          //  Alert.alert(null, Object.values(errors).join(', '));
         }
       })
       .catch(e => {
@@ -51,7 +51,7 @@ export const getCurrentOverAllTargetsAmount = () => {
         console.log({getCurrentOverAllTargetsAmount: res.data});
         if (success) {
           dispatch(storeCurrentOverAllTargetsAmount(data));
-        } else {
+        } else if (errors) {
             Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

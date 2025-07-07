@@ -38,7 +38,7 @@ const OrderScreen = ({navigation, route}) => {
         const {data, success, errors} = res.data;
         if (success) {
           setData(data.orders);
-        } else {
+        } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })

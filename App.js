@@ -11,6 +11,7 @@ import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import store from './src/store';
 import theme from './src/constants/theme';
 import AppNavigation from './src/navigation';
+import { navigationRef } from './src/navigation/NavigationService';
 
 const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
 
@@ -36,6 +37,7 @@ const App = () => {
             {backgroundColor: theme.colors.background},
           ]}>
           <NavigationContainer
+            ref={navigationRef}
             theme={{
               ...NavigationDefaultTheme,
               colors: {

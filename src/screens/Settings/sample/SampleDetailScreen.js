@@ -36,7 +36,7 @@ const SampleDetailScreen = ({ navigation, route }) => {
         setDetail(data.products || []);
         customer.current=data.customer || '';
         createdAt.current=data.created_at || '';
-      } else {
+      } else if (errors) {
         Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (err) {

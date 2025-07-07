@@ -79,12 +79,12 @@ const CheckOutScreen = ({navigation, route}) => {
           if (success) {
             dispatch(clearCartItems());
             assignPromoItems(true);
-          } else {
+          } else if (errors) {
             setOrderLoading(false);
             if (errors.add_order) {
               return Alert.alert('Failed', errors.add_order);
             }
-            Alert.alert('Failed', JSON.stringify(errors));
+            Alert.alert('Failed', Object.values(errors).join(', '));
           }
         })
         .catch(error => {
@@ -126,18 +126,18 @@ const CheckOutScreen = ({navigation, route}) => {
                 console.log(error);
                 assignPromoItems(true);
               });
-          } else {
+          } else if (errors) {
             setOrderAndMailLoading(false);
-            if (errors.add_order) {
+            if (errors?.add_order) {
               return Alert.alert('Failed', errors.add_order);
             }
-            Alert.alert('Failed', JSON.stringify(errors));
+            Alert.alert('Failed', Object.values(errors).join(', '));
           }
         })
         .catch(error => {
           console.log('submitOrder', error);
           setOrderAndMailLoading(false);
-        });
+        }).finally(() => setOrderAndMailLoading(false));
     } else {
       setOrderAndMailLoading(true);
       assignPromoItems(false);

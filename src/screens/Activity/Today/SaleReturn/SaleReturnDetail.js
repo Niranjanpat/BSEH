@@ -28,8 +28,8 @@ const SaleReturnDetail = ({navigation, route}) => {
       console.log(data);
       if (success) {
         setData(data);
-      } else {
-        alert(JSON.stringify(errors));
+      } else if (errors) {
+        alert(Object.values(errors).join(', '));
       }
     });
   };

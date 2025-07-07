@@ -79,11 +79,11 @@ const ReturnCheckOutScreen = ({navigation}) => {
                 },
               ],
             );
-          } else {
+          } else if (errors) {
             if (errors.add_order) {
               return Alert.alert('Failed', errors.add_order);
             }
-            Alert.alert('Failed', errors.toString());
+            Alert.alert('Failed', Object.values(errors).join(', '));
           }
         })
         .catch(error => {

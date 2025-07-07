@@ -45,8 +45,8 @@ const OrderDetail = ({navigation, route}) => {
         if (success) {
           setData(data);
           dispatch(initOrderWithProducts(data.products));
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          Alert.alert('Error!', Object.values(errors).join(', '));
         }
       })
       .finally(() => setIsLoading(false));
@@ -104,8 +104,8 @@ const OrderDetail = ({navigation, route}) => {
               onPress: () => navigation.goBack(),
             },
           ]);
-        } else {
-          Alert.alert('Error', JSON.stringify(errors));
+        } else if (errors) {
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(error => {

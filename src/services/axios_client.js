@@ -10,6 +10,7 @@ import {storeIsInvalid} from '../store/actions/auth';
 import tokenInvalid from '../utils/invalid_token';
 
 const mmkv = new MMKVStorage.Loader().initialize();
+export let isNetworkAlertShown = false;
 
 const client = axios.create({
   baseURL: URLS.base,
@@ -33,19 +34,44 @@ client.interceptors.response.use(
     if (errors && errors.token) {
       mmkv.clearStore();
       store.dispatch(storeIsInvalid(true));
+      return Promise.resolve({
+        data: { data: null, errors: null, success: false },
+      });
     }
     if (errors && errors.version) {
       outdatedVersion();
     }
     return response;
   },
-  error => {
-    if (error.message === 'Network Error') {
-      Alert.alert('No Internet', 'Internet connection is not available.');
-    }
-
-    return Promise.reject(error);
-  },
+  error => handleNetworkError(error),
 );
 
 export default client;
+
+export function handleNetworkError(error: any) {
+  if (error.message === 'Network Error') {
+    if (!isNetworkAlertShown) {
+      isNetworkAlertShown = true;
+
+      Alert.alert(
+        'No Internet',
+        'Internet connection is not available.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              isNetworkAlertShown = false;
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+
+    return Promise.resolve({
+      data: { data: null, errors: null, success: false },
+    });
+  }
+
+  return Promise.reject(error);
+}

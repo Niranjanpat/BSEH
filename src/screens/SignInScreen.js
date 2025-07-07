@@ -93,7 +93,7 @@ const SignInScreen = ({navigation}) => {
           dispatch(initOrderCart());
           setIsLoading(false);
           navigation.replace(ROUTES.bottomtab_stack);
-        } else {
+        } else if (errors) {
           setIsLoading(false);
           console.log(errors);
           if (errors?.email) {
@@ -109,7 +109,8 @@ const SignInScreen = ({navigation}) => {
         setIsLoading(false);
         console.log(e);
         Alert.alert('Error', e.toString());
-      });
+      })
+      .finally(() => setIsLoading(false));;
   };
 
   return (

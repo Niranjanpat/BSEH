@@ -223,7 +223,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         const {data, errors, success} = res.data;
         if (success) {
           setCustomerTarget(data.targets);
-        } else {
+        } else if (errors) {
           console.log(errors);
           Alert.alert('Error', Object.values(errors).join(', '));
         }
@@ -266,7 +266,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
         if (success) {
           Alert.alert('Success', "OTP has been sent to the owner's number");
           navigation.navigate(ROUTES.verify_otp, {id: data?._id});
-        } else {
+        } else if (errors) {
           const {otp} = errors;
 
           if (otp) {
@@ -274,7 +274,7 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             return;
           }
 
-          Alert.alert('Error', JSON.stringify(errors));
+          Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
       .catch(err => {

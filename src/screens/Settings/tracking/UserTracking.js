@@ -23,8 +23,8 @@ const UserTracking = ({navigation, route}) => {
       console.log(data, date);
       if (success) {
         setData(data.geolocations);
-      } else {
-        alert(JSON.stringify(errors));
+      } else if (errors) {
+        alert(Object.values(errors).join(', '));
       }
     });
   };

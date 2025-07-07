@@ -259,7 +259,7 @@ const EditCustomerScreen = ({navigation, route}) => {
                 navigation.goBack();
               } else {
                 console.log(errors);
-                setErrors(res.data.errors || {});
+                setErrors(errors || {});
               }
             })
             .catch(err => console.log(err))

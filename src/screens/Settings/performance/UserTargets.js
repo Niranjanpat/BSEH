@@ -22,7 +22,7 @@ const UserTargets = ({route}) => {
 
       if (success) {
         setTarget(data.targets);
-      } else {
+      } else if (errors) {
         console.log('UserTargets:::', errors.toString());
       }
     } catch (error) {

@@ -25,7 +25,7 @@ const TotalVisitedDetail = ({route}) => {
       if (success) {
         // console.log('fetchMyVisit:::', data);
         setCustomer(data.customers);
-      } else {
+      } else if (errors) {
         Alert.alert('Error', Object.values(errors).join(', '));
         // Alert.alert('Oops!', error.toString())
         console.log('fetchMyVisit error:::', errors);

@@ -31,8 +31,8 @@ const BeatCustomerList = ({route}) => {
 
       if (success) {
         setData(data.customers);
-      } else {
-        Alert.alert(null, JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert(null, Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('fetchCustomerListByBeatId', error);

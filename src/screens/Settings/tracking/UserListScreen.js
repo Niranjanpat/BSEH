@@ -13,7 +13,7 @@ const UserListScreen = ({navigation, route}) => {
       if (success) {
         console.log(data.users);
         setData(data.users);
-      } else {
+      } else if (errors) {
         console.log(errors);
       }
     });

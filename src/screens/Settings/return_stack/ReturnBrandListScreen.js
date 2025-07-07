@@ -20,8 +20,8 @@ const ReturnBrandListScreen = ({navigation, route}) => {
         const {data, errors, success} = res.data;
         if (success) {
           setData(data.brands);
-        } else {
-          alert(JSON.stringify(errors));
+        } else if (errors) {
+          alert(Object.values(errors).join(', '));
         }
       })
       .catch(e => {

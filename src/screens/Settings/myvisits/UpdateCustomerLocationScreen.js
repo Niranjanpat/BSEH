@@ -47,7 +47,7 @@ const UpdateCustomerLocationScreen = ({route}) => {
         const {data, errors, success} = res.data;
         if (success) {
           alert('Customer location successfully updated!');
-        } else {
+        } else if (errors) {
           if (errors?.id) {
             return alert(errors.id);
           }
@@ -67,7 +67,7 @@ const UpdateCustomerLocationScreen = ({route}) => {
       <Text>GPS Location</Text>
       <TextInput
         style={styles.input}
-        value={location ? `${location.latitude}, ${location.longitude}` : ''}
+        value={location.latitude && location.longitude ? `${location.latitude}, ${location.longitude}` : ''}
         editable={false}
         placeholder="Press on the icon at right"
         mode="flat"

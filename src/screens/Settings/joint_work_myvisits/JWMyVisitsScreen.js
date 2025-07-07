@@ -25,8 +25,8 @@ const JWMyVisitscreen = ({route, navigation}) => {
 
       if (success) {
         setCustomers(data.customers);
-      } else {
-        Alert.alert('Error', JSON.stringify(errors));
+      } else if (errors) {
+        Alert.alert('Error', Object.values(errors).join(', '));
       }
     } catch (error) {
       console.log('fetchCustomerList', error);

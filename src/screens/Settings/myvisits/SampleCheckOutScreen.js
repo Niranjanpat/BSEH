@@ -129,7 +129,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
           Alert.alert('Success', 'Order is Saved Successfully');
          navigation.goBack();
          navigation.goBack(); 
-        } else {
+        } else if (errors) {
           if (errors.add_order) {
             Alert.alert('Failed', errors.add_order);
           } else {
@@ -165,11 +165,11 @@ const SampleCheckOutScreen = ({navigation, route}) => {
                 console.log(error);
                 assignPromoItems(true);
               });
-          } else {
+          } else if (errors) {
             if (errors.add_order) {
               Alert.alert('Failed', errors.add_order);
             } else {
-              Alert.alert('Failed', JSON.stringify(errors));
+              Alert.alert('Failed', Object.values(errors).join(', '));
             }
             setOrderAndMailLoading(false);
           }
@@ -177,7 +177,7 @@ const SampleCheckOutScreen = ({navigation, route}) => {
         .catch(error => {
           console.log('submitOrder', error);
           setOrderAndMailLoading(false);
-        });
+        }).finally(() => setOrderAndMailLoading(false));
     } else {
       setOrderAndMailLoading(true);
       assignPromoItems(false);

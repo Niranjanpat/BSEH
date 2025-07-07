@@ -42,7 +42,7 @@ const usePromotionalItems = () => {
 
         if (success) {
           setCustomerPromotionalItems(data.customer_promotional_items);
-        } else {
+        } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
@@ -70,7 +70,7 @@ const usePromotionalItems = () => {
 
         if (success) {
           setUserPromotionalItems(data.user_promotional_inventory_items);
-        } else {
+        } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
@@ -105,7 +105,7 @@ const usePromotionalItems = () => {
           dispatch(clearCartPromotionalItems())
           setIsAssignedPromotionalItems(true);
           //   Alert.alert('Success', 'Promotional items assigned successfully');
-        } else {
+        } else if (errors) {
           Alert.alert('Error', Object.values(errors).join(', '));
         }
       })
