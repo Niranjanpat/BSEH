@@ -38,7 +38,7 @@ import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 // Helper Picker Component
 const FormPicker = ({label, selectedValue, items, onValueChange}) => (
   <View style={styles.picker}>
-    <Picker selectedValue={selectedValue} onValueChange={onValueChange} style={{color:'black'}}>
+    <Picker selectedValue={selectedValue} onValueChange={onValueChange} style={{color:'black'}} dropdownIconColor={'black'}>
       <Picker.Item label={`Select ${label}`} value="" />
       {items.map(item => (
         <Picker.Item key={item._id} label={item.name} value={item._id} />
@@ -193,8 +193,9 @@ const AddShop = () => {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={styles.container}>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <SafeAreaView />
+      <View style={styles.container}>
       <Formik
         initialValues={{
           route_id: '',
@@ -310,10 +311,9 @@ const AddShop = () => {
                     .finally(() => setBeatDetailLoading(false));
                 }}
               />
-              <ActivityIndicator
-                animating={beatDetailLoading}
+              {beatDetailLoading && <ActivityIndicator
                 style={{position: 'absolute', marginEnd: '7%'}}
-              />
+              />}
             </View>
             {errors.route_id && (
               <Text style={styles.errorText}>{errors.route_id}</Text>
@@ -580,6 +580,7 @@ const AddShop = () => {
           </View>
         )}
       </Formik>
+      </View>
     </ScrollView>
   );
 };

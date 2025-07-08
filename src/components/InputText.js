@@ -1,7 +1,7 @@
 import {StyleSheet, TextInput} from 'react-native';
 import React, {useState} from 'react';
 
-const InputText = ({placeholder, keyboardType, onChangeText}) => {
+const InputText = ({placeholder, keyboardType, onChangeText, onBlur}) => {
   const [value, setValue] = useState('');
   return (
     <TextInput
@@ -14,6 +14,7 @@ const InputText = ({placeholder, keyboardType, onChangeText}) => {
         setValue(v);
         onChangeText(v);
       }}
+      onBlur={onBlur}
     />
   );
 };

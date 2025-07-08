@@ -43,7 +43,15 @@ const RetailerMasterFilterMenu = () => {
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={<IconButton icon="filter-outline" size={20} style={{margin: 0}} onPress={openMenu} />}>
+        style={{marginTop: 40}}
+        anchor={
+          <IconButton
+            icon="filter-outline"
+            size={20}
+            style={{margin: 0}}
+            onPress={openMenu}
+          />
+        }>
         <Menu.Item
           onPress={() => {
             handleShowRetailerFilter('Type');

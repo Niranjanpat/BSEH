@@ -1,6 +1,6 @@
 // components/PunchOutModalUI.js
 
-import {StyleSheet, View, TextInput, ScrollView} from 'react-native';
+import {StyleSheet, View, TextInput, ScrollView, Alert} from 'react-native';
 import React, {forwardRef, useState, useImperativeHandle} from 'react';
 import {Modal, Button, Portal, Text} from 'react-native-paper';
 import {COLORS} from '../constants/theme/colors';
@@ -48,38 +48,46 @@ const PunchOutModalUI = forwardRef((props, ref) => {
         <Text variant="titleLarge" style={styles.dialogTitle}>
           Punch Out
         </Text>
-        <ScrollView showsVerticalScrollIndicator={false} >
-        <View style={styles.container}>
-           <Text style={styles.label}>Work feedback</Text>
-          <InputText
-            placeholder="Work feedback"
-            onChangeText={setWorkFeedback}
-          />
-          <View style={styles.container} />
-          <Text style={styles.label}>Day end details</Text>
-          <InputText
-            placeholder="Day end details"
-            onChangeText={setDayEndDetail}
-          />
-          {!isRemarkField && (
-            <>
-              <View style={styles.container} />
-              <Text style={styles.label}>
-                Day End Vehicle K.M (Start KMs: {kilomerters?.startVehicleKm})
-              </Text>
-              <InputText
-                placeholder="Day End Vehicle K.M"
-                keyboardType="numeric"
-                onChangeText={v =>
-                  onVehicleReadingChange(v, kilomerters?.startVehicleKm)
-                }
-              />
-              <Text variant="labelSmall" style={{alignSelf: 'flex-end'}}>
-                Total K.M.: {totalVehicleReading.current}
-              </Text>
-            </>
-          )}
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            <Text style={styles.label}>Work feedback</Text>
+            <InputText
+              placeholder="Work feedback"
+              onChangeText={setWorkFeedback}
+            />
+            <View style={styles.container} />
+            <Text style={styles.label}>Day end details</Text>
+            <InputText
+              placeholder="Day end details"
+              onChangeText={setDayEndDetail}
+            />
+            {!isRemarkField && (
+              <>
+                <View style={styles.container} />
+                <Text style={styles.label}>
+                  Day End Vehicle K.M (Start KMs: {kilomerters?.startVehicleKm})
+                </Text>
+                <InputText
+                  placeholder="Day End Vehicle K.M"
+                  keyboardType="numeric"
+                  onChangeText={v =>
+                    onVehicleReadingChange(v, kilomerters?.startVehicleKm)
+                  }
+                  onBlur={() => {
+                    if (totalVehicleReading.current === '') {
+                      Alert.alert(
+                        'Error',
+                        'End KMs should be greater than start KMs.',
+                      );
+                    }
+                  }}
+                />
+                <Text variant="labelSmall" style={{alignSelf: 'flex-end'}}>
+                  Total K.M.: {totalVehicleReading.current}
+                </Text>
+              </>
+            )}
+          </View>
           <MyDropdown
             channel="Daily Allowance"
             item={dailyAllowance}
@@ -116,10 +124,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   container: {
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     marginBottom: 10,
   },
-   label: {
+  label: {
     fontSize: 16,
     marginBottom: 8,
     color: '#333',
