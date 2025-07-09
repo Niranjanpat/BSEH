@@ -32,7 +32,11 @@ import {requestCameraPermission} from '../../../utils/useCameraPermission';
 // Helper Picker Component
 const FormPicker = ({label, selectedValue, items, onValueChange}) => (
   <View style={styles.picker}>
-    <Picker selectedValue={selectedValue} onValueChange={onValueChange} dropdownIconColor={'black'} style={{color: 'black',}}>
+    <Picker
+      selectedValue={selectedValue}
+      onValueChange={onValueChange}
+      dropdownIconColor={'black'}
+      style={{color: 'black'}}>
       <Picker.Item label={`Select ${label}`} value="" />
       {items.map(item => (
         <Picker.Item key={item._id} label={item.name} value={item._id} />
@@ -55,7 +59,7 @@ const EditCustomerScreen = ({navigation, route}) => {
     getBeat();
     getShopClass();
     getShopType();
-    getPinCode('', data?.city_id);
+    getPinCode('');
   }, []);
 
   const getBeat = () => {
@@ -71,8 +75,8 @@ const EditCustomerScreen = ({navigation, route}) => {
       });
   };
 
-  const getPinCode = (text, id) => {
-    getPinCodeList(text, id)
+  const getPinCode = text => {
+    getPinCodeList(text, data?.city_id)
       .then(res => {
         console.log('Pin codes fetched:', res.data);
         setPinCodeList(res?.data?.data?.pin_codes || []);
@@ -126,7 +130,7 @@ const EditCustomerScreen = ({navigation, route}) => {
         setLoadingLocation(false);
       },
       error => {
-        console.log(error)
+        console.log(error);
         setLoadingLocation(false);
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
@@ -203,7 +207,7 @@ const EditCustomerScreen = ({navigation, route}) => {
           customer_type_id: data?.customer_type_id || '',
           customer_class_id: data?.customer_class_id || '',
           pin_code_id: data?.pin_code_id || '',
-          divisions: data?.division_names||null, // not present in data
+          divisions: data?.division_names || null, // not present in data
           gst_number: data?.gst_number || '',
           owner_name: data?.owner_name || '',
           owner_email: data?.owner_email || '',
@@ -345,10 +349,12 @@ const EditCustomerScreen = ({navigation, route}) => {
               editable={false}
               label="GPS Location"
               mode="outlined"
-               right={
+              right={
                 loadingLocation ? (
                   <TextInput.Icon
-                    icon={() => <ActivityIndicator size={20} color={COLORS.primary} />}
+                    icon={() => (
+                      <ActivityIndicator size={20} color={COLORS.primary} />
+                    )}
                   />
                 ) : (
                   <TextInput.Icon
@@ -358,7 +364,7 @@ const EditCustomerScreen = ({navigation, route}) => {
                 )
               }
             />
-            {errors.longitude  && (
+            {errors.longitude && (
               <Text style={styles.errorText}>{errors.longitude}</Text>
             )}
 
