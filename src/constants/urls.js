@@ -1,6 +1,8 @@
+import { API_URL, ENV, CLIENT_ID, CLIENT_SECRET } from '@env';
+
 export const URLS = {
-  // base: 'http://206.1.13.176:4001/api/', //live
-  base: 'http://182.18.142.21/divya-prakashan/api/', //local test
+  base: API_URL,
+  environment: ENV,
 
   login: 'users/login',
   profile: 'users/profile',
@@ -120,10 +122,5 @@ export const URLS = {
   categories:'/categories',
 };
 
-export const clientId =
-  '33OkryzDZsLKOf5SRuEbdNokINidGcnNteyK1cL-R9t_XivvRr7UjUIbWInW4u8qk72vlOPb8bFscJU1TWpJKQ==';
-export const clientSecret =
-  'lrFxI-iSEg8PQEozuUk9fJdxwjFBFD9oChtfvvZxvpktEevCsZFHOnabTcPSegg2w6eBNMuYFihT77FgEdMTn-xBPaPKvPuX';
-
-// export const MapSDKKey = 'c509092e27ffcb2ead37fe1b88a0c2cd';
-// export const RestAPIkey = '3ec61c9b058136b9cd7c1927682aa80e';
+export const clientId = CLIENT_ID;
+export const clientSecret = CLIENT_SECRET;
