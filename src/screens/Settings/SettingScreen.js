@@ -1,12 +1,19 @@
 import MapplsIntouch from 'mappls-intouch-react-native';
 import React from 'react';
-import {View, StyleSheet, SafeAreaView, ScrollView, Alert, Platform} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Alert,
+  Platform,
+} from 'react-native';
 import MMKVStorage from 'react-native-mmkv-storage';
 import {Avatar, Button, List, Subheading, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../constants/routes';
 import {COLORS} from '../../constants/theme/colors';
-import { userRoles } from '../../utils/user_roles';
+import {userRoles} from '../../utils/user_roles';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -52,10 +59,14 @@ const SettingScreen = ({navigation}) => {
         />
         <Title style={styles.title}>{profile.name}</Title>
         <Subheading style={styles.subheading}>{role}</Subheading>
-        {profile.contact_number && <Subheading style={styles.subheading}>
-          {profile.contact_number}
-        </Subheading>}
-        {profile.email && <Subheading style={styles.subheading}>{profile.email}</Subheading>}
+        {profile.contact_number && (
+          <Subheading style={styles.subheading}>
+            {profile.contact_number}
+          </Subheading>
+        )}
+        {profile.email && (
+          <Subheading style={styles.subheading}>{profile.email}</Subheading>
+        )}
       </View>
 
       <View>
@@ -103,6 +114,12 @@ const SettingScreen = ({navigation}) => {
 
         {renderItem('Complaint', 'message-alert-outline', () =>
           navigation.navigate(ROUTES.complaint_stack),
+        )}
+        {renderItem('Distributor', 'truck-outline', () =>
+          navigation.navigate(ROUTES.distributor_stack),
+        )}
+        {renderItem('User Distributor Schedule', 'calendar-clock-outline', () =>
+          navigation.navigate(ROUTES.user_distributor_schedule_stack),
         )}
 
         {role !== userRoles.TSI &&

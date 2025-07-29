@@ -1,0 +1,67 @@
+import {StyleSheet, View} from 'react-native';
+import React from 'react';
+import {List, Text} from 'react-native-paper';
+import {ROUTES} from '../../../../constants/routes';
+
+const DistributorScreen = ({navigation}) => {
+
+  const ListItem = (name, onPress) => {
+    return (
+      <List.Item
+        style={styles.list}
+        titleStyle={{fontWeight: 'bold'}}
+        title={name}
+        onPress={() => {
+          onPress();
+        }}
+        right={props => (
+          <List.Icon {...props} style={styles.listRight} icon="chevron-right" />
+        )}
+      />
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {ListItem('All-Distributors', () => {
+        navigation.navigate(ROUTES.all_distributor,{channel:ROUTES.all_distributor});
+      })}
+
+      {ListItem('Distributor Visits', () => {
+        navigation.navigate(ROUTES.distributor_visit);
+      })}
+
+      {ListItem('Distributor Schedule', () => {
+        navigation.navigate(ROUTES.distributor_schedule_list);
+      })}
+
+      
+      {ListItem('Visited Distributor', () => {
+        navigation.navigate(ROUTES.visited_distributor);
+      })}
+
+      {ListItem('Super Distributor', () => {
+        navigation.navigate(ROUTES.super_distributor_list ,{channel:ROUTES.super_distributor});
+      })}
+
+    </View>
+  );
+};
+
+export default DistributorScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  list: {
+    backgroundColor: '#fff',
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  listRight: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  },
+});

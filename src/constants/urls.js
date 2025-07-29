@@ -101,6 +101,13 @@ export const URLS = {
   attendanceMonthly: '/daily-attendances/monthly',
   userDailyAttendaces: 'user-daily-attendances',
 
+  //distributor
+  distributors: 'distributors',
+  distributorVisit:'distributor-visits',
+  distributorSchedule:'distributor-schedules',
+  userDistributorSchedule:'user-distributor-schedules',
+
+
   //expense
   expenseType:'expenses/type',
   expense:'expenses',

@@ -65,6 +65,8 @@ import {TaDasStack} from './settings_stack';
 import DailyAttendacesListScreen from '../screens/Settings/daily_attendance';
 import { SampleStack } from './sample_stack';
 import SampleCheckOutScreen from '../screens/Settings/myvisits/SampleCheckOutScreen';
+import { DistributorStackNavigation } from './supplier_stack';
+import UserDistributorScheduleStack from './UserDistributorScheduleStack';
 const SettingsStack = createNativeStackNavigator();   
 export const SettingsStackNavigation = () => {
   return (
@@ -177,6 +179,17 @@ export const SettingsStackNavigation = () => {
         name={ROUTES.complaint_stack}
         component={ComplaintStack}
       />
+      
+      <SettingsStack.Screen
+        name={ROUTES.distributor_stack}
+        component={DistributorStackNavigation}
+      />
+
+      <SettingsStack.Screen
+        name={ROUTES.user_distributor_schedule_stack}
+        component={UserDistributorScheduleStack}
+      />
+
 
       <SettingsStack.Screen
         name={ROUTES.user_complaint_stack}

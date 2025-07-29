@@ -7,6 +7,7 @@ import retailerReducer from './reducers/retailer';
 import returnsReducer from './reducers/returns';
 import orderCartPromotionalReducer from './reducers/cartPromotional';
 import tokenMiddleware from './tokenMiddleware';
+import distributorReducer from './reducers/distributor';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   cart: orderCartReducer,
   cartPromotional: orderCartPromotionalReducer,
   returns: returnsReducer,
+  distributor:distributorReducer
 });
 
 const store = configureStore({
