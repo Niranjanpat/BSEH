@@ -6,7 +6,7 @@ import {ROUTES} from '../constants/routes';
 import {COLORS} from '../constants/theme/colors'; // Make sure this exists
 
 const ActivityScreen = ({navigation}) => {
-  const {role} = useSelector(state => state.auth);
+  // const {role} = useSelector(state => state.auth);
 
   const renderItem = (title, icon, route) => (
     <List.Item

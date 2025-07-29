@@ -1,8 +1,8 @@
 import { API_URL, ENV, CLIENT_ID, CLIENT_SECRET } from '@env';
 
 export const URLS = {
-  base: API_URL,
-  environment: ENV,
+  // base: 'http://182.18.142.47/ruchi-soya-nutrition/api/', //live
+  base: 'http://182.18.142.21/patanjali-dairy/api/', //test
 
   login: 'users/login',
   profile: 'users/profile',
@@ -122,5 +122,7 @@ export const URLS = {
   categories:'/categories',
 };
 
-export const clientId = CLIENT_ID;
-export const clientSecret = CLIENT_SECRET;
+export const clientId =
+  '33OkryzDZsJIkAo-JJBhmpSqQC_GLLbq5yAtPs_D1mE6eqPVoELD8olvqhCkMONQx0wazhVAqnXjTodvQxTrqUSYSoFFEQ-4';
+export const clientSecret =
+  'lrFxI-iSEg_LQj8y1GRzY0JKgxCUN6lQtwim1Mdn6PdpbmKeVwDhu-z0hVf4V3JESu4ORP-2XbSAUtxdks66J7eTD1ZxiIkz6JAmkwxC4MY=';

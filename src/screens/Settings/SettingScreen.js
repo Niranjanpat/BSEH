@@ -6,6 +6,7 @@ import {Avatar, Button, List, Subheading, Title} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../constants/routes';
 import {COLORS} from '../../constants/theme/colors';
+import { userRoles } from '../../utils/user_roles';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -67,7 +68,7 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Monthly attendance', 'calendar-month-outline', () =>
           navigation.navigate(ROUTES.monthly_attendance),
         )}
-        {role !== 'sc' &&
+        {role !== userRoles.TSI &&
           renderItem('User Daily Attendance', 'map-marker', () =>
             navigation.navigate(ROUTES.daily_attendance),
           )}
@@ -77,16 +78,16 @@ const SettingScreen = ({navigation}) => {
         {renderItem('My Route schedules', 'map-marker-distance', () =>
           navigation.navigate(ROUTES.route_schedule_stack),
         )}
-        {role !== 'sc' &&
+        {role !== userRoles.TSI &&
           renderItem('Sub-Ordinate schedules', 'map-marker', () =>
             navigation.navigate(ROUTES.user_route_schedule_list),
           )}
         {renderItem('Retailer Masters', 'bookmark-outline', () =>
           navigation.navigate(ROUTES.retailer_master),
         )}
-        {renderItem('Sample', 'flask-outline', () =>
+        {/* {renderItem('Sample', 'flask-outline', () =>
           navigation.navigate(ROUTES.sample_stack, {screen: ROUTES.sample}),
-        )}
+        )} */}
 
         {/* {renderItem('Cumulative report', 'account-details', () =>
           navigation.navigate(ROUTES.cumulative_report),
@@ -104,7 +105,7 @@ const SettingScreen = ({navigation}) => {
           navigation.navigate(ROUTES.complaint_stack),
         )}
 
-        {role !== 'sc' &&
+        {role !== userRoles.TSI &&
           renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
             navigation.navigate(ROUTES.user_complaint_stack),
           )}

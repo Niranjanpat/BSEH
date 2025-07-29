@@ -33,6 +33,7 @@ import {getRetailerList, storeRetailerList} from '../../store/actions/retailer';
 import {getBeatList, getRetailer} from '../../services/retailer_services';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TabFilter from '../../components/TabFilter';
+import { userRoles } from '../../utils/user_roles';
 
 const Filter = lazy(() =>
   import('../../components/retailer_master/RetailerMasterFilter'),
@@ -271,7 +272,7 @@ const RetailerMaster = ({navigation, route}) => {
           ref={searchbarRef}
         />
 
-        {role !== 'sc' && (
+        {role !== userRoles.TSI && (
           <TabFilter
             initialValue={'All'}
             filterOptionsObject={filterOption}
@@ -288,7 +289,7 @@ const RetailerMaster = ({navigation, route}) => {
         <FlatList
           onScroll={handleScroll}
           scrollEventThrottle={16}
-          contentContainerStyle={{paddingTop: role === 'sc' ? 60 : 120}}
+          contentContainerStyle={{paddingTop: role === userRoles.TSI ? 60 : 120}}
           onRefresh={() => {
             page.current = 0;
             fetchRetailers();

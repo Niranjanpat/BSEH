@@ -24,7 +24,7 @@ import usePromotionalItems from '../../../hooks/usePromotionalItems';
 const CheckOutScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
 
-  const {schemes, total_order_amount, total_order_quantity} = route.params?.data ?? {schemes: [], total_order_amount: 0, total_order_quantity: 0};
+  // const {schemes, total_order_amount, total_order_quantity} = route.params?.data ?? {schemes: [], total_order_amount: 0, total_order_quantity: 0};
 
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderAndMailLoading, setOrderAndMailLoading] = useState(false);
@@ -42,18 +42,28 @@ const CheckOutScreen = ({navigation, route}) => {
     usePromotionalItems();
 
   const cartProductItems = useMemo(
-    () => (isProductCollapsed ? [] : schemes),
-    [isProductCollapsed, schemes],
+    () => (isProductCollapsed ? [] : cartItems),
+    [isProductCollapsed, cartItems],
   );
 
   const total = useMemo(
     () =>
-      schemes.reduce(
+      cartItems.reduce(
         (price, item) =>
-          price + parseFloat(item?.net_amount ?? 0),
+          price + parseFloat(item?.supplier_selling_price ?? 0),
         0.0,
       ),
-    [schemes],
+    [cartItems],
+  );
+
+  const total_order_quantity = useMemo(
+    () =>
+      cartItems.reduce(
+        (quantity, item) =>
+          quantity + parseInt(item?.quantity ?? 0),
+        0.0,
+      ),
+    [cartItems],
   );
 
   useEffect(() => {
@@ -203,7 +213,7 @@ const CheckOutScreen = ({navigation, route}) => {
         <VerticalSpacer size={20} />
       </View>
       <ScrollView nestedScrollEnabled={true}>
-        {schemes.length > 0 && (
+        {cartItems.length > 0 && (
           <>
             <Header
               isForPromotional={false}
@@ -213,13 +223,13 @@ const CheckOutScreen = ({navigation, route}) => {
             <FlatList
               nestedScrollEnabled={true}
               data={cartProductItems}
-              keyExtractor={(item, _) => item.product_id}
+              keyExtractor={(item, _) => item._id}
               contentContainerStyle={styles.contentContainerStyle}
               renderItem={({item}) => {
-                const schemeAmount =
-                  item.liquidation_scheme_amount +
-                  item.secondary_scheme_amount +
-                  item.promotion;
+                // const schemeAmount =
+                //   item.liquidation_scheme_amount +
+                //   item.secondary_scheme_amount +
+                //   item.promotion;
 
                 return (
                   <List.Item
@@ -232,19 +242,19 @@ const CheckOutScreen = ({navigation, route}) => {
                       <>
                         <Text>MRP: ₹ {item.mrp.toFixed(2)}</Text>
                         <Text>
-                          Selling price: ₹ {item.selling_price.toFixed(2)}
+                          Selling price: ₹ {item.supplier_selling_price.toFixed(2)}
                         </Text>
-                        <Text>Scheme amount: ₹ {schemeAmount.toFixed(2)}</Text>
-                        <Text>GST amount: ₹ {item.gst_amount.toFixed(2)}</Text>
-                        <Text>Net amount: ₹ {item.net_amount.toFixed(2)}</Text>
-                        {
+                        {/* <Text>Scheme amount: ₹ {schemeAmount.toFixed(2)}</Text> */}
+                        {/* <Text>GST amount: ₹ {item.gst_amount.toFixed(2)}</Text> */}
+                        {/* <Text>Net amount: ₹ {item.net_amount.toFixed(2)}</Text> */}
+                        {/* {
                           item.distributorsellingprice ? <Text>Distributor Selling Price: ₹ {item.distributorsellingprice.toFixed(2)}</Text> : null
-                        }
+                        } */}
                       </>
                     )}
                     right={_ => (
                       <View style={styles.itemsCount}>
-                        <Text>{item.order_quantity}</Text>
+                        <Text>{item.quantity}</Text>
                       </View>
                     )}
                   />

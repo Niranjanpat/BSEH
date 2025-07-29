@@ -17,8 +17,15 @@ import {getUserComplaint} from '../../../services/complaint_service';
 import {ROUTES} from '../../../constants/routes';
 import {useSelector} from 'react-redux';
 import {COLORS} from '../../../constants/theme/colors';
+import { userRoles } from '../../../utils/user_roles';
 
-const ROLE_HIERARCHY = ['sc', 'asm', 'zm', 'hod'];
+const ROLE_HIERARCHY = [userRoles.SO,
+  userRoles.SSO,
+  userRoles.ASM,
+  userRoles.ZM,
+  userRoles.GM,
+  userRoles.RM,
+  userRoles.VP,];
 
 const UserComplaintListScreen = () => {
   const theme = useTheme();

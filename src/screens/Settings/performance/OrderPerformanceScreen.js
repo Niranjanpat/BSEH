@@ -56,7 +56,7 @@ const OrderPerformanceScreen = ({navigation, route}) => {
         role,
       })}
 
-      {role !== 'sc' &&
+      {/* {role !== 'sc' &&
         renderItem('Top SCs', 'cart-arrow-up', ROUTES.top_sc, {id})}
 
       {role !== 'sc' &&
@@ -66,7 +66,7 @@ const OrderPerformanceScreen = ({navigation, route}) => {
       {role !== 'sc' &&
         role !== 'asm' &&
         role !== 'zm' &&
-        renderItem('Top ZMs', 'cart-arrow-up', ROUTES.top_zm, {id})}
+        renderItem('Top ZMs', 'cart-arrow-up', ROUTES.top_zm, {id})} */}
     </ScrollView>
   );
 };

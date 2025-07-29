@@ -17,14 +17,14 @@ const OrderCartIcon = ({channel}) => {
   );
 
   const navigateTo = useCallback(() => {
-    let screen;
-    if(channel === 'sample'){
-      screen=ROUTES.sample_checkout;
-    }
-    else{
-       screen = cartItems?.length > 0 ? ROUTES.order_cart : ROUTES.order_checkout;
-    }
-    navigation.navigate(screen);
+    // let screen;
+    // if(channel === 'sample'){
+    //   screen=ROUTES.sample_checkout;
+    // }
+    // else{
+    //    screen = cartItems?.length > 0 ? ROUTES.order_cart : ROUTES.order_checkout;
+    // }
+    navigation.navigate(ROUTES.order_checkout);
   }, [cartItems])
 
   return (

@@ -1,7 +1,11 @@
 export const userRoles = {
   ALL: '',
-  SC: 'sc', 
+  TSI: 'tsi',
+  SO: 'so',
+  SSO: 'sso',
   ASM: 'asm',
   ZM: 'zm',
-  HOD: 'hod',
+  GM: 'gm',
+  RM: 'rm',
+  VP: 'vp',
 };

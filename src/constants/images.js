@@ -9,5 +9,5 @@ export const IMAGE = {
   working_with: require('../../assets/images/working_with.png'),
   empty: require('../../assets/images/empty.png'),
   logo_ruchi: require('../../assets/images/logo2.png'),
-  gyanpath_bg: require('../../assets/images/gyanpath_bg.png'),
+  dairy_bg: require('../../assets/images/dairy_bg.png'),
 };

@@ -237,6 +237,7 @@ const NormalProduct = ({item, channel}) => {
               <Caption>{item.unit || 'N/A'}</Caption>
               <Text>Brand: {item.brand || 'N/A'}</Text>
               <Text>MRP: {item.mrp || 'N/A'}</Text>
+              <Text>Selling Price: {item.supplier_selling_price || 'N/A'}</Text>
             </>
           )}
           right={_ => (

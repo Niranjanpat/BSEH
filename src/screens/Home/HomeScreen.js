@@ -35,7 +35,7 @@ const HomeScreen = ({}) => {
       <SafeAreaView>
         <WelcomeMessage />
         <JointWorkingView />
-        {role === 'promoter' && <PromoterVisits />}
+        {/* {role === 'promoter' && <PromoterVisits />} */}
         {/* {role !== 'promoter' && <TodayOrder self={1} />} */}
         {/* <Achievement /> */}
         {/* <DsmCurrentTarget /> */}

@@ -56,6 +56,7 @@ import {sendOTP} from '../../../services/activity_service';
 import PromotionalItemsModal from '../../../components/promotional_item/PromotionalItemsModal';
 import LoadingView from '../../../components/LoadingView';
 import CustomerCheckPhotoModal from '../../../components/myvisits/CustomerCheckPhotoModal';
+import {userRoles} from '../../../utils/user_roles';
 
 const mmkv = new MMKVStorage.Loader().initialize();
 
@@ -128,7 +129,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
     navigation.setOptions({
       headerRight: () => (
         <>
-          {role === 'sales-officer' || role === 'kam'}
+          {role === userRoles.TSI ||
+            role === userRoles.SO ||
+            role === userRoles.SSO}
           <IconButton
             icon="map-marker-outline"
             onPress={() =>
@@ -149,10 +152,9 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
               })
             }
           />
-          {(role === 'kam' ||
-            role === 'dsm' ||
-            role === 'sm' ||
-            role === 'rsm') && (
+          {(role === userRoles.TSI ||
+            role === userRoles.SO ||
+            role === userRoles.SSO) && (
             <IconButton
               icon="phone"
               onPress={() =>
@@ -361,35 +363,23 @@ const MyVisitDetailsScreen = ({route, navigation}) => {
             </>
           )} */}
 
-        {/* {role !== 'promoter' &&
-          customerVisitStatus.status &&
-          customerVisitStatus.customer_id === data._id && (
-            <>
-              <HorizontalSpacer />
-              <Button
-                icon="cart-outline"
-                mode="contained"
-                onPress={() => navigation.navigate(ROUTES.vertical)}>
-                Order
-              </Button>
-            </>
-          )} */}
-
-        <HorizontalSpacer />
+        {/* <HorizontalSpacer /> */}
         <>
           {isCheckedIn && (
             <View style={{flexDirection: 'row'}}>
-              <Button
-                icon="tag-outline"
-                mode="contained"
-                onPress={() =>
-                  navigation.navigate(ROUTES.product, {
-                    data: data,
-                    channel: 'sample',
-                  })
-                }>
-                Samples
-              </Button>
+              {(role === userRoles.TSI ||
+                role === userRoles.SO ||
+                role === userRoles.SSO) && (
+                <>
+                  <HorizontalSpacer />
+                  <Button
+                    icon="cart-outline"
+                    mode="contained"
+                    onPress={() => navigation.navigate(ROUTES.product, {channel: ''})}>
+                    Order
+                  </Button>
+                </>
+              )}
 
               <HorizontalSpacer />
               <Button

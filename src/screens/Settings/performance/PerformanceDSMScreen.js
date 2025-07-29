@@ -31,9 +31,9 @@ const PerformanceDSMScreen = ({navigation, route}) => {
       {renderItem('My performance', 'account', ROUTES.individual_performance, {id: null})}
       {renderItem('Sales performance', 'point-of-sale', ROUTES.sales_performance, {id: null})}
 
-      {authRole !== 'cr' && authRole !== 'sr' && (
+      {/* {authRole !== 'cr' && authRole !== 'sr' && (
         renderItem('Team performance', 'account-group', ROUTES.team_performance)
-      )}
+      )} */}
     </View>
   );
 };

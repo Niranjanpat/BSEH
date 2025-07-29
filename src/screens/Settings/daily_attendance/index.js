@@ -43,7 +43,7 @@ const DailyAttendacesListScreen = ({navigation}) => {
 
   useEffect(() => {
     fetchAllUsersDailyAttendances(date, page);
-    role !== 'sc' && setUserRolesFilter(role);
+    role !== userRoles.TSI && setUserRolesFilter(role);
   }, []);
 
   useEffect(() => {

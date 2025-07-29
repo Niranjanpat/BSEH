@@ -32,7 +32,7 @@ const SplashScreen = () => {
       dispatch(storeToken(token));
       dispatch(getProfileDetail());
       if (role == 'asm' || role == 'sc') {
-        dispatch(getRetailerList());
+        // dispatch(getRetailerList());
       } else {
         dispatch(fetchJointWorkStatus());
       }
@@ -44,7 +44,7 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={"#fbf5e9"} />
+      {/* <StatusBar backgroundColor={"#fbf5e9"} /> */}
       <Image style={styles.coverImage} source={IMAGE.logo_ruchi} />
 
       <Text style={styles.text}>विकल्प रहित संकल्प ।</Text>

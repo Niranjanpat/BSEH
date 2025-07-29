@@ -9,7 +9,6 @@ import {useSelector} from 'react-redux';
 import SplashScreen from '../screens/SplashScreen';
 import {Alert, AppState, BackHandler, Platform} from 'react-native';
 import JailMonkey from 'jail-monkey';
-import {ENV} from '@env';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -35,10 +34,8 @@ export default function AppNavigation() {
   const check = async () => {
     try {
       if (isAndroid) {
-        const isDevModeOn =
-          ENV === 'development'
-            ? false
-            : await JailMonkey.isDevelopmentSettingsMode();
+        // const isDevModeOn = await JailMonkey.isDevelopmentSettingsMode();
+        const isDevModeOn = false;
 
         if (isDevModeOn) {
           Alert.alert(

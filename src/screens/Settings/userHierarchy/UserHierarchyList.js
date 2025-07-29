@@ -4,6 +4,7 @@ import {Button, List} from 'react-native-paper';
 import {ROUTES} from '../../../constants/routes';
 import {COLORS} from '../../../constants/theme/colors';
 import {getUserHierarchyList} from '../../../services/userHierarchy_service';
+import { userRoles } from '../../../utils/user_roles';
 const UserHierarchyList = ({navigation, route}) => {
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -58,9 +59,7 @@ const UserHierarchyList = ({navigation, route}) => {
               }}
               right={props => (
                 <>
-                  {item.role === 'cr' ||
-                  item.role === 'yp' ||
-                  item.role === 'sr' ? null : (
+                  {item.role === userRoles.TSI ? null : (
                     <TouchableOpacity
                       onPress={() => {
                         navigation.push(ROUTES.user_hierarchy_list, {

@@ -33,6 +33,7 @@ import {
   customerVisitStatus,
 } from '../../../services/joint_service';
 import {useSelector} from 'react-redux';
+import { userRoles } from '../../../utils/user_roles';
 
 const JWMyVisitDetailcreen = ({route, navigation}) => {
   const data = route.params.data;
@@ -52,7 +53,7 @@ const JWMyVisitDetailcreen = ({route, navigation}) => {
     navigation.setOptions({
       headerRight: () => (
         <>
-          {role === 'asm' ? (
+          {role === userRoles.ASM ? (
             <IconButton
               icon="square-edit-outline"
               onPress={() =>

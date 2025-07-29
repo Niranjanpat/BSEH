@@ -85,7 +85,7 @@ const SignInScreen = ({navigation}) => {
           dispatch(storeToken(data.token));
           dispatch(getProfileDetail());
           if (data.role == 'asm' || data.role == 'sc') {
-            dispatch(getRetailerList());
+            // dispatch(getRetailerList());
           } else {
             dispatch(fetchJointWorkStatus());
           }
@@ -118,7 +118,7 @@ const SignInScreen = ({navigation}) => {
       {/* <Wave1 /> */}
       <Image
         style={{height: '100%', width: '100%'}}
-        source={IMAGE.gyanpath_bg}
+        source={IMAGE.dairy_bg}
       />
       {/* <View style={{flex: 1}} /> */}
       {/* <Wave2 /> */}
@@ -148,7 +148,7 @@ const SignInScreen = ({navigation}) => {
               activeOutlineColor={COLORS.primaryDark}
               right={
                 <TextInput.Icon
-                  icon={isPwdHidden ? 'eye' : 'eye-off'}
+                  icon={isPwdHidden ? 'eye-off' : 'eye'}
                   onPress={() => setIsPwdHidden(!isPwdHidden)}
                 />
               }

@@ -59,7 +59,7 @@ const PerformanceScreen = ({navigation, route}) => {
       })}
 
       
-       {role !== 'sc' && role !== 'asm'  && (
+       {/* {role !== 'sc' && role !== 'asm'  && (
         <>
            {renderItem('Top ASMs', 'cart-arrow-up', ROUTES.top_asm, {id})}
         </>
@@ -78,7 +78,7 @@ const PerformanceScreen = ({navigation, route}) => {
           'chart-bar',
           ROUTES.individual_performance,
           {id},
-        )}
+        )} */}
 
       {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {
         id,

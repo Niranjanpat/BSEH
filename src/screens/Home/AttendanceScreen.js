@@ -22,6 +22,7 @@ import {
 import useLocationPermission from '../../utils/useLocationPermission';
 import ScheduleSummaryModal from '../../components/ScheduleSummaryModal';
 import {COLORS} from '../../constants/theme/colors';
+import { userRoles } from '../../utils/user_roles';
 
 const AttendanceScreen = ({navigation, route}) => {
   const {openPunchIn} = route.params ?? false;
@@ -87,7 +88,7 @@ const AttendanceScreen = ({navigation, route}) => {
                     return;
                   }
 
-                  if (role === 'kam' || role === 'sales-officer') {
+                  if (role === userRoles.TSI || role === userRoles.SO || role === userRoles.SSO) {
                     dispatch(storeAttendanceLoading(false));
                     setIsSummaryVisible(true);
                     return;
