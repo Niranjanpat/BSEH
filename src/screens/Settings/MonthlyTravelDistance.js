@@ -109,6 +109,9 @@ const MonthlyTravelDistance = ({navigation}) => {
             <View style={styles.section}>
               <Subheading style={styles.title}>Distance (KM)</Subheading>
             </View>
+            <View style={styles.section}>
+              <Subheading style={styles.title}>GPS Distance (KM)</Subheading>
+            </View>
           </View>
           <FlatList
             data={distanceList}
@@ -134,6 +137,11 @@ const MonthlyTravelDistance = ({navigation}) => {
                   <View style={styles.section}>
                     <Subheading style={styles.data}>
                       {item?.total_vehicle_km}
+                    </Subheading>
+                  </View>
+                  <View style={styles.section}>
+                    <Subheading style={styles.data}>
+                      {item?.advance_distance}
                     </Subheading>
                   </View>
                 </View>
@@ -180,6 +188,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 12,
+    textAlign: 'center',
   },
   data: {
     fontWeight: '600',

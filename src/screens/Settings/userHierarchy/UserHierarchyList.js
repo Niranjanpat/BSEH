@@ -45,7 +45,6 @@ const UserHierarchyList = ({navigation, route}) => {
         }}
         keyExtractor={(item, _) => item._id}
         renderItem={({item}) => {
-          console.log(item);
           return (
             <List.Item
               style={styles.list}

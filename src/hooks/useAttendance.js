@@ -109,6 +109,8 @@ export const useAttendance = () => {
     getAttendanceStatus()
       .then(res => {
         const {data, errors, success} = res.data;
+        console.log('attendance', data);
+        
         if (success) {
           setSelection(data?.status);
         }

@@ -77,8 +77,8 @@ const userData = route?.params?.userData ?? null;
         <DayPlanInformation data={data} />
         <WorkDetail data={data} />
         <MTDPerformance data={data} />
-        <MTDThroughput data={data} />
-        <ValueInformation data={data} />
+        {/* <MTDThroughput data={data} /> */}
+        {/* <ValueInformation data={data} /> */}
       </ScrollView>
       {loading && <LoadingView />}
       <FilterModal

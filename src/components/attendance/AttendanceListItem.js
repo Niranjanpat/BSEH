@@ -66,6 +66,9 @@ const AttendanceListItem = ({item}) => {
       <Text variant="labelMedium">
         Total Distance: {item.total_vehicle_km} KMs
       </Text>
+      <Text variant="labelMedium">
+        GPS Distance: {item.advance_distance} KMs
+      </Text>
       <Divider
         style={{
           backgroundColor: COLORS.primary,

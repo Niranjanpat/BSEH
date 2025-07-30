@@ -42,19 +42,19 @@ const MTDPerformance = ({data}) => {
             value={data.new_customer_count}
             width="50%"
           />
-          <GridItem label="Planned TC" value={data.planned_tc} width="50%" />
+          {/* <GridItem label="Planned TC" value={data.planned_tc} width="50%" />
           <GridItem label="Total TC" value={data.tc} />
           <GridItem label="Total PC" value={data.pc} />
-          <GridItem label="% PC" value={data.pc_percentage} />
+          <GridItem label="% PC" value={data.pc_percentage} /> */}
         </View>
-        <View key="2" style={styles.section}>
+        {/* <View key="2" style={styles.section}>
           <GridItem label="Avg TC" value={data.avg_tc} width="50%" />
           <GridItem label="Avg PC" value={data.avg_pc} width="50%" />
           <GridItem label="TLSD" value={data.tlsd} width="50%" />
           <GridItem label="LPSC" value={data.lpsc} width="50%" />
-        </View>
+        </View> */}
       </PagerView>
-      <View style={styles.footer}>
+      {/* <View style={styles.footer}>
         <View style={styles.left}>
           <Icon
             name="circle"
@@ -69,7 +69,7 @@ const MTDPerformance = ({data}) => {
             color={index === 1 ? COLORS.primary : COLORS.lightGrey}
           />
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };

@@ -1,6 +1,12 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {Platform, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import Achievement from '../../components/Achievement';
 import TodayOrder from '../../components/TodayOrder';
@@ -19,6 +25,7 @@ import OrderDetails from '../../components/settings/OrderDetails';
 import {useFocusEffect} from '@react-navigation/native';
 import {useCallback} from 'react';
 import LoadingView from '../../components/LoadingView';
+import {userRoles} from '../../utils/user_roles';
 
 const HomeScreen = ({}) => {
   const {role} = useSelector(state => state.auth);
@@ -36,11 +43,19 @@ const HomeScreen = ({}) => {
         <WelcomeMessage />
         <JointWorkingView />
         {/* {role === 'promoter' && <PromoterVisits />} */}
-        {/* {role !== 'promoter' && <TodayOrder self={1} />} */}
         {/* <Achievement /> */}
         {/* <DsmCurrentTarget /> */}
         <AttendanceInformation data={data} />
-        <CallDetails data={data} />
+        {role === userRoles.TSI ||
+        role === userRoles.SO ||
+        role === userRoles.SSO ? (
+          <CallDetails data={data} />
+        ) : (
+          <>
+            <TodayOrder self={1} />
+            <AttendanceSummary />
+          </>
+        )}
         {/* <OrderDetails data={data} /> */}
         {/* {role === 'asm' && <RecentOrder />}  */}
         {role !== 'promoter' && (
