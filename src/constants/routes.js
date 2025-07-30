@@ -207,4 +207,9 @@ export const ROUTES = {
   //super_distributor
   super_distributor_list: 'super_distributor_list',
   super_distributor: 'super-distributor',
+
+  user_expense_stack: 'user_expense_stack',
+  user_expense_list: 'user_expense_list',
+  user_expense_detail: 'user_expense_detail',
+  user_expense_update: 'user_expense_update',
 };

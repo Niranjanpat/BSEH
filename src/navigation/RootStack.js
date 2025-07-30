@@ -67,6 +67,7 @@ import { SampleStack } from './sample_stack';
 import SampleCheckOutScreen from '../screens/Settings/myvisits/SampleCheckOutScreen';
 import { DistributorStackNavigation } from './supplier_stack';
 import UserDistributorScheduleStack from './UserDistributorScheduleStack';
+import UserExpenseStack from './user_expense_stack';
 const SettingsStack = createNativeStackNavigator();   
 export const SettingsStackNavigation = () => {
   return (
@@ -173,6 +174,11 @@ export const SettingsStackNavigation = () => {
       <SettingsStack.Screen
         name={ROUTES.expense_stack}
         component={ExpenseStack}
+      />
+      
+      <SettingsStack.Screen
+        name={ROUTES.user_expense_stack}
+        component={UserExpenseStack}
       />
 
       <SettingsStack.Screen
