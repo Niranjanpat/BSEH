@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
-  getUserExpenseDetail,
-  userExpenseForward,
-  userExpenseReject,
-} from '../../../services/user_expense';
+  getUserTadasDetail,
+  userTadasForward,
+  userTadasReject,
+} from '../../../services/user_tadas_service';
 import {COLORS} from '../../../constants/theme/colors';
 import {useSelector} from 'react-redux';
 
@@ -24,6 +24,7 @@ const STATUS_COLORS = {
   approved: '#28a745',
   rejected: '#dc3545',
   forwarded: COLORS.light,
+  pending: '#ffc107',
 };
 
 const ROLE_HIERARCHY = [
@@ -34,18 +35,19 @@ const ROLE_HIERARCHY = [
   'forwarded_by_vp_name',
 ];
 
-const UserExpenseDetailScreen = ({route}) => {
-  const {id} = route.params;
+const UserTadasDetailScreen = ({route}) => {
+  const {id , is_editable} = route.params;
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [remark, setRemark] = useState('');
   const [actionType, setActionType] = useState(null);
   const {role}= useSelector(state => state.auth);
+  console.log("is_editable", is_editable,id);
 
   const fetchDetail = async () => {
     try {
-      const res = await getUserExpenseDetail(id);
+      const res = await getUserTadasDetail(id);
       const {data, success, errors} = res?.data || {};
       if (success) {
         setData(data);
@@ -66,7 +68,10 @@ const UserExpenseDetailScreen = ({route}) => {
   const getFinalStatus = () => {
     if (data?.approved_at) return 'approved';
     if (data?.rejected_at) return 'rejected';
-    return 'forwarded';
+    if (data?.forwarded_by_asm_name || data?.forwarded_by_zm_name || 
+        data?.forwarded_by_gm_name || data?.forwarded_by_rm_name || 
+        data?.forwarded_by_vp_name) return 'forwarded';
+    return 'pending';
   };
 
   const openModal = type => {
@@ -75,17 +80,16 @@ const UserExpenseDetailScreen = ({route}) => {
     setRemark('');
   };
 
-
   const handleActionSubmit = async () => {
     const payload = {
       remarks: remark,
-      expense_id: id,
+      ta_da_id: id,
     };
     try {
       const res =
         actionType === 'forward'
-          ? await userExpenseForward(payload)
-          : await userExpenseReject(payload);
+          ? await userTadasForward(payload)
+          : await userTadasReject(payload);
 
       const {success, errors} = res?.data;
       if (success) {
@@ -133,14 +137,13 @@ const UserExpenseDetailScreen = ({route}) => {
   const finalStatus = getFinalStatus();
   const statusColor = STATUS_COLORS[finalStatus];
   const shouldRenderActionButtons = () => {
-  const forwardedIndex = ROLE_HIERARCHY.findIndex(key => data[key]);
-  const currentUserIndex = ROLE_HIERARCHY.findIndex(key => key === `forwarded_by_${role}_name`);
-  if(forwardedIndex === -1 ) {
-    return true;
-  }
-  return currentUserIndex !== -1 && currentUserIndex < forwardedIndex;
-};
-
+    const forwardedIndex = ROLE_HIERARCHY.findIndex(key => data[key]);
+    const currentUserIndex = ROLE_HIERARCHY.findIndex(key => key === `forwarded_by_${role}_name`);
+    if(forwardedIndex === -1 ) {
+       return true;
+    }
+    return currentUserIndex !== -1 && currentUserIndex < forwardedIndex;
+  };
 const userRoles = ['asm', 'zm', 'gm', 'rm', 'vp'];
 
 const checkRejectedByRole = () => {
@@ -152,6 +155,7 @@ const checkRejectedByRole = () => {
   return true; 
 }
 
+  
 
   return (
     <>
@@ -162,20 +166,18 @@ const checkRejectedByRole = () => {
             value={`${data.user_name} (${data.user_role?.toUpperCase()})`}
           />
           <InfoRow label="Date" value={data.date} />
-          <InfoRow label="Type" value={data.expense_type?.replace('-', ' ')} />
+          <InfoRow label="Vehicle Type" value={data.user_vehicle_type} />
+          <InfoRow label="Distance (km)" value={data.user_vehicle_km} />
+          <InfoRow label="Rate per km" value={`₹${data.rupees_per_km_for_vehicle}`} />
           <InfoRow label="Amount" value={`₹${data.amount}`} />
-          <InfoRow label="Extra" value={`₹${data.extra}`} />
-          <InfoRow label="Details" value={data.details || '---'} />
-
+          <InfoRow label="Advance Distance" value={`${data.advance_distance} km`} />
+          <InfoRow label="Advance Amount" value={`₹${data.advance_distance_amount}`} />
+          <InfoRow label="Daily Allowance" value={data.daily_allowance || 'N/A'} />
+          <InfoRow label="Daily Allowance Amount" value={data.daily_allowance_amount ? `₹${data.daily_allowance_amount}` : 'N/A'} />
+          
           <Text style={[styles.status, {color: statusColor}]}>
             Status: {finalStatus.charAt(0).toUpperCase() + finalStatus.slice(1)}
           </Text>
-
-          <Image
-            source={{uri: data.photo_path}}
-            style={styles.image}
-            resizeMode="contain"
-          />
         </View>
 
         {(data.forwarded_by_asm_name ||
@@ -227,6 +229,8 @@ const checkRejectedByRole = () => {
               role: data.approved_by_role,
               remarks: data.approved_remarks || '---',
               date: data.approved_at,
+              approved_amount: data.approved_amount,
+              approved_vehicle_km: data.approved_vehicle_km,
             }}
           />
         )}
@@ -245,24 +249,25 @@ const checkRejectedByRole = () => {
           />
         )}
       </ScrollView>
-  {shouldRenderActionButtons() && checkRejectedByRole() && (
-  <View style={styles.actionRow}>
-    <TouchableOpacity
-      onPress={() => openModal('forward')}
-      style={[styles.iconButton, { backgroundColor: COLORS.primary }]}
-    >
-      <Text style={styles.textButton}>Forward</Text>
-      <Icon name="arrow-up-bold-box" color="#fff" size={24} />
-    </TouchableOpacity>
-    <TouchableOpacity
-      onPress={() => openModal('reject')}
-      style={[styles.iconButton, { backgroundColor: '#dc3545' }]}
-    >
-      <Text style={styles.textButton}>Reject</Text>
-      <Icon name="close-box" color="#fff" size={24} />
-    </TouchableOpacity>
-  </View>
-)}
+
+      { shouldRenderActionButtons() && checkRejectedByRole() && is_editable && (
+        <View style={styles.actionRow}>
+          <TouchableOpacity
+            onPress={() => openModal('forward')}
+            style={[styles.iconButton, { backgroundColor: COLORS.primary }]}
+          >
+            <Text style={styles.textButton}>Forward</Text>
+            <Icon name="arrow-up-bold-box" color="#fff" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => openModal('reject')}
+            style={[styles.iconButton, { backgroundColor: '#dc3545' }]}
+          >
+            <Text style={styles.textButton}>Reject</Text>
+            <Icon name="close-box" color="#fff" size={24} />
+          </TouchableOpacity>
+        </View>
+      )}
 
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
@@ -325,9 +330,15 @@ const StatusBox = ({title, color, data}) => (
     <Text style={styles.sectionHeader}>{title}</Text>
     <Text style={styles.forwardText}>Name: {data.name}</Text>
     <Text style={styles.forwardText}>Emp Code: {data.emp_code}</Text>
-    <Text style={styles.forwardText}>Role: {data.role}</Text>
+    {data.role && <Text style={styles.forwardText}>Role: {data.role}</Text>}
     <Text style={styles.forwardText}>Remarks: {data.remarks}</Text>
     <Text style={styles.forwardText}>Date: {data.date}</Text>
+    {data.approved_amount !== undefined && (
+      <Text style={styles.forwardText}>Approved Amount: ₹{data.approved_amount}</Text>
+    )}
+    {data.approved_vehicle_km !== undefined && (
+      <Text style={styles.forwardText}>Approved Distance: {data.approved_vehicle_km} km</Text>
+    )}
   </View>
 );
 
@@ -356,13 +367,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     fontWeight: '700',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    marginTop: 16,
-    backgroundColor: '#eee',
-    borderRadius: 8,
   },
   sectionHeader: {
     fontSize: 16,
@@ -465,4 +469,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserExpenseDetailScreen;
+export default UserTadasDetailScreen;

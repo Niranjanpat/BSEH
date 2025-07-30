@@ -68,6 +68,7 @@ import SampleCheckOutScreen from '../screens/Settings/myvisits/SampleCheckOutScr
 import { DistributorStackNavigation } from './supplier_stack';
 import UserDistributorScheduleStack from './UserDistributorScheduleStack';
 import UserExpenseStack from './user_expense_stack';
+import UserTadasStack from './user_tadas_stack';
 const SettingsStack = createNativeStackNavigator();   
 export const SettingsStackNavigation = () => {
   return (
@@ -127,6 +128,10 @@ export const SettingsStackNavigation = () => {
       <SettingsStack.Screen
         name={ROUTES.performance}
         component={PerformanceStack}
+      />
+      <SettingsStack.Screen
+        name={ROUTES.user_ta_das_stack}
+        component={UserTadasStack}
       />
       <SettingsStack.Screen
         name={ROUTES.user_hierarchy_stack}
@@ -302,7 +307,7 @@ export const RetailerStackNavigation = () => {
           title: 'Cart Details',
         }}
       />
-         <RetailerStack.Screen
+      <RetailerStack.Screen
         name={ROUTES.sample_checkout}
         component={SampleCheckOutScreen}
         options={{

@@ -126,6 +126,14 @@ const SettingScreen = ({navigation}) => {
         {role !== userRoles.TSI &&
           role !== userRoles.SO &&
           role !== userRoles.SSO &&
+          renderItem('User TaDas', 'account-alert', () =>
+            navigation.navigate(ROUTES.user_ta_das_stack),
+          )}
+
+
+         {role !== userRoles.TSI &&
+          role !== userRoles.SO &&
+          role !== userRoles.SSO &&
           renderItem('User Expense', 'account-alert', () =>
             navigation.navigate(ROUTES.user_expense_stack),
           )}
