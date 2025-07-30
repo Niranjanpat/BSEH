@@ -130,6 +130,7 @@ export const URLS = {
 
 
   categories:'/categories',
+  customerCategories:'/customer-categories',
 };
 
 export const clientId =

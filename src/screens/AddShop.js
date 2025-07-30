@@ -31,6 +31,7 @@ import {
   getPinCodeList,
   addShop,
   getBeatDetail,
+  getCustomerCategories,
 } from '../services/retailer_services';
 import {requestCameraPermission} from '../utils/useCameraPermission';
 import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
@@ -50,6 +51,7 @@ const FormPicker = ({label, selectedValue, items, onValueChange}) => (
 const AddShop = () => {
   const [beat, setBeat] = useState([]);
   const [shopClass, setShopClass] = useState([]);
+  const [customerCategories, setCustomerCategories] = useState([]);
   const [shopType, setShopType] = useState([]);
   const [pinCodeList, setPinCodeList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +63,7 @@ const AddShop = () => {
     getBeat();
     getShopClass();
     getShopType();
+    getCustomerCategory();
     requestCameraPermission().then(granted => {
       if (!granted)
         Alert.alert('Camera permission denied', 'Enable it in settings');
@@ -128,6 +131,19 @@ const AddShop = () => {
       });
   };
 
+  const getCustomerCategory = () => {
+    getCustomerCategories()
+      .then(res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setCustomerCategories(data.customer_categories);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
   const getCurrentLocation = async setFieldValue => {
     
     if (Platform.OS === 'ios') {
@@ -174,6 +190,9 @@ const AddShop = () => {
     if (!values.customer_class_id) {
       errors.customer_class_id = 'Shop class is required';
     }
+    if (!values.customer_category_id) {
+      errors.customer_category_id = 'Customer Category is required';
+    }
 
     if (!values.address) {
       errors.address = 'Address is required';
@@ -202,6 +221,7 @@ const AddShop = () => {
           name: '',
           customer_type_id: '',
           customer_class_id: '',
+          customer_category_id: '',
           pin_code_id: '',
           divisions: '',
           gst_number: '',
@@ -236,6 +256,7 @@ const AddShop = () => {
           formData.append('name', values.name);
           formData.append('customer_type_id', values.customer_type_id);
           formData.append('customer_class_id', values.customer_class_id);
+          formData.append('customer_category_id', values.customer_category_id);
           formData.append('pin_code_id', values.pin_code_id);
           formData.append('divisions', values.divisions);
           formData.append('gst_number', values.gst_number);
@@ -259,6 +280,8 @@ const AddShop = () => {
           addShop(formData)
             .then(res => {
               const {data, success, errors} = res.data;
+              console.log(res);
+              
               if (success) {
                 Alert.alert('Success', 'Customer added successfully');
                 resetForm();
@@ -368,6 +391,16 @@ const AddShop = () => {
             />
             {errors.customer_class_id && (
               <Text style={styles.errorText}>{errors.customer_class_id}</Text>
+            )}
+
+            <FormPicker
+              label="Customer Category"
+              selectedValue={values.customer_category_id}
+              items={customerCategories}
+              onValueChange={value => setFieldValue('customer_category_id', value)}
+            />
+            {errors.customer_category_id && (
+              <Text style={styles.errorText}>{errors.customer_category_id}</Text>
             )}
 
             <Subheading style={{marginVertical: 10}}>

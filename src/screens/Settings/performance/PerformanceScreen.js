@@ -80,9 +80,9 @@ const PerformanceScreen = ({navigation, route}) => {
           {id},
         )} */}
 
-      {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {
+      {/* {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {
         id,
-      })}
+      })} */}
     </ScrollView>
   );
 };
