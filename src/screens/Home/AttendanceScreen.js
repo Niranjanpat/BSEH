@@ -88,11 +88,11 @@ const AttendanceScreen = ({navigation, route}) => {
                     return;
                   }
 
-                  if (role === userRoles.TSI || role === userRoles.SO || role === userRoles.SSO) {
-                    dispatch(storeAttendanceLoading(false));
-                    setIsSummaryVisible(true);
-                    return;
-                  }
+                  // if (role === userRoles.TSI || role === userRoles.SO || role === userRoles.SSO) {
+                  //   dispatch(storeAttendanceLoading(false));
+                  //   setIsSummaryVisible(true);
+                  //   return;
+                  // }
                   punchOutRef.current.showPunchOut(true);
                 } else {
                   punchInRef.current.showPunchIn(true);
