@@ -40,10 +40,6 @@ const DistributorScreen = ({navigation}) => {
         navigation.navigate(ROUTES.visited_distributor);
       })}
 
-      {ListItem('Super Distributor', () => {
-        navigation.navigate(ROUTES.super_distributor_list ,{channel:ROUTES.super_distributor});
-      })}
-
     </View>
   );
 };

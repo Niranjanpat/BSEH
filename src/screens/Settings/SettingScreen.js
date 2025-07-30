@@ -122,6 +122,14 @@ const SettingScreen = ({navigation}) => {
           navigation.navigate(ROUTES.user_distributor_schedule_stack),
         )}
 
+        
+        {role !== userRoles.TSI &&
+          role !== userRoles.SO &&
+          role !== userRoles.SSO &&
+          renderItem('User Expense', 'account-alert', () =>
+            navigation.navigate(ROUTES.user_expense_stack),
+          )}
+
         {role !== userRoles.TSI &&
           renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
             navigation.navigate(ROUTES.user_complaint_stack),

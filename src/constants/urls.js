@@ -125,6 +125,9 @@ export const URLS = {
 
   //sample
   sample:'samples',
+  //user_expense
+  user_expense: 'user-expenses',
+
 
   categories:'/categories',
 };
