@@ -128,6 +128,9 @@ export const URLS = {
   //user_expense
   user_expense: 'user-expenses',
 
+  //user_tadas
+  user_tadas: 'user-ta-das',
+
 
   categories:'/categories',
   customerCategories:'/customer-categories',

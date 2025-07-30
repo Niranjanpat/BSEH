@@ -208,8 +208,14 @@ export const ROUTES = {
   super_distributor_list: 'super_distributor_list',
   super_distributor: 'super-distributor',
 
+  //user_expense
   user_expense_stack: 'user_expense_stack',
   user_expense_list: 'user_expense_list',
   user_expense_detail: 'user_expense_detail',
-  user_expense_update: 'user_expense_update',
+
+  //user_tadas
+  user_ta_das_stack: 'user_ta_das_stack',
+  user_ta_das_list: 'user_ta_das_list',
+  user_ta_das_detail: 'user_ta_das_detail',
+
 };
