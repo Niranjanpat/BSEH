@@ -1,7 +1,7 @@
 import {useFocusEffect} from '@react-navigation/core';
 import React, {useEffect, memo, useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Text, Subheading} from 'react-native-paper';
+import {Text, Subheading, Avatar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {COLORS} from '../constants/theme/colors';
@@ -16,8 +16,16 @@ const TodayOrder = ({self}) => {
   );
 
   return (
-    <View style={styles.container}>
-      <Subheading style={styles.heading}>Today's Order</Subheading>
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <Avatar.Icon
+          size={35}
+          style={styles.avatar}
+          icon="cart"
+          color="white"
+        />
+        <Subheading style={styles.heading}>Today's Order</Subheading>
+      </View>
       <View style={styles.mainBox}>
         <View style={styles.contain}>
           <Text>
@@ -40,16 +48,29 @@ const TodayOrder = ({self}) => {
 export default memo(TodayOrder);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  card: {
+    marginTop: 10,
+    marginBottom: 5,
     padding: 10,
+    elevation: 3,
+    backgroundColor: COLORS.light,
+    marginHorizontal: 2,
+    borderRadius: 10,
+  },
+
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f6f6f6',
+    marginVertical: 5,
   },
 
   heading: {
-    letterSpacing: 1,
     fontWeight: 'bold',
+    paddingHorizontal: 10,
+  },
+
+  avatar: {
+    backgroundColor: COLORS.primary,
   },
 
   mainBox: {

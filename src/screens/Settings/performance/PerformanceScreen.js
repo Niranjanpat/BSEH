@@ -28,7 +28,7 @@ const PerformanceScreen = ({navigation, route}) => {
     <ScrollView
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}>
-      <Text style={styles.sectionTitle}>Performance</Text>
+      {/* <Text style={styles.sectionTitle}>Performance</Text> */}
 
       {renderItem('Daily Order', 'cart-outline', ROUTES.daily_order, {
         id,
@@ -49,10 +49,10 @@ const PerformanceScreen = ({navigation, route}) => {
         id,
         role,
       })}
-      {renderItem('User Targets', 'cart-arrow-up', ROUTES.user_target, {
+      {/* {renderItem('User Targets', 'cart-arrow-up', ROUTES.user_target, {
         id,
         role,
-      })}
+      })} */}
       {renderItem('Order Log', 'cart-outline', ROUTES.order_log_performance, {
         role,
         id,
@@ -92,7 +92,7 @@ export default PerformanceScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#f9f9f9',
+    // backgroundColor: '#f9f9f9',
   },
   sectionTitle: {
     marginVertical: 10,

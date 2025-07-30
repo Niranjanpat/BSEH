@@ -2,7 +2,7 @@ import React, {useEffect, memo, useState} from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
 import {COLORS} from '../constants/theme/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Title, Text} from 'react-native-paper';
+import {Title, Text, Avatar, Subheading} from 'react-native-paper';
 import {URLS} from '../constants/urls';
 import client from '../services/axios_client';
 const AttendanceSummary = () => {
@@ -15,7 +15,6 @@ const AttendanceSummary = () => {
     const url = URLS.attendanceSummary;
     try {
       const res = await client.get(url);
-      console.log('attendance', res);
       const {data, errors, success} = res.data;
       if (success) {
         setAttendanceSummary(data);
@@ -28,16 +27,27 @@ const AttendanceSummary = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.boxView}>
-        <Icon name="account-group-outline" size={40} color={COLORS.primary} />
-        <Text>Total User</Text>
-        <Title>{attendanceSummary.total_users}</Title>
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <Avatar.Icon
+          size={35}
+          style={styles.avatar}
+          icon="account-group"
+          color="white"
+        />
+        <Subheading style={styles.heading}>Users</Subheading>
       </View>
-      <View style={styles.boxView}>
-        <Icon name="account-check-outline" color={COLORS.primary} size={40} />
-        <Text>Active User</Text>
-        <Title>{attendanceSummary.present_users}</Title>
+      <View style={styles.mainBox}>
+        <View style={styles.boxView}>
+          <Icon name="account-group-outline" size={40} color={COLORS.primary} />
+          <Text>Total User</Text>
+          <Title>{attendanceSummary.total_users}</Title>
+        </View>
+        <View style={styles.boxView}>
+          <Icon name="account-check-outline" color={COLORS.primary} size={40} />
+          <Text>Active User</Text>
+          <Title>{attendanceSummary.present_users}</Title>
+        </View>
       </View>
     </View>
   );
@@ -46,18 +56,34 @@ const AttendanceSummary = () => {
 export default memo(AttendanceSummary);
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
+  card: {
+    marginTop: 10,
+    marginBottom: 5,
     padding: 10,
+    elevation: 3,
+    backgroundColor: COLORS.light,
+    marginHorizontal: 2,
+    borderRadius: 10,
+  },
+  mainBox: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
   },
   boxView: {
-    width: '50%',
-    border: 1,
-    backgroundColor: '#f6f6f6',
-    margin: 10,
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  heading: {
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+  },
+  avatar: {
+    backgroundColor: COLORS.primary,
   },
 });
