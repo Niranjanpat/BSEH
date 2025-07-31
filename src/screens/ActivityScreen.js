@@ -37,7 +37,7 @@ const ActivityScreen = ({navigation}) => {
         'map-marker-check-outline',
         ROUTES.total_visited,
       )}
-      {renderItem('Invoice Orders', 'cart-arrow-up', ROUTES.invoice_order)}
+      {/* {renderItem('Invoice Orders', 'cart-arrow-up', ROUTES.invoice_order)} */}
 
       {/* {renderItem('Sales Return', 'cart-remove', ROUTES.sales_return)} */}
 
@@ -51,11 +51,11 @@ const ActivityScreen = ({navigation}) => {
         'map-marker-check-outline',
         ROUTES.weekly_total_visited,
       )}
-      {renderItem(
+      {/* {renderItem(
         'Invoice Orders',
         'cart-arrow-up',
         ROUTES.weekly_invoice_order,
-      )}
+      )} */}
 
       {/* {renderItem('Sales Return', 'cart-remove', ROUTES.weekly_sales_return)} */}
     </ScrollView>

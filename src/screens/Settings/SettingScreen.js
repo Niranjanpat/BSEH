@@ -90,7 +90,7 @@ const SettingScreen = ({navigation}) => {
           navigation.navigate(ROUTES.route_schedule_stack),
         )}
         {role !== userRoles.TSI &&
-          renderItem('Sub-Ordinate schedules', 'map-marker', () =>
+          renderItem('User schedules', 'map-marker', () =>
             navigation.navigate(ROUTES.user_route_schedule_list),
           )}
         {renderItem('Retailer Masters', 'bookmark-outline', () =>
@@ -118,30 +118,19 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Distributor', 'truck-outline', () =>
           navigation.navigate(ROUTES.distributor_stack),
         )}
-        {renderItem('User Distributor Schedule', 'calendar-clock-outline', () =>
-          navigation.navigate(ROUTES.user_distributor_schedule_stack),
+
+        {role !== userRoles.TSI && (
+          <>
+            {renderItem(
+              'User Distributor Schedule',
+              'calendar-clock-outline',
+              () => navigation.navigate(ROUTES.user_distributor_schedule_stack),
+            )}
+            {renderItem('User Complaint', 'account-alert', () =>
+              navigation.navigate(ROUTES.user_complaint_stack),
+            )}
+          </>
         )}
-
-        
-        {role !== userRoles.TSI &&
-          role !== userRoles.SO &&
-          role !== userRoles.SSO &&
-          renderItem('User TaDas', 'account-alert', () =>
-            navigation.navigate(ROUTES.user_ta_das_stack),
-          )}
-
-
-         {role !== userRoles.TSI &&
-          role !== userRoles.SO &&
-          role !== userRoles.SSO &&
-          renderItem('User Expense', 'account-alert', () =>
-            navigation.navigate(ROUTES.user_expense_stack),
-          )}
-
-        {role !== userRoles.TSI &&
-          renderItem('Sub-Ordinate Complaint', 'account-alert', () =>
-            navigation.navigate(ROUTES.user_complaint_stack),
-          )}
 
         {renderItem('Expenses', 'cash-multiple', () =>
           navigation.navigate(ROUTES.expense_stack),
@@ -150,6 +139,19 @@ const SettingScreen = ({navigation}) => {
         {renderItem('TADA', 'briefcase-outline', () =>
           navigation.navigate(ROUTES.ta_das_stack),
         )}
+
+        {role !== userRoles.TSI &&
+          role !== userRoles.SO &&
+          role !== userRoles.SSO && (
+            <>
+              {renderItem('User Expense', 'cash-multiple', () =>
+                navigation.navigate(ROUTES.user_expense_stack),
+              )}
+              {renderItem('User TaDas', 'briefcase-outline', () =>
+                navigation.navigate(ROUTES.user_ta_das_stack),
+              )}
+            </>
+          )}
         {/* {renderItem('About Patanjali', 'office-building', () =>
           navigation.navigate(ROUTES.about),
         )} */}

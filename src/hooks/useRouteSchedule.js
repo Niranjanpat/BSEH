@@ -51,7 +51,7 @@ const useRouteSchedule = () => {
   };
 
   const fetchRoutes = () => {
-    getRoutes()
+    getRoutes({assignee: 'me'})
       .then(res => {
         const {data, errors, success} = res.data;
 

@@ -54,25 +54,24 @@ export default function BottomTabStack({navigation}) {
         component={HomeStackNavigation}
       />
 
-      {/* <Screen
-        name="Activity"
-        options={{
-          tabBarLabel: 'Activity',
-          tabBarIcon: ({color}) => (
-            <MaterialCommunityIcons
-              name="contacts-outline"
-              color={color}
-              size={22}
-            />
-          ),
-        }}
-        component={ActivityStackNavigation}
-      /> */}
-
       {role === userRoles.TSI ||
       role === userRoles.SO ||
       role === userRoles.SSO ? (
         <>
+          <Screen
+            name="Activity"
+            options={{
+              tabBarLabel: 'Activity',
+              tabBarIcon: ({color}) => (
+                <MaterialCommunityIcons
+                  name="contacts-outline"
+                  color={color}
+                  size={22}
+                />
+              ),
+            }}
+            component={ActivityStackNavigation}
+          />
           <Screen
             name="AddShop"
             options={{

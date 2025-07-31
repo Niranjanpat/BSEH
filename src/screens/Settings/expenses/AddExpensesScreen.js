@@ -56,9 +56,8 @@ const AddExpensesScreen = ({route, navigation}) => {
     };
     checkCameraPermission();
     fetchExpenseTypes();
-    fetchLocation(); 
+    fetchLocation();
   }, []);
-
 
   //  const handleFilePick = async () => {
   //   try {
@@ -113,7 +112,6 @@ const AddExpensesScreen = ({route, navigation}) => {
   //   }
   // };
 
-
   useEffect(() => {
     if (channel === 'update' && expenseDetail) {
       const parsedDate = new Date(expenseDetail.date);
@@ -128,19 +126,23 @@ const AddExpensesScreen = ({route, navigation}) => {
 
   const handleOpenCamera = () => {
     launchCamera(
-      {mediaType: 'photo', cameraType: 'back', saveToPhotos: true},
+      {
+        mediaType: 'photo',
+        cameraType: 'back',
+        saveToPhotos: false,
+        quality: 0.5,
+      },
       response => {
         if (response.didCancel) return;
         if (response.errorCode)
           return Alert.alert('Camera error', response.errorMessage);
-        setImage(response.assets?.[0]?.uri);
+        setImage(response.assets[0].uri ?? null);
       },
     );
   };
 
-
-  const fetchLocation = () => { 
-     // Fetch location separately
+  const fetchLocation = () => {
+    // Fetch location separately
     Geolocation.getCurrentPosition(
       position => {
         setLocation({
@@ -153,10 +155,10 @@ const AddExpensesScreen = ({route, navigation}) => {
       },
       {enableHighAccuracy: true, timeout: 10000, maximumAge: 10000},
     );
-  }
+  };
 
   const handleOpenGallery = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
+    launchImageLibrary({mediaType: 'photo', quality: 0.5}, response => {
       if (response.didCancel) return;
       if (response.errorCode)
         return Alert.alert('Gallery error', response.errorMessage);
@@ -174,12 +176,15 @@ const AddExpensesScreen = ({route, navigation}) => {
   };
 
   const onSubmit = () => {
-    if(location.longitude === null || location.latitude === null) {
+    if (location.longitude === null || location.latitude === null) {
       fetchLocation();
     }
 
     if (!amount || !details || !expenseTypeSelected.current || !image) {
-      return Alert.alert('Error', 'Please fill in all fields and select an image.');
+      return Alert.alert(
+        'Error',
+        'Please fill in all fields and select an image.',
+      );
     }
 
     if (!amount.match(moneyRegex) || (extra && !extra.match(moneyRegex))) {
@@ -213,6 +218,8 @@ const AddExpensesScreen = ({route, navigation}) => {
     formData.append('extra', extra);
 
     const handleResponse = res => {
+      console.log(res);
+
       const {success, errors} = res.data;
       if (success) {
         Alert.alert(
@@ -227,9 +234,7 @@ const AddExpensesScreen = ({route, navigation}) => {
     };
 
     const apiCall =
-      channel === 'update'
-        ? updateExpense(formData, id)
-        : addExpense(formData);
+      channel === 'update' ? updateExpense(formData, id) : addExpense(formData);
 
     apiCall
       .then(handleResponse)

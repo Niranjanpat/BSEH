@@ -210,15 +210,15 @@ const OrderScreen = ({navigation, route}) => {
                   </View>
                 </>
               )}
-              right={props => (
-                <TouchableOpacity
-                  onPress={() => {
-                    requestStoragePermission(item._id, item.customer);
-                  }}
-                  style={styles.listRight}>
-                  <List.Icon {...props} icon="download-outline" />
-                </TouchableOpacity>
-              )}
+              // right={props => (
+              //   <TouchableOpacity
+              //     onPress={() => {
+              //       requestStoragePermission(item._id, item.customer);
+              //     }}
+              //     style={styles.listRight}>
+              //     <List.Icon {...props} icon="download-outline" />
+              //   </TouchableOpacity>
+              // )}
             />
           );
         }}
