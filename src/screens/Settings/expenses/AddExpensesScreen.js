@@ -15,7 +15,7 @@ import DatePicker from 'react-native-date-picker';
 import Geolocation from 'react-native-geolocation-service';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import dayjs from 'dayjs';
-
+import DocumentPicker from 'react-native-document-picker';
 import {COLORS} from '../../../constants/theme/colors';
 import MyDropdown from '../../../components/DropDown';
 import {requestCameraPermission} from '../../../utils/useCameraPermission';
@@ -58,6 +58,60 @@ const AddExpensesScreen = ({route, navigation}) => {
     fetchExpenseTypes();
     fetchLocation(); 
   }, []);
+
+
+  //  const handleFilePick = async () => {
+  //   try {
+  //     Alert.alert(
+  //       'Select File Type',
+  //       'Choose what you want to upload',
+  //       [
+  //         {
+  //           text: 'Image',
+  //           onPress: pickImage,
+  //         },
+  //         {
+  //           text: 'PDF',
+  //           onPress: pickPDF,
+  //         },
+  //         {
+  //           text: 'Cancel',
+  //           style: 'cancel',
+  //         },
+  //       ],
+  //       { cancelable: true }
+  //     );
+  //   } catch (err) {
+  //     console.log('Error:', err);
+  //   }
+  // };
+
+  // const pickImage = async () => {
+  //   const result = await launchImageLibrary({
+  //     mediaType: 'photo',
+  //     quality: 1,
+  //   });
+
+  //   if (!result.didCancel && !result.errorCode) {
+  //     setImage(result.assets[0].uri);
+  //   }
+  // };
+
+  // const pickPDF = async () => {
+  //   try {
+  //     const res = await DocumentPicker.pick({
+  //       type: [DocumentPicker.types.pdf],
+  //     });
+  //     console.log('Picked PDF:', res);
+  //     setImage(res[0].uri);
+  //   } catch (err) {
+  //     if (DocumentPicker.isCancel(err)) {
+  //       console.log('User cancelled PDF picker');
+  //     } else {
+  //       console.log('Error picking PDF:', err);
+  //     }
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -200,6 +254,8 @@ const AddExpensesScreen = ({route, navigation}) => {
     }
   };
 
+  console.log('Expense Type Selected:', image);
+
   return (
     <ScrollView>
       <View style={styles.containerWrap}>
@@ -262,7 +318,7 @@ const AddExpensesScreen = ({route, navigation}) => {
           />
         </View>
 
-        <View style={styles.container}>
+        {/* <View style={styles.container}>
           <Text style={styles.label}>Extra Expenses</Text>
           <TextInput
             style={styles.input}
@@ -272,7 +328,7 @@ const AddExpensesScreen = ({route, navigation}) => {
             value={extra}
             onChangeText={setExtra}
           />
-        </View>
+        </View> */}
 
         <View style={styles.container}>
           {image && <Image source={{uri: image}} style={styles.image} />}

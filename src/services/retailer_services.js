@@ -65,7 +65,7 @@ export const getCustomerClassList = async () => {
 
 export const getBeatList = async isMyVisits => {
   const url = isMyVisits ? URLS.routesToday : URLS.route;
-  return await client.get(url);
+  return await client.get(url,{params:{assignee:'me'}});
 };
 
 export const getBeatDetail = async id => {

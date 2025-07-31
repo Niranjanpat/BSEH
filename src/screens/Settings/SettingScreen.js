@@ -65,7 +65,7 @@ const SettingScreen = ({navigation}) => {
           </Subheading>
         )}
         {profile.email && (
-          <Subheading style={styles.subheading}>{profile.email}</Subheading>
+          <Subheading style={styles.subheading}>{profile.emp_code}</Subheading>
         )}
       </View>
 

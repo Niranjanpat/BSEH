@@ -130,7 +130,7 @@ const UserTadasListScreen = () => {
         />
       ) : (
         <View style={styles.empty}>
-          <Text>No {status} expense found</Text>
+          <Text>No {status} Tadas found</Text>
         </View>
       )}
     </View>

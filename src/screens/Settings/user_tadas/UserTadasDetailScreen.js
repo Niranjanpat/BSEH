@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   ActivityIndicator,
   Alert,
   Modal,
@@ -28,11 +27,11 @@ const STATUS_COLORS = {
 };
 
 const ROLE_HIERARCHY = [
-  'forwarded_by_asm_name',
-  'forwarded_by_zm_name',
-  'forwarded_by_gm_name',
-  'forwarded_by_rm_name',
   'forwarded_by_vp_name',
+  'forwarded_by_rm_name',
+  'forwarded_by_gm_name',
+  'forwarded_by_zm_name',
+  'forwarded_by_asm_name',
 ];
 
 const UserTadasDetailScreen = ({route}) => {
@@ -43,7 +42,6 @@ const UserTadasDetailScreen = ({route}) => {
   const [remark, setRemark] = useState('');
   const [actionType, setActionType] = useState(null);
   const {role}= useSelector(state => state.auth);
-  console.log("is_editable", is_editable,id);
 
   const fetchDetail = async () => {
     try {
@@ -106,7 +104,6 @@ const UserTadasDetailScreen = ({route}) => {
   };
 
   const renderForwardRow = (label, user) => {
-    if (!user?.name) return null;
     return (
       <ForwardRow
         label={label}
@@ -136,24 +133,45 @@ const UserTadasDetailScreen = ({route}) => {
 
   const finalStatus = getFinalStatus();
   const statusColor = STATUS_COLORS[finalStatus];
-  const shouldRenderActionButtons = () => {
-    const forwardedIndex = ROLE_HIERARCHY.findIndex(key => data[key]);
+   const shouldRenderActionButtons = () => {
+    let forwardedIndex =-1;
+    for( const roleKey of ROLE_HIERARCHY) {
+      if (data[roleKey]) {
+          forwardedIndex = ROLE_HIERARCHY.indexOf(roleKey);
+          break;
+      }
+    }
     const currentUserIndex = ROLE_HIERARCHY.findIndex(key => key === `forwarded_by_${role}_name`);
     if(forwardedIndex === -1 ) {
        return true;
     }
-    return currentUserIndex !== -1 && currentUserIndex < forwardedIndex;
+    if(currentUserIndex !== -1 && currentUserIndex >= forwardedIndex){
+      return false;
+    }
+    return true;
   };
-const userRoles = ['asm', 'zm', 'gm', 'rm', 'vp'];
+
 
 const checkRejectedByRole = () => {
   if(data.rejected_by_role) {
-    const RejectedIndex = userRoles.indexOf(data.rejected_by_role);
-    const currentUserIndex = userRoles.indexOf(role);
-    return RejectedIndex < currentUserIndex;
+    return false;
   }
   return true; 
 }
+
+
+  const getTopForwardedRole = data => {
+    const roleHierarchy = ['vp', 'rm', 'gm', 'zm', 'asm'];
+    for (const role of roleHierarchy) {
+      const forwardedAt = data[`forwarded_by_${role}_at`];
+      if (forwardedAt && forwardedAt.trim() !== '') {
+        return role;
+      }
+    }
+    return -1;
+  };
+
+  const forwardedBy = getTopForwardedRole(data);
 
   
 
@@ -180,44 +198,19 @@ const checkRejectedByRole = () => {
           </Text>
         </View>
 
-        {(data.forwarded_by_asm_name ||
-          data.forwarded_by_zm_name ||
-          data.forwarded_by_gm_name ||
-          data.forwarded_by_rm_name ||
-          data.forwarded_by_vp_name) && (
-          <Text style={styles.sectionHeader}>Forwarded By</Text>
-        )}
+      
+              {forwardedBy !== -1 && (
+                <>
+                  <Text style={styles.sectionHeader}>Forwarded By</Text>
+                  {renderForwardRow(forwardedBy, {
+                    name: data[`forwarded_by_${forwardedBy}_name`],
+                    emp_code: data[`forwarded_by_${forwardedBy}_emp_code`],
+                    remarks: data[`forwarded_by_${forwardedBy}_remarks`],
+                    date: data[`forwarded_by_${forwardedBy}_at`],
+                  })}
+                </>
+              )}
 
-        {renderForwardRow('ASM', {
-          name: data.forwarded_by_asm_name,
-          emp_code: data.forwarded_by_asm_emp_code,
-          remarks: data.forwarded_by_asm_remarks,
-          date: data.forwarded_by_asm_at,
-        })}
-        {renderForwardRow('ZM', {
-          name: data.forwarded_by_zm_name,
-          emp_code: data.forwarded_by_zm_emp_code,
-          remarks: data.forwarded_by_zm_remarks,
-          date: data.forwarded_by_zm_at,
-        })}
-        {renderForwardRow('GM', {
-          name: data.forwarded_by_gm_name,
-          emp_code: data.forwarded_by_gm_emp_code,
-          remarks: data.forwarded_by_gm_remarks,
-          date: data.forwarded_by_gm_at,
-        })}
-        {renderForwardRow('RM', {
-          name: data.forwarded_by_rm_name,
-          emp_code: data.forwarded_by_rm_emp_code,
-          remarks: data.forwarded_by_rm_remarks,
-          date: data.forwarded_by_rm_at,
-        })}
-        {renderForwardRow('VP', {
-          name: data.forwarded_by_vp_name,
-          emp_code: data.forwarded_by_vp_emp_code,
-          remarks: data.forwarded_by_vp_remarks,
-          date: data.forwarded_by_vp_at,
-        })}
 
         {finalStatus === 'approved' && (
           <StatusBox
@@ -317,7 +310,7 @@ const InfoRow = ({label, value}) => (
 
 const ForwardRow = ({label, name, empCode, remarks, date}) => (
   <View style={styles.forwardRow}>
-    <Text style={styles.forwardLabel}>{label}</Text>
+    <Text style={styles.forwardLabel}>{label?.toString()?.toUpperCase()}</Text>
     <Text style={styles.forwardText}>Name: {name}</Text>
     <Text style={styles.forwardText}>Emp Code: {empCode}</Text>
     <Text style={styles.forwardText}>Remarks: {remarks}</Text>

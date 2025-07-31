@@ -92,7 +92,7 @@ const MyVisitScreen = ({navigation}) => {
   async function fetchMyVisit() {
     try {
       setIsLoading(true);
-      const response = await client.get(URLS.myVisits);
+      const response = await client.get(URLS.myVisits,{params:{assignee: 'me'}});
       const {data, errors, success} = response.data;
       if (success) {
         setData(data.customers);
