@@ -66,7 +66,7 @@ const ProfileScreen = ({navigation}) => {
     State: userDetails?.state_name || '',
     Headquarters: userDetails?.headquarters_name || '',
     'Join Date': dayjs(userDetails?.join_date).format('DD-MM-YYYY') || '',
-    Address: userDetails?.address || '',
+    // Address: userDetails?.address || '',
     'Aadhar Number': userDetails?.aadhar_number || '',
     'PAN Number': userDetails?.pan_number || '',
     // 'Emergency Contact Name': userDetails?.emergency_contact_name || '',

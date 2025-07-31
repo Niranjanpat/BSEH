@@ -47,6 +47,6 @@ export const rejectUserRouteSchedules = async data => {
   return await client.post(`${URLS.userRouteSchedules}/reject`, data);
 };
 
-export const getRoutes = async () => {
-  return await client.get(URLS.route);
+export const getRoutes = async (params) => {
+  return await client.get(URLS.route, {params});
 };

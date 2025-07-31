@@ -38,7 +38,8 @@ const UpdateProfileScreen = ({ navigation }) => {
   const formattedDob = useMemo(() => (dob ? dayjs(dob).format('YYYY-MM-DD') : ''), [dob]);
 
   const btnSubmitEnabled = useMemo(() => {
-    return dob && email && phone && address && Object.keys(errors).length === 0;
+    return dob && email && phone && Object.keys(errors).length === 0;
+    // return dob && email && phone && address && Object.keys(errors).length === 0;
   }, [dob, email, phone, address, errors]);
 
   const validateFields = useCallback(() => {
@@ -46,7 +47,7 @@ const UpdateProfileScreen = ({ navigation }) => {
     if (!dob) newErrors.dob = 'Please select your date of birth';
     if (!email.includes('@') || !email.includes('.')) newErrors.email = 'Invalid email address';
     if (!/^[0-9]{10}$/.test(phone)) newErrors.phone = 'Phone number must be 10 digits';
-    if (!address.trim()) newErrors.address = 'Address cannot be empty';
+    // if (!address.trim()) newErrors.address = 'Address cannot be empty';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [dob, email, phone, address]);
@@ -149,7 +150,7 @@ const UpdateProfileScreen = ({ navigation }) => {
         {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
       </View>
 
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <TextInput
           label="Address"
           value={address}
@@ -161,7 +162,7 @@ const UpdateProfileScreen = ({ navigation }) => {
           error={!!errors.address}
         />
         {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
-      </View>
+      </View> */}
 
       <Button
         mode="contained"

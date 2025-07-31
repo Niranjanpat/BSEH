@@ -26,6 +26,7 @@ import {
   addShop,
   getBeatDetail,
   editShop,
+  getCustomerCategories,
 } from '../../../services/retailer_services';
 import {requestCameraPermission} from '../../../utils/useCameraPermission';
 
@@ -50,6 +51,7 @@ const EditCustomerScreen = ({navigation, route}) => {
   const [beat, setBeat] = useState([]);
   const [shopClass, setShopClass] = useState([]);
   const [shopType, setShopType] = useState([]);
+  const [customerCategories, setCustomerCategories] = useState([]);
   const [pinCodeList, setPinCodeList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [beatDetail, setBeatDetail] = useState([]);
@@ -59,6 +61,7 @@ const EditCustomerScreen = ({navigation, route}) => {
     getBeat();
     getShopClass();
     getShopType();
+    getCustomerCategory();
     getPinCode('');
   }, []);
 
@@ -105,6 +108,19 @@ const EditCustomerScreen = ({navigation, route}) => {
         const {data, success, errors} = res.data;
         if (success) {
           setShopClass(data.customer_classes);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
+  const getCustomerCategory = () => {
+    getCustomerCategories()
+      .then(res => {
+        const {data, success, errors} = res.data;
+        if (success) {
+          setCustomerCategories(data.customer_categories);
         }
       })
       .catch(e => {
@@ -181,6 +197,9 @@ const EditCustomerScreen = ({navigation, route}) => {
     if (!values.customer_class_id) {
       errors.customer_class_id = 'Shop class is required';
     }
+    if (!values.customer_category_id) {
+      errors.customer_category_id = 'Customer Category is required';
+    }
 
     if (!values.address) {
       errors.address = 'Address is required';
@@ -206,6 +225,7 @@ const EditCustomerScreen = ({navigation, route}) => {
           name: data?.name || '',
           customer_type_id: data?.customer_type_id || '',
           customer_class_id: data?.customer_class_id || '',
+          customer_category_id: data?.customer_category_id || '',
           pin_code_id: data?.pin_code_id || '',
           divisions: data?.division_names || null, // not present in data
           gst_number: data?.gst_number || '',
@@ -238,6 +258,7 @@ const EditCustomerScreen = ({navigation, route}) => {
           formData.append('address', values.address);
           formData.append('customer_class_id', values.customer_class_id);
           formData.append('customer_type_id', values.customer_type_id);
+          formData.append('customer_category_id', values.customer_category_id);
           formData.append('owner_email', values.owner_email);
           formData.append('gst_number', values.gst_number);
           formData.append('latitude', values.latitude);
@@ -332,6 +353,20 @@ const EditCustomerScreen = ({navigation, route}) => {
             />
             {errors.customer_class_id && (
               <Text style={styles.errorText}>{errors.customer_class_id}</Text>
+            )}
+
+            <FormPicker
+              label="Customer Category"
+              selectedValue={values.customer_category_id}
+              items={customerCategories}
+              onValueChange={value =>
+                setFieldValue('customer_category_id', value)
+              }
+            />
+            {errors.customer_category_id && (
+              <Text style={styles.errorText}>
+                {errors.customer_category_id}
+              </Text>
             )}
 
             <Subheading style={{marginVertical: 10}}>

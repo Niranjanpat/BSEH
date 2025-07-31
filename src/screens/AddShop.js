@@ -170,7 +170,7 @@ const AddShop = () => {
   };
 
   const handleImagePick = setFieldValue => {
-    launchCamera({mediaType: 'photo', quality: 0.7}, response => {
+    launchCamera({mediaType: 'photo', quality: 0.5}, response => {
       if (response?.assets?.length) {
         setFieldValue('image', response.assets[0].uri);
       }
