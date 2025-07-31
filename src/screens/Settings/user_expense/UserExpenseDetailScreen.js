@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,9 @@ import {
 } from '../../../services/user_expense';
 import {COLORS} from '../../../constants/theme/colors';
 import {useSelector} from 'react-redux';
+import ExpenseImageModal from '../../../components/ExpenseImageModal';
+import { current } from '@reduxjs/toolkit';
+import { index } from 'realm';
 
 const STATUS_COLORS = {
   approved: '#28a745',
@@ -27,11 +30,11 @@ const STATUS_COLORS = {
 };
 
 const ROLE_HIERARCHY = [
-  'forwarded_by_asm_name',
-  'forwarded_by_zm_name',
-  'forwarded_by_gm_name',
-  'forwarded_by_rm_name',
   'forwarded_by_vp_name',
+  'forwarded_by_rm_name',
+  'forwarded_by_gm_name',
+  'forwarded_by_zm_name',
+  'forwarded_by_asm_name',
 ];
 
 const UserExpenseDetailScreen = ({route}) => {
@@ -41,7 +44,8 @@ const UserExpenseDetailScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [remark, setRemark] = useState('');
   const [actionType, setActionType] = useState(null);
-  const {role}= useSelector(state => state.auth);
+  const {role} = useSelector(state => state.auth);
+  const imageModalRef = useRef(null);
 
   const fetchDetail = async () => {
     try {
@@ -75,7 +79,6 @@ const UserExpenseDetailScreen = ({route}) => {
     setRemark('');
   };
 
-
   const handleActionSubmit = async () => {
     const payload = {
       remarks: remark,
@@ -102,7 +105,6 @@ const UserExpenseDetailScreen = ({route}) => {
   };
 
   const renderForwardRow = (label, user) => {
-    if (!user?.name) return null;
     return (
       <ForwardRow
         label={label}
@@ -133,25 +135,41 @@ const UserExpenseDetailScreen = ({route}) => {
   const finalStatus = getFinalStatus();
   const statusColor = STATUS_COLORS[finalStatus];
   const shouldRenderActionButtons = () => {
-  const forwardedIndex = ROLE_HIERARCHY.findIndex(key => data[key]);
-  const currentUserIndex = ROLE_HIERARCHY.findIndex(key => key === `forwarded_by_${role}_name`);
-  if(forwardedIndex === -1 ) {
+    let forwardedIndex =-1;
+    for( const roleKey of ROLE_HIERARCHY) {
+      if (data[roleKey]) {
+          forwardedIndex = ROLE_HIERARCHY.indexOf(roleKey);
+          break;
+      }
+    }
+    const currentUserIndex = ROLE_HIERARCHY.findIndex(key => key === `forwarded_by_${role}_name`);
+    if(forwardedIndex === -1 ) {
+       return true;
+    }
+    if((currentUserIndex !== -1 && currentUserIndex >= forwardedIndex)){
+      return false;
+    }
     return true;
-  }
-  return currentUserIndex !== -1 && currentUserIndex < forwardedIndex;
-};
+  };
 
-const userRoles = ['asm', 'zm', 'gm', 'rm', 'vp'];
+  const checkRejectedByRole = () => {
+    if (data.rejected_by_role) {
+      return false;
+    }
+    return true;
+  };
 
-const checkRejectedByRole = () => {
-  if(data.rejected_by_role) {
-    const RejectedIndex = userRoles.indexOf(data.rejected_by_role);
-    const currentUserIndex = userRoles.indexOf(role);
-    return RejectedIndex < currentUserIndex;
-  }
-  return true; 
-}
-
+  const getTopForwardedRole = data => {
+    const roleHierarchy = ['vp', 'rm', 'gm', 'zm', 'asm'];
+    for (const role of roleHierarchy) {
+      const forwardedAt = data[`forwarded_by_${role}_at`];
+      if (forwardedAt && forwardedAt.trim() !== '') {
+        return role;
+      }
+    }
+    return -1;
+  };
+  const forwardedBy = getTopForwardedRole(data);
 
   return (
     <>
@@ -170,52 +188,27 @@ const checkRejectedByRole = () => {
           <Text style={[styles.status, {color: statusColor}]}>
             Status: {finalStatus.charAt(0).toUpperCase() + finalStatus.slice(1)}
           </Text>
-
-          <Image
-            source={{uri: data.photo_path}}
-            style={styles.image}
-            resizeMode="contain"
-          />
+          <TouchableOpacity
+            onPress={() => imageModalRef.current?.showImage(true)}>
+            <Image
+              source={{uri: data.photo_path}}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
         </View>
 
-        {(data.forwarded_by_asm_name ||
-          data.forwarded_by_zm_name ||
-          data.forwarded_by_gm_name ||
-          data.forwarded_by_rm_name ||
-          data.forwarded_by_vp_name) && (
-          <Text style={styles.sectionHeader}>Forwarded By</Text>
+        {forwardedBy !== -1  && (
+          <>
+            <Text style={styles.sectionHeader}>Forwarded By</Text>
+            {renderForwardRow(forwardedBy, {
+              name: data[`forwarded_by_${forwardedBy}_name`],
+              emp_code: data[`forwarded_by_${forwardedBy}_emp_code`],
+              remarks: data[`forwarded_by_${forwardedBy}_remarks`],
+              date: data[`forwarded_by_${forwardedBy}_at`],
+            })}
+          </>
         )}
-
-        {renderForwardRow('ASM', {
-          name: data.forwarded_by_asm_name,
-          emp_code: data.forwarded_by_asm_emp_code,
-          remarks: data.forwarded_by_asm_remarks,
-          date: data.forwarded_by_asm_at,
-        })}
-        {renderForwardRow('ZM', {
-          name: data.forwarded_by_zm_name,
-          emp_code: data.forwarded_by_zm_emp_code,
-          remarks: data.forwarded_by_zm_remarks,
-          date: data.forwarded_by_zm_at,
-        })}
-        {renderForwardRow('GM', {
-          name: data.forwarded_by_gm_name,
-          emp_code: data.forwarded_by_gm_emp_code,
-          remarks: data.forwarded_by_gm_remarks,
-          date: data.forwarded_by_gm_at,
-        })}
-        {renderForwardRow('RM', {
-          name: data.forwarded_by_rm_name,
-          emp_code: data.forwarded_by_rm_emp_code,
-          remarks: data.forwarded_by_rm_remarks,
-          date: data.forwarded_by_rm_at,
-        })}
-        {renderForwardRow('VP', {
-          name: data.forwarded_by_vp_name,
-          emp_code: data.forwarded_by_vp_emp_code,
-          remarks: data.forwarded_by_vp_remarks,
-          date: data.forwarded_by_vp_at,
-        })}
 
         {finalStatus === 'approved' && (
           <StatusBox
@@ -245,24 +238,24 @@ const checkRejectedByRole = () => {
           />
         )}
       </ScrollView>
-  {shouldRenderActionButtons() && checkRejectedByRole() && (
-  <View style={styles.actionRow}>
-    <TouchableOpacity
-      onPress={() => openModal('forward')}
-      style={[styles.iconButton, { backgroundColor: COLORS.primary }]}
-    >
-      <Text style={styles.textButton}>Forward</Text>
-      <Icon name="arrow-up-bold-box" color="#fff" size={24} />
-    </TouchableOpacity>
-    <TouchableOpacity
-      onPress={() => openModal('reject')}
-      style={[styles.iconButton, { backgroundColor: '#dc3545' }]}
-    >
-      <Text style={styles.textButton}>Reject</Text>
-      <Icon name="close-box" color="#fff" size={24} />
-    </TouchableOpacity>
-  </View>
-)}
+      {shouldRenderActionButtons() && checkRejectedByRole()  && (
+        <View style={styles.actionRow}>
+          <TouchableOpacity
+            onPress={() => openModal('forward')}
+            style={[styles.iconButton, {backgroundColor: COLORS.primary}]}>
+            <Text style={styles.textButton}>Forward</Text>
+            <Icon name="arrow-up-bold-box" color="#fff" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => openModal('reject')}
+            style={[styles.iconButton, {backgroundColor: '#dc3545'}]}>
+            <Text style={styles.textButton}>Reject</Text>
+            <Icon name="close-box" color="#fff" size={24} />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <ExpenseImageModal item={data} ref={imageModalRef}></ExpenseImageModal>
 
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
@@ -312,7 +305,7 @@ const InfoRow = ({label, value}) => (
 
 const ForwardRow = ({label, name, empCode, remarks, date}) => (
   <View style={styles.forwardRow}>
-    <Text style={styles.forwardLabel}>{label}</Text>
+    <Text style={styles.forwardLabel}>{label?.toString()?.toUpperCase()}</Text>
     <Text style={styles.forwardText}>Name: {name}</Text>
     <Text style={styles.forwardText}>Emp Code: {empCode}</Text>
     <Text style={styles.forwardText}>Remarks: {remarks}</Text>

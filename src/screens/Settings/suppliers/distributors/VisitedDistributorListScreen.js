@@ -46,9 +46,9 @@ const VisitedDistributorListScreen = () => {
       <Text style={styles.name}>{item.distributor_name}</Text>
       <Text style={styles.code}>SAP: {item.distributor_sap_code}</Text>
       <View style={styles.timeRow}>
-        <Text style={styles.timeLabel}>Punch In:</Text>
+        <Text style={styles.timeLabel}>Check In:</Text>
         <Text style={styles.timeValue}>{item.check_in_time}</Text>
-        <Text style={styles.timeLabel}>Punch Out:</Text>
+        <Text style={styles.timeLabel}>Check Out:</Text>
         <Text style={styles.timeValue}>{item.check_out_time || 'N/A'}</Text>
       </View>
     </View>

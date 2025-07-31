@@ -41,6 +41,7 @@
     "react-native-countdown-timer-hooks": "^1.0.5",
     "react-native-date-picker": "^4.3.6",
     "react-native-device-info": "^14.0.4",
+    "react-native-document-picker": "^9.3.1",
     "react-native-easy-grid": "^0.2.2",
     "react-native-element-dropdown": "^2.12.4",
     "react-native-geolocation-service": "^5.3.1",
