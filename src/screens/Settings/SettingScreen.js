@@ -86,7 +86,9 @@ const SettingScreen = ({navigation}) => {
         {renderItem('Monthly Travel Distance', 'calendar-month-outline', () =>
           navigation.navigate(ROUTES.monthly_attendance_travel),
         )}
-        {renderItem('My Route schedules', 'map-marker-distance', () =>
+        {(role === userRoles.TSI ||
+          role === userRoles.SO ||
+          role === userRoles.SSO )&& renderItem('My Route schedules', 'map-marker-distance', () =>
           navigation.navigate(ROUTES.route_schedule_stack),
         )}
         {role !== userRoles.TSI &&
@@ -112,7 +114,9 @@ const SettingScreen = ({navigation}) => {
             navigation.navigate(ROUTES.user_hierarchy_stack),
           )} */}
 
-        {renderItem('Complaint', 'message-alert-outline', () =>
+        {(role === userRoles.TSI ||
+          role === userRoles.SO ||
+          role === userRoles.SSO) && renderItem('Complaint', 'message-alert-outline', () =>
           navigation.navigate(ROUTES.complaint_stack),
         )}
         {renderItem('Distributor', 'truck-outline', () =>

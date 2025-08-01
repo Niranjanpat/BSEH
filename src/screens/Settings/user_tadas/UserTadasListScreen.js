@@ -21,6 +21,7 @@ export const filterOptions = {
   Pending: 'pending',
   Forwarded: 'forwarded',
   Rejected: 'rejected',
+  Approved: 'approved',
 };
 
 const STATUS_COLORS = {
