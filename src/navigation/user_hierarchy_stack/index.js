@@ -23,6 +23,8 @@ import TeamPerformanceScreen from '../../screens/Settings/performance/TeamPerfor
 import RetailerMasterDetailsScreen from '../../screens/RetailerMaster/RetailerMasterDetailsScreen';
 import TopAsmsScreen from '../../screens/Settings/performance/TopAsmsScreen';
 import TopZmsScreen from '../../screens/Settings/performance/TopZmsScreen';
+import TotalVisitedScreen from '../../screens/Activity/Today/TotalVisitedScreen';
+import TotalVisitedDetail from '../../screens/Activity/Today/TotalVisited/TotalVisitedDetail'
 
 
 const {Navigator, Screen} = createNativeStackNavigator();
@@ -39,6 +41,21 @@ export const UserHierarchyStack = () => {
         name={ROUTES.performance_screen}
         component={PerformanceScreen}
         options={{title: 'Performance'}}
+      />
+      
+      <Screen
+        name={ROUTES.total_visited}
+        component={TotalVisitedScreen}
+        options={({route, navigation}) => ({
+          title: 'Total Visited',
+        })}
+      />
+        <Screen
+        name={ROUTES.total_visit_detail}
+        component={TotalVisitedDetail}
+        options={({route, navigation}) => ({
+          title: 'Total Visited Detail',
+        })}
       />
       <Screen
         name={ROUTES.daily_order}

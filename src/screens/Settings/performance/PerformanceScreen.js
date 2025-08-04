@@ -59,11 +59,15 @@ const PerformanceScreen = ({navigation, route}) => {
       })}
 
       
-       {/* {role !== 'sc' && role !== 'asm'  && (
+      {(role === 'so' || role === 'sso'  || role ==='tsi' )&& (
         <>
-           {renderItem('Top ASMs', 'cart-arrow-up', ROUTES.top_asm, {id})}
+         {renderItem(
+                 'Total Visited',
+                 'map-marker-check-outline',
+                 ROUTES.total_visited,
+               )}
         </>
-      )}
+      )} 
 
        {role !== 'sc' && role !== 'asm' && role!== 'zm'  && (
         <>
@@ -71,14 +75,14 @@ const PerformanceScreen = ({navigation, route}) => {
         </>
       )}
 
-      {role !== 'asm' &&
+      {/* {role !== 'asm' &&
         role !== 'zm' &&
         renderItem(
           'Performance overview',
           'chart-bar',
           ROUTES.individual_performance,
           {id},
-        )} */}
+        )}  */}
 
       {/* {renderItem('Product sales', 'point-of-sale', ROUTES.sales_performance, {
         id,
