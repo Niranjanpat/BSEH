@@ -1,5 +1,3 @@
-import { API_URL, ENV, CLIENT_ID, CLIENT_SECRET } from '@env';
-
 export const URLS = {
   // base: 'http://206.1.13.176:5001/patanjali-dairy/api/', //live
   base: 'http://182.18.142.21/patanjali-dairy/api/', //test
