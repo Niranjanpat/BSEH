@@ -27,7 +27,7 @@ const DistributorListScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
 
   const {distributorVisitStatus} = useSelector(state => state.distributor);
-  console.log('distributor', distributorVisitStatus);
+
   useEffect(() => {
     const today = dayjs().format('YYYY-MM-DD');
     fetchDistributorVisit(today);
@@ -137,7 +137,7 @@ const DistributorListScreen = ({route, navigation}) => {
       <View style={styles.container}>
         <FlatList
           onRefresh={() => {
-            refreshData();
+            fetchDistributorVisit();
           }}
           data={filterDistributors}
           refreshing={loading}

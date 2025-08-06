@@ -15,6 +15,7 @@ import { COLORS } from '../../../constants/theme/colors';
 import { ROUTES } from '../../../constants/routes';
 import TabFilter from '../../../components/TabFilter';
 import { getUserExpense } from '../../../services/user_expense';
+import App from '../../../../App';
 
 
 export const filterOptions = {
@@ -22,6 +23,7 @@ export const filterOptions = {
     Pending: 'pending',
     Forwarded: 'forwarded',
     Rejected: 'rejected',
+    Approved: 'approved',
   };
 
 

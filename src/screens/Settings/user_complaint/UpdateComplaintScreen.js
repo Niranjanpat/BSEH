@@ -80,6 +80,7 @@ const UpdateComplaintScreen = ({route, navigation}) => {
       if (success) {
         Alert.alert('Success', `Complaint updated successfully`);
         navigation.goBack();
+        navigation.goBack();
       } else if (errors) {
         console.log(errors);
         Alert.alert('Error', Object.values(errors).join(', '));
