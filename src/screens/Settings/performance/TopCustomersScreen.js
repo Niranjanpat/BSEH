@@ -27,17 +27,18 @@ const TopCustomersScreen = ({route}) => {
   }, [date]);
 
   const getTopCustomerDSM = () => {
+    const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0]; 
+    const endDate = new Date(year, month, 0).toISOString().split('T')[0]; 
     const temp = {
       id: route.params?.id,
-      month: month,
-      year: year,
+      start_date: startDate,
+      end_date: endDate,
       sort_by: 'amount',
       self: 1,
     };
     topCustomerList(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log(data);
         if (success) {
           setDataDSM(data.customers);
         } else if (errors) {
@@ -49,17 +50,18 @@ const TopCustomersScreen = ({route}) => {
       });
   };
   const getTopCustomer = () => {
+    const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0]; 
+    const endDate = new Date(year, month, 0).toISOString().split('T')[0]; 
     const temp = {
       id: route.params?.id,
-      month: month,
-      year: year,
+      start_date: startDate,
+      end_date: endDate,
       sort_by: 'amount',
       self: 0,
     };
     topCustomerList(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log('get', res);
         console.log(data);
         if (success) {
           setData(data.customers);
