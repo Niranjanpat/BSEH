@@ -69,11 +69,11 @@ const PerformanceScreen = ({navigation, route}) => {
         </>
       )} 
 
-       {role !== 'sc' && role !== 'asm' && role!== 'zm'  && (
+       {/* {role !== 'sc' && role !== 'asm' && role!== 'zm'  && (
         <>
             {renderItem('Top ZMs', 'cart-arrow-up', ROUTES.top_zm, {id})}
         </>
-      )}
+      )} */}
 
       {/* {role !== 'asm' &&
         role !== 'zm' &&

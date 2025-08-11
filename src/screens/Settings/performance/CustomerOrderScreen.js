@@ -27,10 +27,12 @@ const CustomerOrderScreen = ({route}) => {
   }, [date]);
   console.log(data);
   const getTopCustomerDSM = () => {
+    const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
+    const endDate = new Date(year, month, 0).toISOString().split('T')[0];
     const temp = {
       id: route.params?.id,
-      year: year,
-      month: month,
+      start_date: startDate,
+      end_date: endDate,
       sort_by: 'amount',
       page: 1,
       self: 1,
@@ -50,10 +52,12 @@ const CustomerOrderScreen = ({route}) => {
       });
   };
   const getTopCustomer = () => {
+    const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
+    const endDate = new Date(year, month, 0).toISOString().split('T')[0];
     const temp = {
       id: route.params?.id,
-      year: year,
-      month: month,
+      start_date: startDate,
+      end_date: endDate,
       sort_by: 'amount',
       page: 1,
       self: 0,
@@ -61,7 +65,7 @@ const CustomerOrderScreen = ({route}) => {
     customerOrderList(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log(res);
+        console.log(res.data);
         console.log(data);
         if (success) {
           setData(data.customers);

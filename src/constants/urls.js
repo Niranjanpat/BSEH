@@ -71,6 +71,9 @@ export const URLS = {
   userDashboard: 'user-dashboard/today',
   cumulativeReport: 'user-hierarchy/cumulative-report',
   cumulativeMonthlyReport: 'user-hierarchy/cumulative-monthly-report',
+  cumulativePerformance: 'user-performance/cumulative-performance',
+  salesPerformance: '/user-performance/product-sales',
+
   kamMtd: 'kams/month-till-date',
   kams: 'kams',
   promoterSales: 'promoter-sales',

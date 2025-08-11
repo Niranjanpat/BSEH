@@ -75,7 +75,7 @@ const UserHierarchyList = ({navigation, route}) => {
           );
         }}
       />
-
+{/* 
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
@@ -88,8 +88,8 @@ const UserHierarchyList = ({navigation, route}) => {
           mode="contained"
           onPress={() => handleSalesClick()}>
           Product Sales
-        </Button>
-      </View>
+        </Button> 
+      </View>*/}
     </View>
   );
 };

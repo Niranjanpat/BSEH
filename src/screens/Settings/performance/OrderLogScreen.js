@@ -51,7 +51,7 @@ const OrderLogScreen = ({route}) => {
     weeklyOrderLog(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log(data);
+        
         if (success) {
           setDataDSM(data.days);
         } else if (errors) {
@@ -75,7 +75,6 @@ const OrderLogScreen = ({route}) => {
     weeklyOrderLog(temp)
       .then(res => {
         const {data, errors, success} = res.data;
-        console.log(data);
         if (success) {
           setData(data.days);
         } else if (errors) {
