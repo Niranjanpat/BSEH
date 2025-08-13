@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import SplashScreen from '../screens/SplashScreen';
 import {Alert, AppState, BackHandler, Platform} from 'react-native';
 import JailMonkey from 'jail-monkey';
+import DashboardStack from '../screens_new/DashboardStack';
 
 const {Navigator, Screen} = createNativeStackNavigator();
 
@@ -66,9 +67,9 @@ export default function AppNavigation() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName={token ? ROUTES.bottomtab_stack : ROUTES.auth_stack}>
+      initialRouteName={token ? ROUTES.dashboard_stack : ROUTES.auth_stack}>
       <Screen name={ROUTES.auth_stack} component={AuthStack} />
-      <Screen name={ROUTES.bottomtab_stack} component={BottomTabStack} />
+      <Screen name={ROUTES.dashboard_stack} component={DashboardStack} />
     </Navigator>
   );
 }

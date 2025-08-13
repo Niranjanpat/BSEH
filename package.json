@@ -69,6 +69,13 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
+    "react-native-render-html": "^6.3.4",
+    "react-native-file-viewer": "^2.1.5",
+    "react-native-fs": "^2.20.0",
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-html-to-pdf": "^0.12.0",
+    "react-native-paper-dropdown": "^2.3.1",
+    "react-native-share": "^12.2.0",
     "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
