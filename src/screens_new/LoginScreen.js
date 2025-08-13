@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { View, TouchableOpacity, ActivityIndicator, StyleSheet, Image, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { IconButton, Text } from 'react-native-paper';
 import { ROUTES } from '../constants/routes';
@@ -9,6 +9,8 @@ const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(()=>{navigation.replace(ROUTES.dashboard_stack);},[])
 
   const handleLogin = async () => {
     if (!username || !password) {

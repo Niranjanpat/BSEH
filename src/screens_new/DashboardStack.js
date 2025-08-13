@@ -9,7 +9,7 @@ import ViewGrievanceScreen from './ViewGrienvanceScreen';
 import ApplyLeaveScreen from './ApplyLeaveScreen';
 import ViewLeaveScreen from './LeaveStatusScreen';
 import SuggestionScreen from './SuggestionScreen';
-import LoanScreen from './LoanScreen';
+import LoanScreen from './LoanScreen'
 import ViewLoanScreen from './ViewLoanScreen';
 import ViewGpaScreen from './ViewGPFScreen';
 import GrievanceScreen from './GrievanceScreen';

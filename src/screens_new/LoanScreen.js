@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
-import DropDown from 'react-native-paper-dropdown';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 import { COLORS } from '../constants/theme/colors';
 
 const LoanScreen = () => {
@@ -13,7 +13,6 @@ const LoanScreen = () => {
   const [loadingTypes, setLoadingTypes] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [showDropDown, setShowDropDown] = useState(false);
 
   // Fetch account types from API
   const fetchAccountTypes = async () => {
@@ -22,7 +21,12 @@ const LoanScreen = () => {
       const res = await fetch('https://example.com/api/account-types'); // replace with real API
       const data = await res.json();
       if (res.ok) {
-        setAccountTypes(data.map(item => ({ label: item.label, value: item._id })));
+        setAccountTypes(
+          data.map(item => ({
+            id: item._id,
+            name: item.label,
+          }))
+        );
       } else {
         setError(data.message || 'Failed to load account types');
       }
@@ -97,15 +101,29 @@ const LoanScreen = () => {
       {loadingTypes ? (
         <ActivityIndicator size="small" color="#3498db" />
       ) : (
-        <DropDown
-          label="Account Type"
-          mode="outlined"
-          visible={showDropDown}
-          showDropDown={() => setShowDropDown(true)}
-          onDismiss={() => setShowDropDown(false)}
-          value={accountType}
-          setValue={setAccountType}
-          list={accountTypes}
+        <SearchableDropdown
+          onItemSelect={item => setAccountType(item.id)}
+          items={accountTypes}
+          defaultIndex={
+            accountTypes.findIndex(item => item.id === accountType) !== -1
+              ? accountTypes.findIndex(item => item.id === accountType)
+              : 0
+          }
+          placeholder="Select Account Type"
+          resetValue={false}
+          textInputProps={{
+            underlineColorAndroid: 'transparent',
+            style: {
+              padding: 12,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              borderRadius: 5,
+              backgroundColor: '#fff',
+            },
+          }}
+          listProps={{
+            nestedScrollEnabled: true,
+          }}
         />
       )}
 
@@ -135,7 +153,7 @@ const LoanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor:COLORS.background,
+    backgroundColor: COLORS.background,
   },
   input: {
     marginBottom: 15,
