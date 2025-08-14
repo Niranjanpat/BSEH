@@ -14,7 +14,7 @@ const DashboardScreen = () => {
 
   const menuItems = [
     { title: 'Profile', icon: 'account-circle', route: ROUTES.profile },
-    // { title: 'Attendance', icon: 'calendar-check', route: ROUTES.attendance },
+    { title: 'Attendance', icon: 'calendar-check', route: ROUTES.attendance },
     { title: 'Salary', icon: 'currency-rupee', route: ROUTES.salary },
     // { title: 'Grievance View', icon: 'file-eye-outline', route: ROUTES.grievance_view },
     { title: 'Apply Leave', icon: 'calendar-plus', route: ROUTES.apply_leave },

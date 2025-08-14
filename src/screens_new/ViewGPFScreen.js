@@ -1,39 +1,53 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+} from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import { COLORS } from '../constants/theme/colors';
 
 const ViewGpaScreen = () => {
   const [gpaList, setGpaList] = useState([
-    { date: '2025-01-05', amount: 5000, interest: 5.5, request: 'Personal Loan' },
-    { date: '2025-01-10', amount: 12000, interest: 6.2, request: 'Education Loan' },
-    { date: '2025-01-15', amount: 25000, interest: 4.8, request: 'Home Loan' },
-    { date: '2025-02-01', amount: 15000, interest: 5.0, request: 'Car Loan' },
-    { date: '2025-02-05', amount: 8000, interest: 7.1, request: 'Medical Loan' },
-    { date: '2025-02-10', amount: 7000, interest: 6.0, request: 'Vacation Loan' },
-    { date: '2025-02-15', amount: 9000, interest: 5.9, request: 'Wedding Loan' },
-    { date: '2025-03-01', amount: 20000, interest: 6.5, request: 'Startup Loan' },
-    { date: '2025-03-05', amount: 30000, interest: 4.5, request: 'Mortgage Loan' },
-    { date: '2025-03-10', amount: 40000, interest: 5.2, request: 'Business Loan' },
-    { date: '2025-03-15', amount: 5500, interest: 5.7, request: 'Personal Loan' },
-    { date: '2025-04-01', amount: 13000, interest: 6.3, request: 'Education Loan' },
-    { date: '2025-04-05', amount: 16000, interest: 5.4, request: 'Car Loan' },
-    { date: '2025-04-10', amount: 9500, interest: 7.0, request: 'Medical Loan' },
-    { date: '2025-04-15', amount: 8500, interest: 6.1, request: 'Vacation Loan' },
-    { date: '2025-05-01', amount: 10000, interest: 5.8, request: 'Wedding Loan' },
-    { date: '2025-05-05', amount: 22000, interest: 6.4, request: 'Startup Loan' },
-    { date: '2025-05-10', amount: 28000, interest: 4.9, request: 'Mortgage Loan' },
-    { date: '2025-05-15', amount: 35000, interest: 5.3, request: 'Business Loan' },
-    { date: '2025-05-20', amount: 5200, interest: 5.6, request: 'Home Loan' },
+    { date: '2025-01-05', amount: 5000, interest: 5.5, recovery: 1000, totalAmount: 5250, pending: 4250 },
+    { date: '2025-02-10', amount: 12000, interest: 6.2, recovery: 4000, totalAmount: 12744, pending: 8744 },
+    { date: '2025-03-15', amount: 25000, interest: 4.8, recovery: 8000, totalAmount: 26200, pending: 18200 },
+    { date: '2025-04-20', amount: 15000, interest: 5.0, recovery: 5000, totalAmount: 15750, pending: 10750 },
+     { date: '2025-01-05', amount: 5000, interest: 5.5, recovery: 1000, totalAmount: 5250, pending: 4250 },
+    { date: '2025-02-10', amount: 12000, interest: 6.2, recovery: 4000, totalAmount: 12744, pending: 8744 },
+    { date: '2025-03-15', amount: 25000, interest: 4.8, recovery: 8000, totalAmount: 26200, pending: 18200 },
+    { date: '2025-04-20', amount: 15000, interest: 5.0, recovery: 5000, totalAmount: 15750, pending: 10750 },
+     { date: '2025-01-05', amount: 5000, interest: 5.5, recovery: 1000, totalAmount: 5250, pending: 4250 },
+    { date: '2025-02-10', amount: 12000, interest: 6.2, recovery: 4000, totalAmount: 12744, pending: 8744 },
+    { date: '2025-03-15', amount: 25000, interest: 4.8, recovery: 8000, totalAmount: 26200, pending: 18200 },
+    { date: '2025-04-20', amount: 15000, interest: 5.0, recovery: 5000, totalAmount: 15750, pending: 10750 },
+     { date: '2025-01-05', amount: 5000, interest: 5.5, recovery: 1000, totalAmount: 5250, pending: 4250 },
+    { date: '2025-02-10', amount: 12000, interest: 6.2, recovery: 4000, totalAmount: 12744, pending: 8744 },
+    { date: '2025-03-15', amount: 25000, interest: 4.8, recovery: 8000, totalAmount: 26200, pending: 18200 },
+    { date: '2025-04-20', amount: 15000, interest: 5.0, recovery: 5000, totalAmount: 15750, pending: 10750 },
+     { date: '2025-01-05', amount: 5000, interest: 5.5, recovery: 1000, totalAmount: 5250, pending: 4250 },
+    { date: '2025-02-10', amount: 12000, interest: 6.2, recovery: 4000, totalAmount: 12744, pending: 8744 },
+    { date: '2025-03-15', amount: 25000, interest: 4.8, recovery: 8000, totalAmount: 26200, pending: 18200 },
+    { date: '2025-04-20', amount: 15000, interest: 5.0, recovery: 5000, totalAmount: 15750, pending: 10750 },
+     { date: '2025-01-05', amount: 5000, interest: 5.5, recovery: 1000, totalAmount: 5250, pending: 4250 },
+    { date: '2025-02-10', amount: 12000, interest: 6.2, recovery: 4000, totalAmount: 12744, pending: 8744 },
+    { date: '2025-03-15', amount: 25000, interest: 4.8, recovery: 8000, totalAmount: 26200, pending: 18200 },
+    { date: '2025-04-20', amount: 15000, interest: 5.0, recovery: 5000, totalAmount: 15750, pending: 10750 },
   ]);
-  const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  const screenHeight = Dimensions.get('window').height;
 
   const fetchGpaData = async () => {
     try {
       setLoading(true);
-      const res = await fetch('https://example.com/api/view-gpa'); // Replace with your real GET API
+      const res = await fetch('https://example.com/api/view-gpa'); // Replace with real API
       const data = await res.json();
-
       if (res.ok) {
         setGpaList(data);
       } else {
@@ -48,81 +62,115 @@ const ViewGpaScreen = () => {
   };
 
   useEffect(() => {
-    fetchGpaData();
+    // fetchGpaData();
   }, []);
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Card style={styles.card}>
-        {/* Table Header */}
-        <View style={[styles.row, styles.headerRow]}>
-          <Text style={[styles.cell, styles.headerCell, { flex: 0.5 }]}>SR.NO</Text>
-          <Text style={[styles.cell, styles.headerCell]}>DATE</Text>
-          <Text style={[styles.cell, styles.headerCell]}>AMOUNT</Text>
-          <Text style={[styles.cell, styles.headerCell]}>INTEREST</Text>
-          <Text style={[styles.cell, styles.headerCell]}>REQUEST</Text>
-        </View>
+  const rowsMaxHeight = screenHeight - headerHeight - 150; 
+  // 150 is padding + card margin + possible top bar height; adjust if needed
 
-        {loading ? (
-          <ActivityIndicator style={{ marginVertical: 20 }} />
-        ) : gpaList.length > 0 ? (
-          gpaList.map((item, index) => (
+  return (
+    <View style={styles.container}>
+      <Card style={styles.card}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View>
+            {/* Table Header */}
             <View
-              key={item.id || index}
-              style={[
-                styles.row,
-                { backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' },
-              ]}
+              style={[styles.row, styles.headerRow]}
+              onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
             >
-              <Text style={[styles.cell, { flex: 0.5 }]}>{index + 1}</Text>
-              <Text style={styles.cell}>{item.date}</Text>
-              <Text style={[styles.cell, { color: COLORS.primary, fontWeight: '600' }]}>
-                ₹{item.amount.toLocaleString()}
-              </Text>
-              <Text style={[styles.cell, { color: '#27ae60', fontWeight: '500' }]}>
-                {item.interest}%
-              </Text>
-              <Text style={[styles.cell, { fontStyle: 'italic', color: '#555' }]}>
-                {item.request}
-              </Text>
+              <Text style={[styles.headerCell, { width: 60 }]}>SR.NO</Text>
+              <Text style={[styles.headerCell, { width: 100 }]}>DATE</Text>
+              <Text style={[styles.headerCell, { width: 120 }]}>AMOUNT</Text>
+              <Text style={[styles.headerCell, { width: 120 }]}>INTEREST</Text>
+              <Text style={[styles.headerCell, { width: 120 }]}>RECOVERY</Text>
+              <Text style={[styles.headerCell, { width: 150 }]}>TOTAL AMOUNT</Text>
+              <Text style={[styles.headerCell, { width: 150 }]}>PENDING</Text>
             </View>
-          ))
-        ) : (
-          <Text style={{ textAlign: 'center', paddingVertical: 20 }}>No GPA records found</Text>
-        )}
+
+            {/* Table Rows */}
+            <ScrollView
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={true}
+              style={{ maxHeight: rowsMaxHeight }}
+            >
+              {loading ? (
+                <ActivityIndicator style={{ marginVertical: 20 }} />
+              ) : gpaList.length > 0 ? (
+                gpaList.map((item, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.row,
+                      { backgroundColor: index % 2 === 0 ? '#fdfdfd' : '#f7f9fc' },
+                    ]}
+                  >
+                    <Text style={[styles.cell, { width: 60 }]}>{index + 1}</Text>
+                    <Text style={[styles.cell, { width: 100 }]}>{item.date}</Text>
+                    <Text style={[styles.cell, { width: 120, color: COLORS.primary, fontWeight: '600' }]}>
+                      ₹{item.amount.toLocaleString()}
+                    </Text>
+                    <Text style={[styles.cell, { width: 120, color: '#27ae60', fontWeight: '500' }]}>
+                      {item.interest}%
+                    </Text>
+                    <Text style={[styles.cell, { width: 120 }]}>
+                      {item.recovery.toLocaleString()}
+                    </Text>
+                    <Text style={[styles.cell, { width: 150 }]}>
+                      {item.totalAmount.toLocaleString()}
+                    </Text>
+                    <Text style={[styles.cell, { width: 150 }]}>
+                      {item.pending.toLocaleString()}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={{ textAlign: 'center', paddingVertical: 20 }}>
+                  No GPA records found
+                </Text>
+              )}
+            </ScrollView>
+          </View>
+        </ScrollView>
       </Card>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 15,
     backgroundColor: COLORS.background,
   },
   card: {
-    borderRadius: 12,
+    borderRadius: 10,
     overflow: 'hidden',
-    elevation: 3,
+    backgroundColor: '#fff',
+    elevation: 2,
+    alignSelf: 'stretch',
   },
   row: {
     flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
     borderBottomWidth: 0.5,
     borderColor: '#ddd',
+    alignItems: 'center',
   },
   headerRow: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primary || '#3498db',
   },
   cell: {
-    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 6,
     fontSize: 13,
+    flexWrap: 'wrap',
   },
   headerCell: {
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    fontSize: 13,
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 13,
+    textTransform: 'uppercase',
   },
 });
 

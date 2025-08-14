@@ -1,131 +1,358 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Card, Text, ActivityIndicator } from 'react-native-paper';
-import { COLORS } from '../constants/theme/colors';
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Dimensions,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import {Card, Text, IconButton} from 'react-native-paper';
+import {COLORS} from '../constants/theme/colors';
 
-const ViewLoanScreen = () => {
-  const [loanData, setLoanData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const HEADER_HEIGHT = 48;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-  const fetchLoanData = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('https://example.com/api/view-loans'); // Replace with your API
-      const data = await res.json();
+const ViewLeaveScreen = () => {
+  const [leaves, setLeaves] = useState([
+    {
+      title: 'Project Alpha',
+      reason: 'Requirement Gathering',
+      sDate: '2025-01-05',
+      eDate: '2025-01-10',
+      status: 'Completed',
+    },
+    {
+      title: 'System Upgrade',
+      reason: 'Server Maintenance',
+      sDate: '2025-02-01',
+      eDate: '2025-02-05',
+      status: 'In Progress',
+    },
+    {
+      title: 'Website Revamp',
+      reason: 'UI/UX Improvements with additional features and long reason to test wrapping',
+      sDate: '2025-03-10',
+      eDate: '2025-03-20',
+      status: 'Pending',
+    },
+    {
+      title: 'Training Session',
+      reason: 'Skill Development',
+      sDate: '2025-04-15',
+      eDate: '2025-04-16',
+      status: 'Completed',
+    },
+    {
+      title: 'Audit Review',
+      reason: 'Annual Compliance',
+      sDate: '2025-05-01',
+      eDate: '2025-05-03',
+      status: 'In Progress',
+    },
+    {
+      title: 'Marketing Campaign',
+      reason: 'Product Launch',
+      sDate: '2025-05-15',
+      eDate: '2025-05-30',
+      status: 'Pending',
+    },
+     {
+      title: 'Project Alpha',
+      reason: 'Requirement Gathering',
+      sDate: '2025-01-05',
+      eDate: '2025-01-10',
+      status: 'Completed',
+    },
+    {
+      title: 'System Upgrade',
+      reason: 'Server Maintenance',
+      sDate: '2025-02-01',
+      eDate: '2025-02-05',
+      status: 'In Progress',
+    },
+    {
+      title: 'Website Revamp',
+      reason: 'UI/UX Improvements with additional features and long reason to test wrapping',
+      sDate: '2025-03-10',
+      eDate: '2025-03-20',
+      status: 'Pending',
+    },
+    {
+      title: 'Training Session',
+      reason: 'Skill Development',
+      sDate: '2025-04-15',
+      eDate: '2025-04-16',
+      status: 'Completed',
+    },
+    {
+      title: 'Audit Review',
+      reason: 'Annual Compliance',
+      sDate: '2025-05-01',
+      eDate: '2025-05-03',
+      status: 'In Progress',
+    },
+    {
+      title: 'Marketing Campaign',
+      reason: 'Product Launch',
+      sDate: '2025-05-15',
+      eDate: '2025-05-30',
+      status: 'Pending',
+    },
+     {
+      title: 'Project Alpha',
+      reason: 'Requirement Gathering',
+      sDate: '2025-01-05',
+      eDate: '2025-01-10',
+      status: 'Completed',
+    },
+    {
+      title: 'System Upgrade',
+      reason: 'Server Maintenance',
+      sDate: '2025-02-01',
+      eDate: '2025-02-05',
+      status: 'In Progress',
+    },
+    {
+      title: 'Website Revamp',
+      reason: 'UI/UX Improvements with additional features and long reason to test wrapping',
+      sDate: '2025-03-10',
+      eDate: '2025-03-20',
+      status: 'Pending',
+    },
+    {
+      title: 'Training Session',
+      reason: 'Skill Development',
+      sDate: '2025-04-15',
+      eDate: '2025-04-16',
+      status: 'Completed',
+    },
+    {
+      title: 'Audit Review',
+      reason: 'Annual Compliance',
+      sDate: '2025-05-01',
+      eDate: '2025-05-03',
+      status: 'In Progress',
+    },
+    {
+      title: 'Marketing Campaign',
+      reason: 'Product Launch',
+      sDate: '2025-05-15',
+      eDate: '2025-05-30',
+      status: 'Pending',
+    },
+  ]);
+  const [loading, setLoading] = useState(false);
 
-      if (res.ok) {
-        setLoanData(data);
-      } else {
-        console.error(data.message || 'Failed to fetch loans');
-      }
-    } catch (err) {
-      console.error('Error fetching loans:', err);
-    } finally {
-      setLoading(false);
+  // Filter states
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState(null);
+
+  const rowsMaxHeight = SCREEN_HEIGHT - HEADER_HEIGHT - 150;
+
+  const getStatusStyle = status => {
+    switch (status) {
+      case 'Completed':
+        return {backgroundColor: '#d4edda', color: '#155724'};
+      case 'In Progress':
+        return {backgroundColor: '#fff3cd', color: '#856404'};
+      case 'Pending':
+        return {backgroundColor: '#f8d7da', color: '#721c24'};
+      default:
+        return {backgroundColor: '#e2e3e5', color: '#383d41'};
     }
   };
 
-  useEffect(() => {
-    fetchLoanData();
-  }, []);
+  // Filter logic
+  const displayData = selectedFilter
+    ? leaves.filter(item =>
+        selectedFilter === 'All'
+          ? true
+          : item.status.toLowerCase() === selectedFilter.toLowerCase(),
+      )
+    : leaves;
 
-  // Static data fallback (for demo)
-  const sampleData = [
-    { empName: 'John Doe', deptName: 'Finance', request: 'Personal Loan' },
-    { empName: 'Jane Smith', deptName: 'HR', request: 'Education Loan' },
-    { empName: 'Michael Lee', deptName: 'IT', request: 'Home Loan' },
-    { empName: 'Emily Davis', deptName: 'Marketing', request: 'Car Loan' },
-    { empName: 'David Wilson', deptName: 'Operations', request: 'Medical Loan' },
-    { empName: 'Sophia Brown', deptName: 'Finance', request: 'Vacation Loan' },
-    { empName: 'Liam Johnson', deptName: 'HR', request: 'Wedding Loan' },
-    { empName: 'Olivia Taylor', deptName: 'IT', request: 'Startup Loan' },
-    { empName: 'Noah Anderson', deptName: 'Sales', request: 'Mortgage Loan' },
-    { empName: 'Isabella Thomas', deptName: 'Legal', request: 'Business Loan' },
-    { empName: 'James Martinez', deptName: 'Finance', request: 'Personal Loan' },
-    { empName: 'Ava Robinson', deptName: 'HR', request: 'Education Loan' },
-    { empName: 'Ethan Garcia', deptName: 'IT', request: 'Car Loan' },
-    { empName: 'Mia Clark', deptName: 'Operations', request: 'Medical Loan' },
-    { empName: 'Lucas Rodriguez', deptName: 'Marketing', request: 'Vacation Loan' },
-    { empName: 'Charlotte Lewis', deptName: 'Finance', request: 'Wedding Loan' },
-    { empName: 'Benjamin Walker', deptName: 'IT', request: 'Startup Loan' },
-    { empName: 'Amelia Hall', deptName: 'Legal', request: 'Mortgage Loan' },
-    { empName: 'William Allen', deptName: 'Sales', request: 'Business Loan' },
-    { empName: 'Harper Young', deptName: 'HR', request: 'Home Loan' },
-  ];
-
-  const displayData = loanData.length > 0 ? loanData : sampleData;
+  const filterOptions = ['All', 'Completed', 'In Progress', 'Pending'];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Card style={styles.card} elevation={2}>
-        {/* Table Header */}
-        <View style={[styles.row, styles.headerRow]}>
-          <Text style={[styles.cell, styles.headerText, { flex: 0.6 }]}>SR.NO</Text>
-          <Text style={[styles.cell, styles.headerText]}>EMP NAME</Text>
-          <Text style={[styles.cell, styles.headerText]}>DEPARTMENT NAME</Text>
-          <Text style={[styles.cell, styles.headerText]}>REQUEST</Text>
-        </View>
+    <View style={styles.container}>
+      {/* Filter Modal */}
+      <Modal
+        transparent
+        animationType="fade"
+        visible={filterVisible}
+        onRequestClose={() => setFilterVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPressOut={() => setFilterVisible(false)}>
+          <View style={styles.modalContent}>
+            {filterOptions.map((option, idx) => (
+              <TouchableOpacity
+                key={idx}
+                onPress={() => {
+                  setSelectedFilter(option === 'All' ? null : option);
+                  setFilterVisible(false);
+                }}>
+                <Text style={styles.filterOption}>{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
 
-        {/* Table Body */}
-        {loading ? (
-          <ActivityIndicator style={{ marginVertical: 20 }} />
-        ) : (
-          displayData.map((item, index) => (
-            <View
-              key={index}
-              style={[
-                styles.row,
-                {
-                  backgroundColor: index % 2 === 0 ? '#f5f8ff' : '#ffffff',
-                },
-              ]}
-            >
-              <Text style={[styles.cell, { flex: 0.6 }]}>{index + 1}</Text>
-              <Text style={styles.cell}>{item.empName}</Text>
-              <Text style={styles.cell}>{item.deptName}</Text>
-              <Text style={styles.cell}>{item.request}</Text>
+      {/* Table */}
+      <Card style={styles.card}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View>
+            {/* Table Header */}
+            <View style={[styles.row, styles.headerRow]}>
+              <Text style={[styles.headerCell, {width: 60}]}>SR.No</Text>
+              <Text style={[styles.headerCell, {width: 180}]}>TITLE</Text>
+              <Text style={[styles.headerCell, {width: 250}]}>REASON</Text>
+              <Text style={[styles.headerCell, {width: 120}]}>START DATE</Text>
+              <Text style={[styles.headerCell, {width: 120}]}>END DATE</Text>
+              <View style={styles.statusHeader}>
+                <Text style={styles.headerCell}>STATUS</Text>
+                <IconButton
+                  icon="filter"
+                  size={20}
+                  iconColor="white"
+                  onPress={() => setFilterVisible(true)}
+                />
+              </View>
             </View>
-          ))
-        )}
+
+            {/* Table Body */}
+            <ScrollView 
+              nestedScrollEnabled 
+              style={{maxHeight: rowsMaxHeight}}
+              showsVerticalScrollIndicator={true}
+            >
+              {loading ? (
+                <ActivityIndicator style={{marginVertical: 20}} />
+              ) : displayData.length > 0 ? (
+                displayData.map((item, index) => (
+                  <View
+                    key={`${item.title}-${index}`}
+                    style={[
+                      styles.row,
+                      {
+                        backgroundColor:
+                          index % 2 === 0 ? '#fdfdfd' : '#f7f9fc',
+                      },
+                    ]}>
+                    <Text style={[styles.cell, {width: 60}]}>{index + 1}</Text>
+                    <Text style={[styles.cell, {width: 180}]}>
+                      {item.title}
+                    </Text>
+                    <Text style={[styles.cell, {width: 250}]}>
+                      {item.reason}
+                    </Text>
+                    <Text style={[styles.cell, {width: 120}]}>
+                      {item.sDate}
+                    </Text>
+                    <Text style={[styles.cell, {width: 120}]}>
+                      {item.eDate}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.cell,
+                        styles.statusPill,
+                        {
+                          width: 120,
+                          backgroundColor: getStatusStyle(item.status)
+                            .backgroundColor,
+                          color: getStatusStyle(item.status).color,
+                        },
+                      ]}>
+                      {item.status}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={{textAlign: 'center', paddingVertical: 20}}>
+                  No leave records found
+                </Text>
+              )}
+            </ScrollView>
+          </View>
+        </ScrollView>
       </Card>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 15,
     backgroundColor: COLORS.background,
   },
   card: {
-    borderRadius: 12,
+    borderRadius: 10,
     overflow: 'hidden',
     backgroundColor: '#fff',
+    elevation: 2,
   },
   row: {
     flexDirection: 'row',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomWidth: 0.5,
+    borderColor: '#ddd',
     alignItems: 'center',
   },
   headerRow: {
     backgroundColor: COLORS.primary || '#3498db',
+    height: HEADER_HEIGHT,
   },
   cell: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 6,
+    fontSize: 13,
+    flexWrap: 'wrap',
   },
-  headerText: {
-    fontWeight: 'bold',
+  headerCell: {
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    fontSize: 13,
     color: '#fff',
-    fontSize: 14,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  },
+  statusHeader: {
+    width: 120,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusPill: {
+    borderRadius: 12,
+    textAlign: 'center',
+    paddingVertical: 3,
+    overflow: 'hidden',
+    marginHorizontal: 4,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    justifyContent: 'flex-start',
+    paddingTop: 50,
+    paddingHorizontal: 15,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 10,
+    elevation: 4,
+    width: 200,
+    alignSelf: 'flex-end',
+  },
+  filterOption: {
+    fontSize: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
   },
 });
 
-export default ViewLoanScreen;
+export default ViewLeaveScreen;
